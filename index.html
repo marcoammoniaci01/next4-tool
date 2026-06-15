@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Bandi – Next4 International</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f4f8; color: #1a1a2e; font-size: 14px; }
+
+  .header {
+    background: #1B3A6B;
+    color: white;
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  .header-title { font-size: 19px; font-weight: 700; }
+  .header-title span { color: #00E5D1; }
+  .header-sub { font-size: 11px; color: #a8c4e8; margin-top: 2px; }
+  .header-date { font-size: 12px; color: #a8c4e8; text-align: right; line-height: 1.6; }
+
+  /* CARDS */
+  .stats { display: flex; gap: 12px; padding: 20px 32px 0; flex-wrap: wrap; }
+  .stat-card {
+    background: white; border-radius: 10px; padding: 14px 18px;
+    flex: 1; min-width: 120px; box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    border-top: 4px solid #1B3A6B; cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+  .s-aperto      { border-top-color: #16a34a; }
+  .s-inapertura  { border-top-color: #00897b; }
+  .s-monitorare  { border-top-color: #d97706; }
+  .s-lavorazione { border-top-color: #2563eb; }
+  .s-chiuso      { border-top-color: #dc2626; }
+  .stat-num { font-size: 28px; font-weight: 800; color: #1B3A6B; line-height: 1; }
+  .s-aperto     .stat-num { color: #16a34a; }
+  .s-inapertura .stat-num { color: #00897b; }
+  .s-monitorare .stat-num { color: #d97706; }
+  .s-lavorazione .stat-num { color: #2563eb; }
+  .s-chiuso     .stat-num { color: #dc2626; }
+  .stat-label { font-size: 11px; color: #666; margin-top: 3px; }
+
+  /* URGENZA */
+  .urgenza-bar { margin: 14px 32px 0; background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #856404; }
+  .urgenza-bar strong { color: #92400e; }
+  .u-item { display: inline-block; margin: 2px 14px 2px 0; }
+
+  /* APERTURA IMMINENTE */
+  .apertura-bar { margin: 8px 32px 0; background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #166534; }
+  .apertura-bar strong { color: #14532d; }
+
+  /* FILTRI */
+  .filtri { display: flex; gap: 10px; padding: 16px 32px 6px; flex-wrap: wrap; align-items: flex-end; }
+  .filtri input, .filtri select {
+    border: 1px solid #d1d5db; border-radius: 8px; padding: 7px 11px;
+    font-size: 13px; background: white; color: #1a1a2e; outline: none;
+    transition: border-color 0.2s;
+  }
+  .filtri input:focus, .filtri select:focus { border-color: #1B3A6B; }
+  .filtri input { width: 240px; }
+  .filtri select { min-width: 148px; }
+  .filtri label { font-size: 10px; color: #777; display: block; margin-bottom: 3px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; }
+  .btn-reset { background: #f0f4f8; border: 1px solid #d1d5db; border-radius: 8px; padding: 7px 14px; font-size: 12px; cursor: pointer; color: #555; align-self: flex-end; }
+  .btn-reset:hover { background: #e2e8f0; }
+
+  .ris-info { padding: 4px 32px 6px; font-size: 12px; color: #999; }
+
+  /* TABELLA */
+  .table-wrap { padding: 0 32px 48px; overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 6px rgba(0,0,0,0.08); }
+  thead { background: #1B3A6B; color: white; }
+  th { padding: 11px 12px; text-align: left; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+  td { padding: 11px 12px; border-bottom: 1px solid #f0f4f8; vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #f8fafc; }
+  .bando-nome { font-weight: 700; font-size: 13px; color: #1B3A6B; line-height: 1.3; }
+  .bando-nome a { color: inherit; text-decoration: none; }
+  .bando-nome a:hover { text-decoration: underline; }
+  .bando-ente { font-size: 11.5px; color: #777; margin-top: 2px; }
+  .bando-desc { font-size: 11px; color: #999; margin-top: 3px; line-height: 1.4; }
+
+  /* FLAG */
+  .flg { display: inline-block; font-size: 9px; font-weight: 800; padding: 1px 5px; border-radius: 3px; margin-left: 5px; vertical-align: middle; letter-spacing: 0.2px; }
+  .flg-urgente  { background: #dc2626; color: white; }
+  .flg-rilevante{ background: #16a34a; color: white; }
+  .flg-apertura { background: #00897b; color: white; }
+
+  /* BADGE STATO */
+  .badge { display: inline-block; padding: 3px 9px; border-radius: 20px; font-size: 10.5px; font-weight: 700; white-space: nowrap; }
+  .b-aperto      { background: #dcfce7; color: #16a34a; }
+  .b-inapertura  { background: #ccfbf1; color: #0f766e; }
+  .b-monitorare  { background: #fef9c3; color: #a16207; }
+  .b-lavorazione { background: #dbeafe; color: #1d4ed8; }
+  .b-chiuso      { background: #fee2e2; color: #dc2626; }
+
+  /* TAG TIPOLOGIA */
+  .tag { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 10.5px; font-weight: 600; margin: 2px 2px 2px 0; white-space: nowrap; }
+  .t-innovazione            { background: #ede9fe; color: #6d28d9; }
+  .t-rs                     { background: #fce7f3; color: #be185d; }
+  .t-internazionalizzazione { background: #e0f2fe; color: #0369a1; }
+  .t-digitale               { background: #d1fae5; color: #065f46; }
+  .t-impresa                { background: #fff7ed; color: #c2410c; }
+  .t-fiscale                { background: #f0fdf4; color: #15803d; }
+  .t-step                   { background: #f5f3ff; color: #7c3aed; }
+  .t-ambiente               { background: #ecfdf5; color: #065f46; }
+  .t-cultura                { background: #fdf2f8; color: #9d174d; }
+  .t-startup                { background: #fef3c7; color: #92400e; }
+  .t-lavoro                 { background: #f0f9ff; color: #0c4a6e; }
+
+  /* CLIENTI */
+  .ct { display: inline-block; background: #e8f0fb; color: #1B3A6B; border-radius: 4px; padding: 2px 6px; font-size: 10.5px; font-weight: 600; margin: 2px 2px 2px 0; white-space: nowrap; }
+  .ct-potential { display: inline-block; background: #fff3e0; color: #b45309; border-radius: 4px; padding: 2px 6px; font-size: 10.5px; font-weight: 600; margin: 2px 2px 2px 0; white-space: nowrap; border: 1px dashed #f59e0b; }
+
+  /* TIPOLOGIA PROCEDURA */
+  .proc { font-size: 10.5px; color: #999; margin-top: 2px; font-style: italic; }
+
+  /* LINK */
+  .btn-link { display: inline-block; background: #1B3A6B; color: white; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; text-decoration: none; transition: background 0.2s; white-space: nowrap; }
+  .btn-link:hover { background: #00E5D1; color: #1B3A6B; }
+
+  .contributo { font-weight: 700; color: #1B3A6B; font-size: 12.5px; }
+  .scadenza { font-size: 12px; color: #444; }
+  .scadenza.urg { color: #dc2626; font-weight: 700; }
+  .no-results { text-align: center; padding: 40px; color: #aaa; }
+  .footer { text-align: center; padding: 16px; color: #bbb; font-size: 11px; }
+  .footer em { color: #00E5D1; font-style: normal; }
+
+  @media print { .header { position: static; } .filtri, .urgenza-bar, .apertura-bar { display: none; } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="header-title">Dashboard Bandi <span>|</span> Next4 International</div>
+    <div class="header-sub">Fonte: next4consulting.it · Invitalia · SIMEST · EIC · europainnovazione.com · portali regionali · Aggiornato al 11/06/2026</div>
+  </div>
+  <div class="header-date" id="header-date"></div>
+</div>
+
+<div class="stats">
+  <div class="stat-card s-aperto"     onclick="quickFilter('aperto')">    <div class="stat-num" id="c-aperto">0</div><div class="stat-label">Aperti</div></div>
+  <div class="stat-card s-inapertura" onclick="quickFilter('inapertura')"><div class="stat-num" id="c-inapertura">0</div><div class="stat-label">In apertura</div></div>
+  <div class="stat-card s-lavorazione"onclick="quickFilter('lavorazione')"><div class="stat-num" id="c-lavorazione">0</div><div class="stat-label">In lavorazione</div></div>
+  <div class="stat-card s-monitorare" onclick="quickFilter('monitorare')"> <div class="stat-num" id="c-monitorare">0</div><div class="stat-label">Da monitorare</div></div>
+  <div class="stat-card s-chiuso"     onclick="quickFilter('chiuso')">     <div class="stat-num" id="c-chiuso">0</div><div class="stat-label">Chiusi</div></div>
+  <div class="stat-card"              onclick="quickFilter('')">            <div class="stat-num" id="c-totale">0</div><div class="stat-label">Totale</div></div>
+</div>
+
+<div id="urgenza-bar"  class="urgenza-bar"  style="display:none;"></div>
+<div id="apertura-bar" class="apertura-bar" style="display:none;"></div>
+
+<div class="filtri">
+  <div><label>Ricerca</label><input id="q" type="text" placeholder="Cerca bando, ente, descrizione..."></div>
+  <div><label>Stato</label><select id="f-stato"></select></div>
+  <div><label>Regione</label><select id="f-regione"></select></div>
+  <div><label>Tipologia</label><select id="f-tipo"></select></div>
+  <div><label>Cliente abbinabile</label><select id="f-cliente"></select></div>
+  <button class="btn-reset" onclick="resetAll()">✕ Reset</button>
+</div>
+<div class="ris-info" id="ris-info"></div>
+<div style="padding:2px 32px 8px;font-size:11px;color:#888;">
+  <span style="display:inline-block;background:#e8f0fb;color:#1B3A6B;border-radius:4px;padding:1px 5px;font-weight:600;font-size:10px;margin-right:4px;">Cliente</span> Sede confermata nella regione &nbsp;·&nbsp;
+  <span style="display:inline-block;background:#fff3e0;color:#b45309;border-radius:4px;padding:1px 5px;font-weight:600;font-size:10px;border:1px dashed #f59e0b;margin-right:4px;">Cliente *</span> Sede assente – aprire entità/sede nella regione entro prima erogazione
+</div>
+
+<div class="table-wrap">
+  <table>
+    <thead><tr>
+      <th style="min-width:220px">Bando</th>
+      <th>Regione</th>
+      <th>Tipologia</th>
+      <th>Contributo</th>
+      <th>Scadenza / Apertura</th>
+      <th>Stato</th>
+      <th style="min-width:185px">Clienti abbinabili</th>
+      <th>Link</th>
+    </tr></thead>
+    <tbody id="tbody"></tbody>
+  </table>
+  <div class="no-results" id="no-res" style="display:none;">Nessun risultato.</div>
+</div>
+
+<div class="footer">Next4 International S.R.L. · <em>next4international.com</em> · Dashboard aggiornata: <span id="footer-date"></span></div>
+
+<script>
+// ─── DATI BANDI ─────────────────────────────────────────────────────────
+// stato: aperto | inapertura | monitorare | lavorazione | chiuso
+// urgente: scadenza <= 30 gg  |  aperturaImminente: apertura <= 20 gg
+const BANDI = [
+
+  // ══ APERTI – URGENTI (scadenza entro 30 giorni) ══════════════════════
+  { nome:"Filiere Riciclo e Recupero Rifiuti – Calabria", ente:"Regione Calabria", regione:"Calabria",
+    tipo:["ambiente","innovazione"], contributo:"€12,76 milioni (dotazione totale)",
+    scadenza:"04/06/2026 – 06/07/2026", proc:"Graduatoria",
+    stato:"aperto", urgente:true, altaRilevanza:true, aperturaImminente:false,
+    descrizione:"Contributi per economia circolare, recupero e valorizzazione materiali da rifiuti in Calabria. GATIM SRL ha ATECO 38.21.30: corrispondenza diretta.",
+    clienti:["GATIM SRL"],
+    link:"https://calabriaeuropa.regione.calabria.it/incentivi-per-lo-sviluppo-di-filiere-produttive-innovative-per-il-riutilizzo-il-riciclaggio-e-il-recupero-di-materia-dai-rifiuti-pubblicato-lavviso-pubblico/" },
+
+  { nome:"Programma Technology Transfer – Lazio (TT Lazio)", ente:"Lazio Innova", regione:"Lazio",
+    tipo:["rs","innovazione"], contributo:"Fino a €250.000 fondo perduto",
+    scadenza:"30/06/2026 (scadenza PROROGATA)", proc:"Graduatoria",
+    stato:"aperto", urgente:true, altaRilevanza:true, aperturaImminente:false,
+    descrizione:"Startup innovative Lazio <36 mesi, TRL≥4. Trasformazione risultati di ricerca in impresa. Originariamente chiuso il 05/06/2026, PROROGATO al 30/06/2026.",
+    clienti:["INTUOS SRL","Messagenius","Drop Digital Health","Azu Tech","Assetia *","Yourease *"],
+    link:"https://ttlazio.lazioinnova.it" },
+
+  { nome:"Voucher Manager – Potenziamento Manageriale Lazio", ente:"Regione Lazio / PR FSE+ 2021-2027", regione:"Lazio",
+    tipo:["impresa"], contributo:"Fino a €30.000 per azienda",
+    scadenza:"30/06/2026 (finestre mensili)", proc:"Sportello (ordine cronologico)",
+    stato:"aperto", urgente:true, altaRilevanza:true, aperturaImminente:false,
+    descrizione:"Voucher per assunzione manager/quadri o consulenza manageriale specializzata. €5M totali. Aperto a tutte le imprese laziali. Fino a 2 domande per azienda.",
+    clienti:["INTUOS SRL","Messagenius","Drop Digital Health","Azu Venture","Azu Tech","Ecoter","Ecubit","WDA","Govtech","Consedin","Speri","Kerr","TLC Telecomunicazioni","Assetia *"],
+    link:"https://www.lazioeuropa.it/bandi/rafforzamento-delle-capacita-manageriali-delle-imprese/" },
+
+  { nome:"Sviluppo Competenze Digitali/Green – Mezzogiorno", ente:"MIMIT / Invitalia", regione:"Mezzogiorno",
+    tipo:["lavoro","digitale"], contributo:"€50 milioni (dotazione totale)",
+    scadenza:"23/06/2026", proc:"Sportello",
+    stato:"aperto", urgente:true, altaRilevanza:true, aperturaImminente:false,
+    descrizione:"Finanziamento a fondo perduto per PMI del Mezzogiorno che investono in formazione digitale e green. Scadenza imminente.",
+    clienti:["GATIM SRL","Digitalmens","Tod Systems","Flex Packaging"],
+    link:"https://www.invitalia.it/incentivi-e-strumenti/sviluppo-competenze-specialistiche-delle-pmi" },
+
+  { nome:"Calabria Startup – Consolidamento", ente:"Regione Calabria", regione:"Calabria",
+    tipo:["startup","innovazione"], contributo:"Fino a €400.000 (70% fondo perduto)",
+    scadenza:"19/05/2025 – 30/06/2026", proc:"Sportello",
+    stato:"aperto", urgente:true, altaRilevanza:false, aperturaImminente:false,
+    descrizione:"Consolidamento startup innovative Calabria ad alta intensità di conoscenza. Richiede iscrizione sezione startup registro imprese. GATIM e Tod Systems da verificare.",
+    clienti:[],
+    link:"https://calabriaeuropa.regione.calabria.it/bando/avviso-per-il-sostegno-alla-creazione-e-al-consolidamento-di-startup-innovative-ad-alta-intensita-di-conoscenza/" },
+
+  // ══ APERTI – A SPORTELLO (continuo) ══════════════════════════════════
+  { nome:"Smart&Start Italia", ente:"Invitalia", regione:"Nazionale",
+    tipo:["startup","innovazione"], contributo:"Fino a €1.500.000",
+    scadenza:"Fino a esaurimento fondi (31/12/2029)", proc:"Sportello",
+    stato:"aperto", urgente:false, altaRilevanza:true, aperturaImminente:false,
+    descrizione:"Finanziamento agevolato tasso zero + fondo perduto (30% Centro-Sud) per startup innovative <60 mesi. Aperto dal 01/01/2024.",
+    clienti:["BrainoAI","INTUOS SRL","Messagenius","Drop Digital Health","Ekore SRL","Fideliomed","Velion SRL","Wink Suite SRL","Boss Technologies SRL","Destino Italia","Azu Tech","Yourease","OralTec","Heres *","Assetia *"],
+    link:"https://www.invitalia.it/incentivi-e-strumenti/smartstart-italia" },
+
+  { nome:"ON – Oltre Nuove Imprese a Tasso Zero", ente:"Invitalia", regione:"Nazionale",
+    tipo:["impresa"], contributo:"Prestito tasso zero + fondo perduto fino al 90%",
+    scadenza:"Fino a esaurimento fondi", proc:"Sportello",
+    stato:"aperto", urgente:false, altaRilevanza:false, aperturaImminente:false,
+    descrizione:"Micro/piccole imprese femminili (>50% quote donne) o giovanili (under 35). Wink Suite: 100% donna. INTUOS SRL: 58,5% donna.",
+    clienti:["Wink Suite SRL","INTUOS SRL"],
+    link:"https://www.invitalia.it/incentivi-e-strumenti/ON-nuove-imprese-tasso-zero" },
+
+  { nome:"Autoimpiego Centro-Nord", ente:"Invitalia", regione:"Centro-Nord",
+    tipo:["lavoro","impresa"], contributo:"Voucher €30.000–€40.000",
+    scadenza:"Fino a esaurimento fondi", proc:"Sportello",
+    stato:"aperto", urgente:false, altaRilevanza:false, aperturaImminente:false,
+    descrizione:"Incentivi per avvio nuove attività autonome al Centro-Nord. Destinato prevalentemente a persone fisiche o nuove imprese.",
+    clienti:["BrainoAI","Boss Technologies SRL","Azu Tech","OralTec","Yourease"],
+    link:"https://www.invitalia.it/incentivi-e-strumenti/autoimpiego-centro-nord" },
+
+  { nome:"Resto al Sud 2.0", ente:"Invitalia / Agenzia per la Coesione", regione:"Sud Italia (8 regioni)",
+    tipo:["impresa"], contributo:"€50.000 – €200.000",
+    scadenza:"Dal 15/10/2025 – esaurimento fondi", proc:"Sportello",
+    stato:"aperto", urgente:false, altaRilevanza:true, aperturaImminente:false,
+    descrizione:"Contributo fondo perduto + finanziamento per avvio/sviluppo imprese al Mezzogiorno. Titolari under 55. Digitalmens (NA), ProGen (CT), GATIM (CZ), Destino Italia (PA), Tod Systems (CZ).",
+    clienti:["Digitalmens","ProGen SRL","GATIM SRL","Destino Italia","Tod Systems"],
+    link:"https://www.invitalia.it/incentivi-e-strumenti/resto-al-sud" },
+
+  { nome:"Pre-Seed 3.0 – Regione Lazio", ente:"Regione Lazio / Lazio Innova", regione:"Lazio",
+    tipo:["startup","innovazione"], contributo:"Fino a €145.000 (fondo perduto 100%)",
+    scadenza:"19/03/2026 – fondi esauriti ✗", proc:"Sportello",
+    stato:"chiuso", urgente:false, altaRilevanza:false, aperturaImminente:false,
+    descrizione:"Startup innovative Lazio <36 mesi. Fondo perduto 100% su spese ammissibili. Apporto min €10.000. Copertura fino a 2× se investitore terzo (max €145.000). Monitorare Pre-Seed 4.0.",
+    clienti:["INTUOS SRL","Messagenius","Drop Digital Health","Azu Tech","Assetia *","Yourease *"],
+    link:"https://www.lazioinnova.it/bandi/pre-seed-3-0/" },
+
+  { nome:"TecnoNidi Puglia", ente:"Regione Puglia", regione:"Puglia",
+    tipo:["startup","innovazione"], contributo:"Fino a €350.000",
+    scadenza:"Fino a esaurimento fondi", proc:"Sportello",
+    stato:"aperto", urgente:false, altaRilevanza:false, aperturaImminente:false,
+    descrizione:"Valorizzazione economica di nuovi prodotti/servizi per startup e piccole imprese in Puglia.",
+    clienti:[],
+    link:"https://www.regione.puglia.it/web/competitivita-e-innovazione/-/avviso-tecnonidi-aiuti-alle-piccole-imprese-innovative" },
+
+  { nome:"STEP Puglia", ente:"Regione Puglia", regione:"Puglia",
+    tipo:["step","innovazione"], contributo:"€471,5 milioni (dotazione totale)",
+    scadenza:"Dal 05/08/2025 – esaurimento fondi", proc:"Sportello",
+    stato:"aperto", urgente:false, altaRilevanza:false, aperturaImminente:false,
+    descrizione:"Sviluppo e fabbricazione di tecnologie critiche STEP in Puglia. Ampio budget disponibile.",
+    clienti:[],
+    link:"https://www.regione.puglia.it/web/competitivita-e-innovazione/-/avviso-pubblico-step-tecnologie-critiche-digitali-e-biotecnologie" },
+
+  { nome:"MiniPIA Puglia", ente:"Regione Puglia", regione:"Puglia",
+    tipo:["innovazione","impresa"], contributo:"Da definire",
+    scadenza:"Dal 29/02/2024 – esaurimento fondi", proc:"Sportello",
+    stato:"aperto", urgente:false, altaRilevanza:false, aperturaImminente:false,
+    descrizione:"Incentivi per investimenti innovativi di micro e piccole imprese in Puglia.",
+    clienti:[],
+    link:"https://www.minipia.puglia.it" },
+
+  { nome:"Innovazione Strategica STEP – Toscana", ente:"Regione Toscana", regione:"Toscana",
+    tipo:["step","innovazione"], contributo:"Da definire",
+    scadenza:"Dal 30/03/2026 – esaurimento fondi", proc:"Sportello",
+    stato:"aperto", urgente:false, altaRilevanza:false, aperturaImminente:false,
+    descrizione:"Contributi per innovazione e investimenti nelle tecnologie STEP in Toscana. OralTec (FI) biomedical/dental. Drycor: tecnologia HVAC ad alta efficienza energetica, manufacturing Siena (apertura entità italiana).",
+    clienti:["OralTec","Drycor *"],
+    link:"https://www.regione.toscana.it/-/bando-innovazione-strategica-step-strategic-technologies-for-europe-platform-" },
+
+  { nome:"MiC – Cultura Cresce", ente:"Ministero della Cultura", regione:"Mezzogiorno (7 regioni)",
+    tipo:["cultura","impresa"], contributo:"€142 milioni (dotazione totale)",
+    scadenza:"Dal 10/12/2025 al 31/12/2029", proc:"Sportello",
+    stato:"aperto", urgente:false, altaRilevanza:false, aperturaImminente:false,
+    descrizione:"Imprese filiera culturale/creativa. Regioni: Basilicata, Calabria, Campania, Molise, Puglia, Sardegna, Sicilia.",
+    clienti:["Destino Italia","ProGen SRL"],
+    link:"https://www.invitalia.it/incentivi-e-strumenti/cultura-cresce" },
+
+  // ── SIMEST FONDO 394 – 9 strumenti ──────────────────────────────────────
+  { nome:"SIMEST – Inserimento Mercati (IM)", ente:"SIMEST / CDP Group (Fondo 394 Circ. 3/2023)", regione:"Nazionale (Export)",
+    tipo:["internazionalizzazione"], contributo:"Fino a €300.000 PMI · +10% fondo perduto (25% Sud)",
+    scadenza:"Sportello digitale continuo", proc:"Sportello digitale",
+    stato:"aperto", urgente:false, altaRilevanza:true, aperturaImminente:false,
+    descrizione:"Finanziamento agevolato per entrare in nuovi mercati esteri: studi di mercato, uffici di rappresentanza, personale locale, consulenze, campagne promo. Accessibile anche a PMI senza fatturato estero (prime esportazioni).",
+    clienti:["BrainoAI","INTUOS SRL","Messagenius","Drop Digital Health","Ekore SRL","Fideliomed","Velion SRL","Wink Suite SRL","Boss Technologies SRL","Casavo","Destino Italia","Digitalmens","GATIM SRL","Tod Systems","ProGen SRL","EasyRFID","TLC Telecomunicazioni","Azu Tech","Ecubit","OralTec","Yourease","Spartan Tech","Heres","GGG","Flex Packaging","Ecoter","Citynews *","Next4Production","Fairtile *","Drycor *","Leasy *","Leonardo formazione"],
+    link:"https://www.simest.it/per-le-imprese/finanziamenti-agevolati/finanziamenti-agevolati-internazionalizzazione/" },
+
+  { nome:"SIMEST – Transizione Digitale/Ecologica (DE)", ente:"SIMEST / CDP Group (Fondo 394 Circ. 4/2023)", regione:"Nazionale (Export)",
+    tipo:["internazionalizzazione","digitale"], contributo:"Fino a €300.000 PMI · +10% fondo perduto (25% Sud)",
+    scadenza:"Sportello digitale continuo", proc:"Sportello digitale",
+    stato:"aperto", urgente:false, altaRilevanza:true, aperturaImminente:false,
+    descrizione:"Software, hardware, sistemi digitali, consulenze per digitalizzazione dell'export. Aggiornato 30/04/2026 con misura 'Energia per Competitività': PMI con incremento ≥10% costi energetici (conflitto Golfo Persico, dal 28/02/2026) ottengono condizioni migliorative.",
+    clienti:["BrainoAI","INTUOS SRL","Messagenius","Drop Digital Health","Ekore SRL","Fideliomed","Velion SRL","Wink Suite SRL","Boss Technologies SRL","Casavo","Digitalmens","EasyRFID","Tod Systems","Azu Tech","Ecubit","Yourease","Spartan Tech","Heres","Flex Packaging"],
+    link:"https://www.simest.it/per-le-imprese/finanziamenti-agevolati/finanziamenti-agevolati-internazionalizzazione/" },
+
+  { nome:"SIMEST – Fiere ed Events (FM)", ente:"SIMEST / CDP Group (Fondo 394 Circ. 5/2023)", regione:"Nazionale (Export)",
+    tipo:["internazionalizzazione"], contributo:"Fino a €100.000 PMI · +10% fondo perduto (25% Sud)",
+    scadenza:"Sportello digitale continuo", proc:"Sportello digitale",
+    stato:"aperto", urgente:false, altaRilevanza:false, aperturaImminente:false,
+    descrizione:"Partecipazione a fiere ed eventi promozionali internazionali: quote stand, allestimento, trasferte, materiale promozionale, traduzioni.",
+    clienti:["BrainoAI","INTUOS SRL","Messagenius","Drop Digital Health","Ekore SRL","Fideliomed","Velion SRL","Wink Suite SRL","Boss Technologies SRL","Casavo","Destino Italia","EasyRFID","Azu Tech","Ecubit","OralTec","Yourease","Flex Packaging","GGG"],
+    link:"https://www.simest.it/per-le-imprese/finanziamenti-agevolati/finanziamenti-agevolati-internazionalizzazione/" },
+
+  { nome:"SIMEST – E-Commerce (EC)", ente:"SIMEST / CDP Group (Fondo 394 Circ. 6/2023)", regione:"Nazionale (Export)",
+    tipo:["internazionalizzazione","digitale"], contributo:"Fino a €150.000 PMI · +10% fondo perduto (25% Sud)",
+    scadenza:"Sportello digitale continuo", proc:"Sportello digitale",
+    stato:"aperto", urgente:false, altaRilevanza:false, aperturaImminente:false,
+    descrizione:"Piattaforme e-commerce internazionali, SEO su mercati esteri, logistica, traduzioni, sistemi di pagamento digitale. Requisito: dominio/piattaforma rivolta a mercati esteri.",
+    clienti:["BrainoAI","INTUOS SRL","Messagenius","Drop Digital Health","Ekore SRL","Velion SRL","Wink Suite SRL","Casavo","EasyRFID","Azu Tech","Yourease","Heres","Spartan Tech","OralTec"],
+    link:"https://www.simest.it/per-le-imprese/finanziamenti-agevolati/finanziamenti-agevolati-internazionalizzazione/" },
+
+  { nome:"SIMEST – Certificazioni e Consulenze (SC)", ente:"SIMEST / CDP Group (Fondo 394 Circ. 7/2023)", regione:"Nazionale (Export)",
+    tipo:["internazionalizzazione"], contributo:"Fino a €100.000 PMI · +10% fondo perduto (25% Sud)",
+    scadenza:"Sportello digitale continuo", proc:"Sportello digitale",
+    stato:"aperto", urgente:false, altaRilevanza:false, aperturaImminente:false,
+    descrizione:"Certificazioni internazionali (ISO, CE marking, standard tecnici esteri) e consulenze strategiche per l'internazionalizzazione.",
+    clienti:["BrainoAI","INTUOS SRL","Messagenius","Drop Digital Health","Ekore SRL","Fideliomed","Velion SRL","Wink Suite SRL","Boss Technologies SRL","Casavo","Destino Italia","EasyRFID","TLC Telecomunicazioni","Digitalmens","ProGen SRL","Azu Tech","Ecubit","OralTec","Yourease","GGG","Flex Packaging","Ecoter","Speri","Leonardo formazione"],
+    link:"https://www.simest.it/per-le-imprese/finanziamenti-agevolati/finanziamenti-agevolati-internazionalizzazione/" },
+
+  { nome:"SIMEST – Temporary Export Manager (TM)", ente:"SIMEST / CDP Group (Fondo 394 Circ. 8/2023)", regione:"Nazionale (Export)",
+    tipo:["internazionalizzazione"], contributo:"Fino a €150.000 PMI · +10% fondo perduto (25% Sud)",
+    scadenza:"Sportello digitale continuo", proc:"Sportello digitale",
+    stato:"aperto", urgente:false, altaRilevanza:false, aperturaImminente:false,
+    descrizione:"Figura professionale di Temporary/Export Manager tramite società di management specializzata. Ideale per PMI senza struttura export interna che vogliono avviare o accelerare l'internazionalizzazione.",
+    clienti:["BrainoAI","INTUOS SRL","Messagenius","Drop Digital Health","Ekore SRL","Fideliomed","Velion SRL","Wink Suite SRL","Boss Technologies SRL","Destino Italia","Digitalmens","GATIM SRL","Tod Systems","EasyRFID","TLC Telecomunicazioni","Azu Tech","Ecubit","OralTec","Yourease","Flex Packaging","GGG","Ecoter","Speri","Leonardo formazione"],
+    link:"https://www.simest.it/per-le-imprese/finanziamenti-agevolati/finanziamenti-agevolati-internazionalizzazione/" },
+
+  { nome:"SIMEST – Potenziamento Mercati Africani", ente:"SIMEST / CDP Group (Fondo 394 Circ. 1/2024)", regione:"Nazionale (Export – Africa)",
+    tipo:["internazionalizzazione"], contributo:"Fino a €900.000 PMI · +30% fondo perduto (40% Sud)",
+    scadenza:"Sportello digitale continuo", proc:"Sportello digitale",
+    stato:"aperto", urgente:false, altaRilevanza:true, aperturaImminente:false,
+    descrizione:"Per PMI già presenti, che esportano o si approvvigionano in Africa. Spese: investimenti produttivi/commerciali, digitalizzazione, rafforzamento patrimoniale, formazione personale. Quota fondo perduto elevata (30-40%). Piano Mattei correlato.",
+    clienti:["Destino Italia","GATIM SRL","Boss Technologies SRL","BrainoAI","Flex Packaging","Ecubit","EasyRFID","Tod Systems","Digitalmens"],
+    link:"https://www.simest.it/per-le-imprese/finanziamenti-agevolati/finanziamenti-agevolati-internazionalizzazione/" },
+
+  { nome:"SIMEST – Competitività America Latina (LatAm)", ente:"SIMEST / CDP Group (Fondo 394 Circ. 1/2025)", regione:"Nazionale (Export – America Latina)",
+    tipo:["internazionalizzazione"], contributo:"Fino a €900.000 PMI · +30% fondo perduto (40% Sud)",
+    scadenza:"Sportello digitale continuo", proc:"Sportello digitale",
+    stato:"aperto", urgente:false, altaRilevanza:false, aperturaImminente:false,
+    descrizione:"Per PMI con interessi in America centrale o meridionale (Argentina, Brasile, Messico, Colombia, Cile, Perù, ecc.). Investimenti produttivi, commerciali, digitali, patrimoniali. Attivo dal 28/02/2025.",
+    clienti:["BrainoAI","Boss Technologies SRL","INTUOS SRL","Destino Italia","Yourease","Ecubit","EasyRFID","Leasy *"],
+    link:"https://www.simest.it/per-le-imprese/finanziamenti-agevolati/finanziamenti-agevolati-internazionalizzazione/" },
+
+  { nome:"SIMEST – Affiancamento Strategico Mercato Indiano", ente:"SIMEST / CDP Group (Fondo 394 Circ. 2/2025)", regione:"Nazionale (Export – India)",
+    tipo:["internazionalizzazione"], contributo:"Fino a €300.000 PMI · +25% fondo perduto (35% Sud)",
+    scadenza:"Sportello digitale continuo", proc:"Sportello digitale",
+    stato:"aperto", urgente:false, altaRilevanza:false, aperturaImminente:false,
+    descrizione:"Per PMI che vogliono entrare o sono già presenti in India. Almeno 30% del finanziamento destinato a investimenti in India. Spese: produttivi, commerciali, digitalizzazione, formazione. Attivo dal 31/07/2025.",
+    clienti:["BrainoAI","Ekore SRL","INTUOS SRL","Fideliomed","Ecubit","Azu Tech","OralTec","EasyRFID"],
+    link:"https://www.simest.it/per-le-imprese/finanziamenti-agevolati/finanziamenti-agevolati-internazionalizzazione/" },
+
+  { nome:"Credito d'Imposta R&S, Innovazione e Design", ente:"Agenzia delle Entrate / MIMIT", regione:"Nazionale",
+    tipo:["fiscale","rs"], contributo:"10–20% su spese R&S/Innovazione",
+    scadenza:"Continuo (annuale in dichiarazione)", proc:"Automatico in dichiarazione fiscale",
+    stato:"aperto", urgente:false, altaRilevanza:false, aperturaImminente:false,
+    descrizione:"R&S 10%, Innovazione tecnologica 5%, Design 5% delle spese qualificate. Cumulabile. Documentazione obbligatoria.",
+    clienti:["BrainoAI","INTUOS SRL","Boss Technologies SRL","Fideliomed","Drop Digital Health","Ekore SRL","Velion SRL","Wink Suite SRL","Azu Tech","Ecubit","Yourease","Heres","EasyRFID","OralTec","Ecoter","Speri"],
+    link:"https://www.mimit.gov.it/it/incentivi/credito-d-imposta-r-s" },
+
+  { nome:"Voucher Startup – Sardegna", ente:"Regione Sardegna", regione:"Sardegna",
+    tipo:["startup"], contributo:"Fino a €200.000",
+    scadenza:"10/11/2025 – 30/04/2027", proc:"Sportello",
+    stato:"aperto", urgente:false, altaRilevanza:false, aperturaImminente:false,
+    descrizione:"Incentivi per sviluppo e validazione di startup innovative in Sardegna. Drycor (Nimbus EU) pianifica manufacturing a Porto Torres – aprire sede in Sardegna per candidatura.",
+    clienti:["Drycor *"],
+    link:"https://www.regione.sardegna.it/notizie/pubblicata-l-edizione-2025-del-programma-voucher-startup" },
+
+  { nome:"PNRR – Facility Parco Agrisolare", ente:"Ministero Ambiente (MASE)", regione:"Nazionale",
+    tipo:["ambiente"], contributo:"Da definire",
+    scadenza:"10/03/2026 – 09/10/2026", proc:"Sportello",
+    stato:"aperto", urgente:false, altaRilevanza:false, aperturaImminente:false,
+    descrizione:"Contributi per impianti fotovoltaici su fabbricati agricoli.",
+    clienti:[],
+    link:"https://www.gse.it/servizi-per-te/attuazione-misure-pnrr/facility-parco-agrisolare" },
+
+  { nome:"EIC Accelerator 2026", ente:"European Innovation Council (Horizon Europe)", regione:"Europeo",
+    tipo:["innovazione","startup","rs"], contributo:"Grant fino €2,5M + equity fino €10M",
+    scadenza:"Cut-off 08/07/2026 e 17/12/2026 (short proposal: continuo)", proc:"Graduatoria bifasica",
+    stato:"aperto", urgente:false, altaRilevanza:true, aperturaImminente:false,
+    descrizione:"634M€ europei per startup/PMI deep-tech con innovazione dirompente. TRL 6-8. Grant non rimborsabile + investimento equity. Aperto a tutte le PMI UE.",
+    clienti:["BrainoAI","INTUOS SRL","Fideliomed","Drop Digital Health","Boss Technologies SRL","Ekore SRL","Azu Tech","Yourease","Ecubit","Heres *","Ilios *","Fairtile *"],
+    link:"https://eic.ec.europa.eu/eic-funding-opportunities/eic-accelerator/eic-accelerator-challenges-2026_en" },
+
+  // ══ IN APERTURA ═════════════════════════════════════════════════════════
+  { nome:"Collabora & Innova 2 – Lombardia", ente:"Regione Lombardia", regione:"Lombardia",
+    tipo:["rs","innovazione"], contributo:"Da definire",
+    scadenza:"Apre 25/06/2026 – scade 22/09/2026", proc:"Graduatoria",
+    stato:"inapertura", urgente:false, altaRilevanza:false, aperturaImminente:true,
+    descrizione:"R&S collaborativa per gli ecosistemi innovativi lombardi. Apre tra 14 giorni. BrainoAI, Wink Suite, Spartan Tech a Milano. TLC con sede op. Milano. Fairtile (London|Milan) potenzialmente idonea.",
+    clienti:["BrainoAI","Wink Suite SRL","Casavo","Spartan Tech","TLC Telecomunicazioni","Fairtile *"],
+    link:"https://www.openinnovation.regione.lombardia.it/it/bandi-e-sperimentazioni/collabora-innova/collabora-innova-edizione-2" },
+
+  { nome:"Sviluppo Tecnologico delle Startup Innovative", ente:"MIMIT", regione:"Nazionale",
+    tipo:["startup","innovazione"], contributo:"€15,64 milioni (dotazione totale)",
+    scadenza:"In attesa di pubblicazione", proc:"Graduatoria",
+    stato:"inapertura", urgente:false, altaRilevanza:true, aperturaImminente:false,
+    descrizione:"Sostegno alle startup innovative ad alto contenuto tecnologico. In preinformazione MIMIT.",
+    clienti:["BrainoAI","INTUOS SRL","Messagenius","Drop Digital Health","Ekore SRL","Fideliomed","Velion SRL","Wink Suite SRL","Boss Technologies SRL","Destino Italia","Azu Tech","Yourease","OralTec","Heres *","Assetia *"],
+    link:"https://www.regione.lombardia.it/attivita-produttive-imprese/start-up-e-avvio-di-impresa/sviluppo-tecnologico-delle-startup-innovative" },
+
+  { nome:"Filiere Tecnologiche – Lazio", ente:"Regione Lazio", regione:"Lazio",
+    tipo:["rs","step"], contributo:"Da definire",
+    scadenza:"In attesa di decreto", proc:"Graduatoria",
+    stato:"inapertura", urgente:false, altaRilevanza:true, aperturaImminente:false,
+    descrizione:"R&S per sviluppo e consolidamento di filiere nelle tecnologie STEP nel Lazio.",
+    clienti:["INTUOS SRL","Messagenius","Drop Digital Health","Azu Tech","Ecubit","Ecoter","Govtech","Assetia *"],
+    link:"https://www.lazioinnova.it/news/step-e-filiere-tecnologiche-85-milioni-per-ricerca-e-innovazione/" },
+
+  { nome:"STEP FRI – Lazio", ente:"Regione Lazio", regione:"Lazio",
+    tipo:["step","rs"], contributo:"Da definire",
+    scadenza:"In attesa di decreto", proc:"Sportello",
+    stato:"inapertura", urgente:false, altaRilevanza:true, aperturaImminente:false,
+    descrizione:"Sviluppo e fabbricazione di tecnologie innovative. Strumento FRI per tecnologie critiche STEP nel Lazio.",
+    clienti:["INTUOS SRL","Messagenius","Drop Digital Health","Azu Tech","Ecubit","Drycor *"],
+    link:"https://next4consulting.it/news-bando/step-fri-lazio/" },
+
+  { nome:"Investimenti Sostenibili 4.0 MIMIT", ente:"MIMIT", regione:"Mezzogiorno",
+    tipo:["innovazione","impresa"], contributo:"€448 milioni (dotazione totale)",
+    scadenza:"In attesa di decreto", proc:"Sportello",
+    stato:"inapertura", urgente:false, altaRilevanza:true, aperturaImminente:false,
+    descrizione:"Programmi innovativi, sostenibili e ad alto contenuto tecnologico per PMI del Mezzogiorno.",
+    clienti:["GATIM SRL","Tod Systems","Digitalmens","ProGen SRL","Destino Italia","Flex Packaging"],
+    link:"https://www.mimit.gov.it/it/notizie-stampa/mimit-al-via-il-bando-investimenti-sostenibili-4-0-da-448-milioni" },
+
+  { nome:"STEP Piemonte", ente:"Regione Piemonte", regione:"Piemonte",
+    tipo:["step","innovazione"], contributo:"€40 milioni (dotazione totale)",
+    scadenza:"In attesa di pubblicazione", proc:"Sportello",
+    stato:"inapertura", urgente:false, altaRilevanza:true, aperturaImminente:false,
+    descrizione:"40 milioni per investimenti in tecnologie critiche STEP in Piemonte. Fideliomed a Torino.",
+    clienti:["Fideliomed"],
+    link:"http://www.steppiemonte.it" },
+
+  { nome:"Bando SWICH – Terza Edizione 2026", ente:"Regione Piemonte", regione:"Piemonte",
+    tipo:["rs","innovazione"], contributo:"€40 milioni (dotazione totale)",
+    scadenza:"In attesa di pubblicazione", proc:"Sportello",
+    stato:"inapertura", urgente:false, altaRilevanza:true, aperturaImminente:false,
+    descrizione:"40 milioni per ricerca, sviluppo e innovazione in Piemonte. Fideliomed: R&S scienze biologiche, ottima corrispondenza.",
+    clienti:["Fideliomed"],
+    link:"https://www.regione.piemonte.it/web/temi/fondi-progetti-europei/fondo-europeo-sviluppo-regionale-fesr/calendario-degli-inviti/presentazione-al-partenariato-delle-misure-swich-2026-step" },
+
+  // ══ DA MONITORARE ═══════════════════════════════════════════════════════
+  { nome:"Creazione e Consolidamento Startup Innovative", ente:"MISE / Invitalia", regione:"Nazionale",
+    tipo:["startup","innovazione"], contributo:"€300.000 – €1.500.000",
+    scadenza:"Bandi periodici (verificare apertura)", proc:"Sportello / Graduatoria",
+    stato:"monitorare", urgente:false, altaRilevanza:true, aperturaImminente:false,
+    descrizione:"Incentivi (equity, quasi-equity, prestiti) per startup innovative. Verificare apertura corrente su Invitalia. Azu Tech, Yourease, OralTec nuove startup da monitorare.",
+    clienti:["BrainoAI","INTUOS SRL","Messagenius","Drop Digital Health","Ekore SRL","Fideliomed","Azu Tech","Yourease","OralTec","Heres *","Assetia *"],
+    link:"https://www.invitalia.it/" },
+
+  { nome:"Brevetti+, Disegni+, Marchi+ e EUIPO SME Fund", ente:"MIMIT / UIBM / EUIPO", regione:"Nazionale / Europeo",
+    tipo:["rs"], contributo:"€25.000 – €140.000 (EUIPO fino al 04/12/2026)",
+    scadenza:"Click day periodici MIMIT; EUIPO aperto fino 04/12/2026", proc:"Graduatoria",
+    stato:"monitorare", urgente:false, altaRilevanza:false, aperturaImminente:false,
+    descrizione:"Agevolazione per brevetti (richiede deposito), marchi, design. EUIPO SME Fund 2026 aperto per PMI UE fino a dicembre.",
+    clienti:["Boss Technologies SRL","BrainoAI","Fideliomed","INTUOS SRL","Ecubit","EasyRFID","OralTec","Azu Tech"],
+    link:"https://www.euipo.europa.eu/it/sme-corner/sme-fund/2026" },
+
+  { nome:"Trasferimento Tecnologico T2 – Lombardia", ente:"Regione Lombardia / Fondazione Cariplo", regione:"Lombardia",
+    tipo:["rs"], contributo:"€500.000 – €2.000.000",
+    scadenza:"Luglio–Agosto 2026 (da verificare apertura)", proc:"Graduatoria",
+    stato:"monitorare", urgente:false, altaRilevanza:false, aperturaImminente:false,
+    descrizione:"Co-finanziamento ricerca collaborativa tra imprese e centri di ricerca in Lombardia. Spartan Tech e TLC (sede op. MI). Fairtile con ufficio Milano.",
+    clienti:["BrainoAI","Casavo","Spartan Tech","TLC Telecomunicazioni","Fairtile *"],
+    link:"https://www.bandi.regione.lombardia.it/servizi/servizio/bandi/dettaglio/ricerca-innovazione/infrastrutture-tecnologiche/manifestazione-interesse-irtt-RLF12024039403" },
+
+  { nome:"Nuova Sabatini – Beni Strumentali", ente:"MIMIT / Banche convenzionate", regione:"Nazionale",
+    tipo:["impresa"], contributo:"Contributo interessi su finanziamento bancario",
+    scadenza:"Sportello bancario continuo", proc:"Sportello bancario",
+    stato:"monitorare", urgente:false, altaRilevanza:false, aperturaImminente:false,
+    descrizione:"Contributo in conto impianti su finanziamento per acquisto macchinari, attrezzature, hardware/software. Tasso agevolato.",
+    clienti:["Boss Technologies SRL","GATIM SRL","Ecoter","EasyRFID","Flex Packaging","Ecubit","Speri","Kerr"],
+    link:"https://www.mimit.gov.it/it/incentivi/agevolazioni-per-gli-investimenti-delle-pmi-in-beni-strumentali-nuova-sabatini" },
+
+  // ══ CHIUSI (per riferimento e monitoraggio riedizioni) ═══════════════════
+  { nome:"Tech4Health", ente:"MIMIT", regione:"Nazionale",
+    tipo:["rs","innovazione"], contributo:"€18,9 milioni (dotazione totale)",
+    scadenza:"07/04/2026 – 31/05/2026 ✗", proc:"Graduatoria",
+    stato:"chiuso", urgente:false, altaRilevanza:false, aperturaImminente:false,
+    descrizione:"R&S sanità digitale: diagnosi malattie croniche, AI, medicina predittiva. ATS 1–5 imprese + 1–2 enti ricerca. Monitorare riedizione.",
+    clienti:["Fideliomed","Drop Digital Health","Ecubit","Yourease *"],
+    link:"https://next4consulting.it/news-bando/tech4health/" },
+
+  { nome:"Consolidamento Startup Innovative – Veneto", ente:"Regione Veneto", regione:"Veneto",
+    tipo:["startup","innovazione"], contributo:"€3 milioni (dotazione totale)",
+    scadenza:"12/03/2026 – 21/05/2026 ✗", proc:"Graduatoria",
+    stato:"chiuso", urgente:false, altaRilevanza:false, aperturaImminente:false,
+    descrizione:"Startup <60 mesi con sede operativa in Veneto, ambiti S3 regionali. Ekore (Padova) da inserire alla riedizione.",
+    clienti:["Ekore SRL","Yourease *"],
+    link:"https://next4consulting.it/news-bando/consolidamento-startup-innovative-veneto/" },
+
+  { nome:"STEP Campania", ente:"Regione Campania", regione:"Campania",
+    tipo:["step","innovazione"], contributo:"€50 milioni (dotazione totale)",
+    scadenza:"04/02/2026 – 26/02/2026 ✗", proc:"Graduatoria",
+    stato:"chiuso", urgente:false, altaRilevanza:false, aperturaImminente:false,
+    descrizione:"Investimenti produttivi e R&S in tecnologie digitali, clean tech, biotech in Campania. Monitorare riedizione per Digitalmens.",
+    clienti:["Digitalmens","Flex Packaging"],
+    link:"https://next4consulting.it/news-bando/step-campania/" },
+
+  { nome:"Investimenti Strategici PMI – Lazio", ente:"Regione Lazio", regione:"Lazio",
+    tipo:["impresa","innovazione"], contributo:"€40 milioni (dotazione totale)",
+    scadenza:"17/07/2025 – 05/03/2026 ✗", proc:"Sportello",
+    stato:"chiuso", urgente:false, altaRilevanza:false, aperturaImminente:false,
+    descrizione:"Ampliamento capacità produttiva e trasformazione processi per PMI laziali. Monitorare nuova edizione.",
+    clienti:["INTUOS SRL","Messagenius","Drop Digital Health","Azu Tech","Ecoter","Ecubit","WDA","Govtech","Speri","Kerr"],
+    link:"https://next4consulting.it/news-bando/investimenti-strategici-pmi-lazio/" },
+
+  { nome:"Donne e Impresa Lazio 2026", ente:"Regione Lazio", regione:"Lazio",
+    tipo:["impresa"], contributo:"Da definire",
+    scadenza:"22/04/2026 – 10/06/2026 ✗", proc:"Graduatoria",
+    stato:"chiuso", urgente:false, altaRilevanza:false, aperturaImminente:false,
+    descrizione:"Contributi per sviluppo PMI femminili nel Lazio. INTUOS (58,5% donna), Wink Suite (100% donna). Monitorare edizione 2027.",
+    clienti:["INTUOS SRL","Wink Suite SRL","Drop Digital Health"],
+    link:"https://next4consulting.it/news-bando/donne-e-impresa-lazio-2026/" },
+
+  { nome:"Voucher Digitalizzazione PMI – Lazio II ed. 2025", ente:"Regione Lazio / Lazio Innova", regione:"Lazio",
+    tipo:["digitale","impresa"], contributo:"€50.000–€150.000 per azienda",
+    scadenza:"24/10/2025 – 24/11/2025 ✗", proc:"Graduatoria",
+    stato:"chiuso", urgente:false, altaRilevanza:false, aperturaImminente:false,
+    descrizione:"€15M per PMI laziali con investimenti in tecnologie digitali. Max €50k micro, €150k medie. Monitorare III edizione 2026.",
+    clienti:["INTUOS SRL","Messagenius","Drop Digital Health","Azu Tech","Ecubit","WDA"],
+    link:"https://www.lazioinnova.it/bandi/voucher-digitalizzazione-pmi-ii-edizione-2025/" },
+
+  { nome:"Fondo Repubblica Digitale – Prospettive+", ente:"Fondo per la Repubblica Digitale", regione:"Nazionale",
+    tipo:["digitale","lavoro"], contributo:"€1M – €3M per progetto",
+    scadenza:"20/02/2026 – 15/05/2026 ✗", proc:"Graduatoria",
+    stato:"chiuso", urgente:false, altaRilevanza:false, aperturaImminente:false,
+    descrizione:"Partnership con capofila non profit per formazione digitale lavoratori 34-67 anni. Non direttamente applicabile a imprese for-profit come capofila.",
+    clienti:[],
+    link:"https://next4consulting.it/news-bando/fondo-repubblica-digitale-prospettive/" },
+
+  { nome:"Internazionalizzazione PMI – Avviso Calabria", ente:"Regione Calabria", regione:"Calabria",
+    tipo:["internazionalizzazione"], contributo:"Fino a €100.000",
+    scadenza:"Chiuso 31/05/2026 ✗ – monitorare riapertura", proc:"Sportello",
+    stato:"chiuso", urgente:false, altaRilevanza:false, aperturaImminente:false,
+    descrizione:"Linea A 50% piano export, B 50% servizi, C 100% fiere. PR Calabria FESR 2021-2027. GGG SRL (Marche) ha presentato domanda – verificare sede Calabria per riapertura. Monitorare.",
+    clienti:["GATIM SRL","GGG *"],
+    link:"https://calabriaeuropa.regione.calabria.it/" },
+
+  { nome:"Accordi per l'Innovazione 2025", ente:"MIMIT", regione:"Nazionale",
+    tipo:["rs","innovazione"], contributo:"€731 milioni (dotazione totale)",
+    scadenza:"14/01/2026 – 18/02/2026 ✗", proc:"Graduatoria",
+    stato:"chiuso", urgente:false, altaRilevanza:false, aperturaImminente:false,
+    descrizione:"Ricerca industriale e sviluppo sperimentale con imprese e università. Monitorare edizione 2026.",
+    clienti:["BrainoAI","Boss Technologies SRL","ProGen SRL","Fideliomed","Ecubit","Ecoter","EasyRFID"],
+    link:"https://next4consulting.it/news-bando/accordi-per-linnovazione-2025/" },
+
+  { nome:"STEP Sicilia", ente:"Regione Sicilia", regione:"Sicilia",
+    tipo:["step","innovazione"], contributo:"€315 milioni (dotazione totale)",
+    scadenza:"15/12/2025 – 13/02/2026 ✗", proc:"Graduatoria",
+    stato:"chiuso", urgente:false, altaRilevanza:false, aperturaImminente:false,
+    descrizione:"€315M per innovazione e sviluppo industriale in Sicilia. Monitorare riapertura. ProGen (CT) e Destino Italia (PA).",
+    clienti:["ProGen SRL","Destino Italia"],
+    link:"https://next4consulting.it/news-bando/bando-1/" },
+
+  { nome:"Bando Internazionalizzazione Imprese FVG 2026", ente:"Regione Friuli Venezia Giulia", regione:"Friuli Venezia Giulia",
+    tipo:["internazionalizzazione"], contributo:"Fino a €100.000 (50% spese ammissibili)",
+    scadenza:"12/02/2026 – 12/05/2026 ✗", proc:"Graduatoria",
+    stato:"chiuso", urgente:false, altaRilevanza:false, aperturaImminente:false,
+    descrizione:"Contributo 50% per fiere, e-commerce, consulenze internazionali. Imprese FVG. Monitorare riedizione per Boss Technologies (UD) e Velion (TS).",
+    clienti:["Boss Technologies SRL","Velion SRL"],
+    link:"https://next4consulting.it/news-bando/bando-internazionalizzazione-imprese-fvg-2026/" },
+
+  { nome:"Brevetti+ 2025", ente:"MIMIT", regione:"Nazionale",
+    tipo:["rs"], contributo:"Da verificare",
+    scadenza:"Chiuso 20/11/2025 ✗", proc:"Graduatoria",
+    stato:"chiuso", urgente:false, altaRilevanza:false, aperturaImminente:false,
+    descrizione:"Incentivi per valorizzazione economica dei brevetti. Monitorare edizione 2026.",
+    clienti:["Boss Technologies SRL","BrainoAI","Fideliomed","Ecubit","EasyRFID","OralTec"],
+    link:"https://next4consulting.it/news-bando/brevetti-2025/" },
+
+  { nome:"Staff House – Riqualificazione Immobili", ente:"MIMIT", regione:"Nazionale",
+    tipo:["impresa"], contributo:"Da definire",
+    scadenza:"02/04/2026 – 05/05/2026 ✗", proc:"Sportello",
+    stato:"chiuso", urgente:false, altaRilevanza:false, aperturaImminente:false,
+    descrizione:"Contributi per riqualificazione immobili residenziali. Non direttamente applicabile ai clienti tech portfolio. Monitorare eventuale nuova edizione.",
+    clienti:[],
+    link:"https://next4consulting.it/news-bando/staff-house-riqualificazione-degli-immobili/" },
+
+  { nome:"Energia Solare per le Imprese – Lazio", ente:"Regione Lazio", regione:"Lazio",
+    tipo:["ambiente"], contributo:"Da definire",
+    scadenza:"03/02/2026 – 31/03/2026 ✗", proc:"Sportello",
+    stato:"chiuso", urgente:false, altaRilevanza:false, aperturaImminente:false,
+    descrizione:"Contributi per impianti fotovoltaici su edifici produttivi del Lazio. Monitorare nuova edizione.",
+    clienti:[],
+    link:"https://next4consulting.it/news-bando/energia-solare-per-le-imprese-lazio/" },
+
+  // ── BANDI DA EUROPA INNOVAZIONE (aggiornamento 11/06/2026) ───────────────
+  { nome:"Fondo Patrimonializzazione PMI – Lazio", ente:"Regione Lazio / Lazio Innova", regione:"Lazio",
+    tipo:["impresa","startup"], contributo:"Fino a €500.000",
+    scadenza:"Chiuso ✗ – monitorare riedizione 2027", proc:"Sportello",
+    stato:"chiuso", urgente:false, altaRilevanza:false, aperturaImminente:false,
+    descrizione:"Finanziamento agevolato e/o contributo per rafforzare la struttura patrimoniale di PMI e startup laziali. Strumento complementare al Pre-Seed 3.0 per clienti già oltre la fase seed. Monitorare nuova edizione.",
+    clienti:["INTUOS SRL","Messagenius","Drop Digital Health","Azu Venture","Azu Tech","Ecoter","Ecubit","WDA","Govtech","Consedin","Speri","Kerr","TLC Telecomunicazioni","Yourease *","GGG *","Leonardo formazione"],
+    link:"https://www.lazioinnova.it/bandi/fondo-patrimonializzazione-pmi-2026/" },
+
+  { nome:"Competenze & Innovazione – Lombardia II Ed.", ente:"Regione Lombardia", regione:"Lombardia",
+    tipo:["digitale","innovazione","impresa"], contributo:"Fino a €50.000",
+    scadenza:"Sportello aperto", proc:"Sportello",
+    stato:"aperto", urgente:false, altaRilevanza:false, aperturaImminente:false,
+    descrizione:"Voucher per PMI lombarde per acquisto di servizi di consulenza specialistica su innovazione, digitalizzazione e sviluppo competenze. Seconda edizione, sportello a scorrimento.",
+    clienti:["Wink Suite SRL","BrainoAI","Casavo","Spartan Tech","TLC Telecomunicazioni","Citynews *","Fairtile *"],
+    link:"https://www.bandi.regione.lombardia.it/servizi/servizio/catalogo/dettaglio/ricerca-innovazione/ricerca-sviluppo-innovazione/competenze-innovazione-seconda-edizione-RLF12026051723" },
+
+  { nome:"Consolidamento Patrimoniale Startup – Piemonte", ente:"Regione Piemonte / Finpiemonte", regione:"Piemonte",
+    tipo:["startup"], contributo:"Fino a €500.000",
+    scadenza:"In arrivo (bando in preparazione)",  proc:"Graduatoria",
+    stato:"inapertura", urgente:false, altaRilevanza:true, aperturaImminente:false,
+    descrizione:"Misura per rafforzare la struttura patrimoniale e la crescita delle startup innovative piemontesi. Fideliomed (Torino, R&S scienze biologiche) potenzialmente idonea.",
+    clienti:["Fideliomed"],
+    link:"https://www.europainnovazione.com/misura-consolidamento-patrimoniale-e-crescita-delle-start-up-innovative/" },
+
+  { nome:"Digitalizzazione ed Efficientamento PMI – Piemonte", ente:"Regione Piemonte", regione:"Piemonte",
+    tipo:["digitale","impresa"], contributo:"Da definire",
+    scadenza:"Riapertura sportelli: luglio e ottobre 2026", proc:"Sportello",
+    stato:"inapertura", urgente:false, altaRilevanza:false, aperturaImminente:false,
+    descrizione:"Incentivi per digitalizzazione ed efficientamento produttivo di PMI piemontesi. Previsti due sportelli di riapertura: luglio 2026 e ottobre 2026.",
+    clienti:["Fideliomed"],
+    link:"https://www.europainnovazione.com/bando-digitalizzazione-ed-efficientamento-produttivo-delle-imprese-riapertura-degli-sportelli/" },
+
+  { nome:"Lombardia Venture STEP", ente:"Regione Lombardia / Fondo Europeo Investimenti", regione:"Lombardia",
+    tipo:["startup","innovazione","step"], contributo:"Equity (importo da definire)",
+    scadenza:"A graduatoria (scadenze da confermare)", proc:"Graduatoria",
+    stato:"monitorare", urgente:false, altaRilevanza:true, aperturaImminente:false,
+    descrizione:"Intervento equity per imprese lombarde nei settori STEP (AI, semiconduttori, biotech, quantum, tecnologie spaziali). BrainoAI (AI) e Wink Suite SRL (software) potenzialmente idonee.",
+    clienti:["BrainoAI","Wink Suite SRL","Spartan Tech","Fairtile *"],
+    link:"https://www.bandi.regione.lombardia.it/servizi/servizio/bandi/dettaglio/attivita-produttive-imprese/start-up-impresa/lombardia-venture-step-destinatari-finali-RLO12025049143" }
+];
+
+// ─── CONFIG ──────────────────────────────────────────────────────────────
+const STATO_CFG = {
+  aperto:      { label:"Aperto",        cls:"b-aperto" },
+  inapertura:  { label:"In apertura",   cls:"b-inapertura" },
+  monitorare:  { label:"Da monitorare", cls:"b-monitorare" },
+  lavorazione: { label:"In lavorazione",cls:"b-lavorazione" },
+  chiuso:      { label:"Chiuso",        cls:"b-chiuso" }
+};
+const TIPO_CFG = {
+  innovazione:            { label:"Innovazione",        cls:"t-innovazione" },
+  rs:                     { label:"R&S",                cls:"t-rs" },
+  internazionalizzazione: { label:"Internazional.",     cls:"t-internazionalizzazione" },
+  digitale:               { label:"Digitale",           cls:"t-digitale" },
+  impresa:                { label:"Creazione Impresa",  cls:"t-impresa" },
+  fiscale:                { label:"Fiscale",            cls:"t-fiscale" },
+  step:                   { label:"Tecnologie STEP",    cls:"t-step" },
+  ambiente:               { label:"Ambiente",           cls:"t-ambiente" },
+  cultura:                { label:"Cultura/Creativa",   cls:"t-cultura" },
+  startup:                { label:"Startup",            cls:"t-startup" },
+  lavoro:                 { label:"Lavoro",             cls:"t-lavoro" }
+};
+const ORDINE = { aperto:0, inapertura:1, monitorare:2, lavorazione:3, chiuso:4 };
+
+// ─── INIT ────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  const oggi = new Date();
+  const fmt = d => d.toLocaleDateString('it-IT',{day:'2-digit',month:'long',year:'numeric'});
+  document.getElementById('header-date').innerHTML = `Aggiornata: ${fmt(oggi)}<br>Fonti: next4consulting.it · Invitalia · SIMEST · EIC · europainnovazione.com`;
+  document.getElementById('footer-date').textContent = fmt(oggi);
+
+  // Banner urgenza
+  const urgenti = BANDI.filter(b => b.urgente && b.stato !== 'chiuso');
+  if (urgenti.length) {
+    const el = document.getElementById('urgenza-bar');
+    el.style.display = 'block';
+    el.innerHTML = '⚠️ <strong>Scadenza entro 30 giorni:</strong> ' +
+      urgenti.map(b => `<span class="u-item">📌 <strong>${b.nome}</strong> — ${b.scadenza}</span>`).join('');
+  }
+  // Banner apertura imminente
+  const imminenti = BANDI.filter(b => b.aperturaImminente);
+  if (imminenti.length) {
+    const el = document.getElementById('apertura-bar');
+    el.style.display = 'block';
+    el.innerHTML = '🟢 <strong>In apertura imminente:</strong> ' +
+      imminenti.map(b => `<span class="u-item">📅 <strong>${b.nome}</strong> — ${b.scadenza}</span>`).join('');
+  }
+
+  // Popola select
+  const stati = ['','aperto','inapertura','monitorare','lavorazione','chiuso'];
+  fillSelect('f-stato', stati, v => v ? STATO_CFG[v]?.label||v : 'Tutti gli stati');
+  const regioni = ['',...new Set(BANDI.map(b=>b.regione))].sort((a,b)=>a<b?-1:1);
+  fillSelect('f-regione', regioni, v => v||'Tutte le regioni');
+  const tipi = ['',...new Set(BANDI.flatMap(b=>b.tipo))].sort();
+  fillSelect('f-tipo', tipi, v => v ? TIPO_CFG[v]?.label||v : 'Tutte le tipologie');
+  const clienti = ['',...new Set(BANDI.flatMap(b=>b.clienti).map(c=>c.replace(' *','')))].sort();
+  fillSelect('f-cliente', clienti, v => v||'Tutti i clienti');
+
+  ['q','f-stato','f-regione','f-tipo','f-cliente'].forEach(id =>
+    document.getElementById(id).addEventListener(id==='q'?'input':'change', render)
+  );
+  render();
+});
+
+function fillSelect(id, vals, labelFn) {
+  const s = document.getElementById(id); s.innerHTML='';
+  vals.forEach(v => { const o=document.createElement('option'); o.value=v; o.textContent=labelFn(v); s.appendChild(o); });
+}
+function quickFilter(stato) { document.getElementById('f-stato').value=stato; render(); }
+function resetAll() {
+  ['q','f-stato','f-regione','f-tipo','f-cliente'].forEach(id => document.getElementById(id).value='');
+  render();
+}
+
+// ─── RENDER ──────────────────────────────────────────────────────────────
+function render() {
+  const q = document.getElementById('q').value.toLowerCase().trim();
+  const fs = document.getElementById('f-stato').value;
+  const fr = document.getElementById('f-regione').value;
+  const ft = document.getElementById('f-tipo').value;
+  const fc = document.getElementById('f-cliente').value;
+
+  const filt = BANDI.filter(b => {
+    if (fs && b.stato!==fs) return false;
+    if (fr && b.regione!==fr) return false;
+    if (ft && !b.tipo.includes(ft)) return false;
+    if (fc && !b.clienti.some(c=>c.replace(' *','')=== fc)) return false;
+    if (q && ![b.nome,b.ente,b.descrizione,b.regione,...b.clienti].join(' ').toLowerCase().includes(q)) return false;
+    return true;
+  });
+
+  // Contatori
+  ['aperto','inapertura','lavorazione','monitorare','chiuso'].forEach(s =>
+    document.getElementById('c-'+s).textContent = BANDI.filter(b=>b.stato===s).length
+  );
+  document.getElementById('c-totale').textContent = BANDI.length;
+  document.getElementById('ris-info').textContent = filt.length===BANDI.length
+    ? `Tutti i ${BANDI.length} bandi`
+    : `${filt.length} di ${BANDI.length} bandi`;
+
+  filt.sort((a,b) => {
+    const d = ORDINE[a.stato]-ORDINE[b.stato]; if (d) return d;
+    if (a.urgente!==b.urgente) return a.urgente?-1:1;
+    if (a.aperturaImminente!==b.aperturaImminente) return a.aperturaImminente?-1:1;
+    if (a.altaRilevanza!==b.altaRilevanza) return a.altaRilevanza?-1:1;
+    return 0;
+  });
+
+  const tbody = document.getElementById('tbody');
+  tbody.innerHTML='';
+  document.getElementById('no-res').style.display = filt.length?'none':'block';
+
+  filt.forEach(b => {
+    const sc = STATO_CFG[b.stato]||{label:b.stato,cls:''};
+    const tr = document.createElement('tr');
+    tr.innerHTML=`
+      <td>
+        <div class="bando-nome"><a href="${b.link}" target="_blank" rel="noopener">${b.nome}</a>
+          ${b.urgente?'<span class="flg flg-urgente">URGENTE</span>':''}
+          ${b.aperturaImminente?'<span class="flg flg-apertura">APRE PRESTO</span>':''}
+          ${b.altaRilevanza&&!b.urgente&&!b.aperturaImminente?'<span class="flg flg-rilevante">RILEVANTE</span>':''}
+        </div>
+        <div class="bando-ente">${b.ente}</div>
+        ${b.descrizione?`<div class="bando-desc">${b.descrizione}</div>`:''}
+        ${b.proc?`<div class="proc">Procedura: ${b.proc}</div>`:''}
+      </td>
+      <td>${b.regione}</td>
+      <td>${b.tipo.map(t=>{const c=TIPO_CFG[t]||{label:t,cls:''};return`<span class="tag ${c.cls}">${c.label}</span>`}).join('')}</td>
+      <td><span class="contributo">${b.contributo}</span></td>
+      <td><span class="scadenza${b.urgente?' urg':''}">${b.scadenza}</span></td>
+      <td><span class="badge ${sc.cls}">${sc.label}</span></td>
+      <td>${b.clienti.length?b.clienti.map(c=>c.endsWith(' *')?`<span class="ct-potential" title="Sede non confermata nella regione – apertura richiesta prima dell'erogazione">${c}</span>`:`<span class="ct">${c}</span>`).join(''):'<span style="color:#ddd;font-size:11px">—</span>'}</td>
+      <td><a href="${b.link}" target="_blank" class="btn-link">→ Apri</a></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+</script>
+</body>
+</html>
