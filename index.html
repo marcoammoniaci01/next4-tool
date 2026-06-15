@@ -4,95 +4,199 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard Bandi – Next4 International</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f4f8; color: #1a1a2e; font-size: 14px; }
+  body { font-family: 'Inter', 'Segoe UI', Arial, sans-serif; background: #f0f4f9; color: #1a1a2e; font-size: 14px; }
 
+  /* ── HEADER ── */
   .header {
-    background: #1B3A6B;
+    background: linear-gradient(135deg, #0d1f40 0%, #1B3A6B 100%);
     color: white;
-    padding: 16px 32px;
+    padding: 0 32px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    height: 58px;
     position: sticky;
     top: 0;
     z-index: 100;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    box-shadow: 0 2px 20px rgba(0,0,0,0.22);
   }
-  .header-title { font-size: 19px; font-weight: 700; }
-  .header-title span { color: #00E5D1; }
-  .header-sub { font-size: 11px; color: #a8c4e8; margin-top: 2px; }
-  .header-date { font-size: 12px; color: #a8c4e8; text-align: right; line-height: 1.6; }
+  .header-brand { display: flex; align-items: center; gap: 16px; }
+  .header-logo { font-size: 18px; font-weight: 800; letter-spacing: -0.3px; color: white; }
+  .header-logo span { color: #00E5D1; }
+  .header-divider { width: 1px; height: 18px; background: rgba(255,255,255,0.2); }
+  .header-tagline { font-size: 11px; color: rgba(255,255,255,0.5); font-weight: 400; }
+  .header-date { font-size: 11px; color: rgba(255,255,255,0.5); text-align: right; line-height: 1.7; }
 
-  /* CARDS */
-  .stats { display: flex; gap: 12px; padding: 20px 32px 0; flex-wrap: wrap; }
+  /* ── STATS ── */
+  .stats { display: flex; gap: 10px; padding: 20px 32px 0; flex-wrap: wrap; }
   .stat-card {
-    background: white; border-radius: 10px; padding: 14px 18px;
-    flex: 1; min-width: 120px; box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-    border-top: 4px solid #1B3A6B; cursor: pointer;
+    background: white;
+    border-radius: 12px;
+    padding: 14px 18px;
+    flex: 1; min-width: 110px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.07);
+    cursor: pointer;
     transition: transform 0.15s, box-shadow 0.15s;
   }
-  .stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
-  .s-aperto      { border-top-color: #16a34a; }
-  .s-inapertura  { border-top-color: #00897b; }
-  .s-monitorare  { border-top-color: #d97706; }
-  .s-lavorazione { border-top-color: #2563eb; }
-  .s-chiuso      { border-top-color: #dc2626; }
-  .stat-num { font-size: 28px; font-weight: 800; color: #1B3A6B; line-height: 1; }
-  .s-aperto     .stat-num { color: #16a34a; }
-  .s-inapertura .stat-num { color: #00897b; }
-  .s-monitorare .stat-num { color: #d97706; }
+  .stat-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+  .stat-dot { width: 8px; height: 8px; border-radius: 50%; margin-bottom: 8px; }
+  .stat-num { font-size: 26px; font-weight: 800; line-height: 1; }
+  .stat-label { font-size: 11px; color: #94a3b8; margin-top: 4px; font-weight: 500; }
+  .s-aperto      .stat-dot { background: #16a34a; }
+  .s-inapertura  .stat-dot { background: #0f766e; }
+  .s-monitorare  .stat-dot { background: #d97706; }
+  .s-lavorazione .stat-dot { background: #2563eb; }
+  .s-chiuso      .stat-dot { background: #dc2626; }
+  .stat-total    .stat-dot { background: #1B3A6B; }
+  .s-aperto      .stat-num { color: #16a34a; }
+  .s-inapertura  .stat-num { color: #0f766e; }
+  .s-monitorare  .stat-num { color: #d97706; }
   .s-lavorazione .stat-num { color: #2563eb; }
-  .s-chiuso     .stat-num { color: #dc2626; }
-  .stat-label { font-size: 11px; color: #666; margin-top: 3px; }
+  .s-chiuso      .stat-num { color: #dc2626; }
+  .stat-total    .stat-num { color: #1B3A6B; }
 
-  /* URGENZA */
-  .urgenza-bar { margin: 14px 32px 0; background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #856404; }
-  .urgenza-bar strong { color: #92400e; }
+  /* ── ALERT BANNERS ── */
+  .urgenza-bar  { margin: 14px 32px 0; background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 10px 14px; font-size: 12px; color: #92400e; }
+  .urgenza-bar strong { color: #78350f; }
+  .apertura-bar { margin: 8px 32px 0; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 10px 14px; font-size: 12px; color: #166534; }
+  .apertura-bar strong { color: #14532d; }
   .u-item { display: inline-block; margin: 2px 14px 2px 0; }
 
-  /* APERTURA IMMINENTE */
-  .apertura-bar { margin: 8px 32px 0; background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; padding: 10px 14px; font-size: 12px; color: #166534; }
-  .apertura-bar strong { color: #14532d; }
-
-  /* FILTRI */
-  .filtri { display: flex; gap: 10px; padding: 16px 32px 6px; flex-wrap: wrap; align-items: flex-end; }
-  .filtri input, .filtri select {
-    border: 1px solid #d1d5db; border-radius: 8px; padding: 7px 11px;
-    font-size: 13px; background: white; color: #1a1a2e; outline: none;
-    transition: border-color 0.2s;
+  /* ── TABS ── */
+  .tabs { display: flex; gap: 6px; padding: 18px 32px 0; }
+  .tab {
+    background: white;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 8px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
   }
-  .filtri input:focus, .filtri select:focus { border-color: #1B3A6B; }
-  .filtri input { width: 240px; }
+  .tab:hover { border-color: #1B3A6B; color: #1B3A6B; }
+  .tab.active { background: #1B3A6B; border-color: #1B3A6B; color: white; }
+
+  /* ── FILTRI ── */
+  .filtri-wrap { margin: 14px 32px 0; background: white; border-radius: 12px; padding: 14px 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+  .filtri { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
+  .filtri input, .filtri select {
+    border: 1.5px solid #e2e8f0; border-radius: 8px; padding: 8px 12px;
+    font-size: 13px; background: #f8fafc; color: #1a1a2e; outline: none;
+    transition: border-color 0.2s; font-family: inherit;
+  }
+  .filtri input:focus, .filtri select:focus { border-color: #1B3A6B; background: white; }
+  .filtri input { width: 260px; }
   .filtri select { min-width: 148px; }
-  .filtri label { font-size: 10px; color: #777; display: block; margin-bottom: 3px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; }
-  .btn-reset { background: #f0f4f8; border: 1px solid #d1d5db; border-radius: 8px; padding: 7px 14px; font-size: 12px; cursor: pointer; color: #555; align-self: flex-end; }
-  .btn-reset:hover { background: #e2e8f0; }
+  .filtri label { font-size: 10px; color: #94a3b8; display: block; margin-bottom: 3px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+  .btn-reset { background: #f1f5f9; border: 1.5px solid #e2e8f0; border-radius: 8px; padding: 8px 14px; font-size: 12px; cursor: pointer; color: #64748b; align-self: flex-end; font-family: inherit; transition: all 0.15s; }
+  .btn-reset:hover { background: #e2e8f0; color: #1B3A6B; }
 
-  .ris-info { padding: 4px 32px 6px; font-size: 12px; color: #999; }
+  .ris-info { padding: 10px 32px 0; font-size: 12px; color: #94a3b8; font-weight: 500; }
+  .legend { padding: 4px 32px 0; font-size: 11px; color: #94a3b8; }
 
-  /* TABELLA */
-  .table-wrap { padding: 0 32px 48px; overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 1px 6px rgba(0,0,0,0.08); }
-  thead { background: #1B3A6B; color: white; }
-  th { padding: 11px 12px; text-align: left; font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
-  td { padding: 11px 12px; border-bottom: 1px solid #f0f4f8; vertical-align: top; }
-  tr:last-child td { border-bottom: none; }
-  tr:hover td { background: #f8fafc; }
-  .bando-nome { font-weight: 700; font-size: 13px; color: #1B3A6B; line-height: 1.3; }
-  .bando-nome a { color: inherit; text-decoration: none; }
-  .bando-nome a:hover { text-decoration: underline; }
-  .bando-ente { font-size: 11.5px; color: #777; margin-top: 2px; }
-  .bando-desc { font-size: 11px; color: #999; margin-top: 3px; line-height: 1.4; }
+  /* ── CARDS GRID ── */
+  .cards-wrap { padding: 12px 32px 56px; }
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+    gap: 14px;
+  }
+  .no-results { text-align: center; padding: 60px 20px; color: #94a3b8; font-size: 14px; }
 
-  /* FLAG */
-  .flg { display: inline-block; font-size: 9px; font-weight: 800; padding: 1px 5px; border-radius: 3px; margin-left: 5px; vertical-align: middle; letter-spacing: 0.2px; }
+  /* ── BANDO CARD ── */
+  .card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.18s;
+    overflow: hidden;
+    border-left: 4px solid #e2e8f0;
+  }
+  .card:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.11); }
+  .card-aperto      { border-left-color: #16a34a; }
+  .card-inapertura  { border-left-color: #0f766e; }
+  .card-monitorare  { border-left-color: #d97706; }
+  .card-lavorazione { border-left-color: #2563eb; }
+  .card-chiuso      { border-left-color: #dc2626; opacity: 0.72; }
+
+  .card-top { padding: 14px 16px 10px; flex: 1; }
+  .card-toprow { display: flex; align-items: center; gap: 5px; margin-bottom: 9px; flex-wrap: wrap; }
+  .card-flags { display: flex; gap: 4px; }
+  .card-regione { font-size: 10px; color: #94a3b8; margin-left: auto; white-space: nowrap; font-weight: 500; }
+  .card-title {
+    font-size: 13.5px; font-weight: 700; color: #1B3A6B; line-height: 1.35; margin-bottom: 3px;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+  }
+  .card-ente { font-size: 11px; color: #94a3b8; font-weight: 500; }
+
+  .card-meta { padding: 10px 16px; border-top: 1px solid #f1f5f9; display: flex; flex-direction: column; gap: 5px; }
+  .card-meta-item { display: flex; align-items: flex-start; gap: 7px; font-size: 12px; line-height: 1.4; }
+  .card-meta-icon { flex-shrink: 0; font-size: 12px; margin-top: 1px; }
+  .card-contributo { font-weight: 700; color: #1B3A6B; }
+
+  .card-tags { padding: 8px 16px 6px; display: flex; flex-wrap: wrap; gap: 4px; min-height: 32px; }
+
+  .card-footer {
+    padding: 9px 16px;
+    border-top: 1px solid #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .card-clienti { display: flex; flex-wrap: wrap; gap: 3px; flex: 1; min-width: 0; }
+  .ct-extra { display: inline-block; background: #f1f5f9; color: #64748b; border-radius: 4px; padding: 2px 6px; font-size: 10.5px; font-weight: 600; }
+  .ct-none { font-size: 10.5px; color: #cbd5e1; font-style: italic; }
+
+  /* ── DE MINIMIS ── */
+  .dm-section { padding: 9px 15px; background: #f8fafc; border-bottom: 1px solid #f1f5f9; }
+  .dm-bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+  .dm-lbl { font-size: 9.5px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+  .dm-track { flex: 1; background: #e2e8f0; border-radius: 4px; height: 6px; overflow: hidden; }
+  .dm-fill { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
+  .dm-fill-ok     { background: #4ade80; }
+  .dm-fill-warn   { background: #fbbf24; }
+  .dm-fill-alert  { background: #f97316; }
+  .dm-fill-danger { background: #ef4444; }
+  .dm-amounts { font-size: 10px; color: #64748b; font-weight: 600; white-space: nowrap; }
+  .dm-info-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .dm-residuo { font-size: 10.5px; font-weight: 700; }
+  .dm-res-ok     { color: #16a34a; }
+  .dm-res-warn   { color: #d97706; }
+  .dm-res-alert  { color: #ea580c; }
+  .dm-res-danger { color: #dc2626; }
+  .dm-date { font-size: 9.5px; color: #cbd5e1; }
+  .dm-rna-btn { font-size: 9.5px; color: #94a3b8; text-decoration: none; margin-left: auto; white-space: nowrap; padding: 2px 6px; border: 1px solid #e2e8f0; border-radius: 4px; background: white; }
+  .dm-rna-btn:hover { color: #1B3A6B; border-color: #1B3A6B; }
+  .dm-unverified { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .dm-unverified-label { font-size: 10px; color: #cbd5e1; font-style: italic; }
+  .dm-no-piva { font-size: 9.5px; color: #e2e8f0; }
+
+  /* ── DOMANDA PRESENTATA ── */
+  .ct-dom { display: inline-block; background: #dcfce7; color: #15803d; border-radius: 4px; padding: 2px 6px; font-size: 10.5px; font-weight: 700; white-space: nowrap; border: 1px solid #86efac; }
+
+  /* ── COPIA LINK ── */
+  .btn-copy { background: #f1f5f9; border: 1.5px solid #e2e8f0; color: #64748b; padding: 6px 10px; border-radius: 7px; font-size: 11.5px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.15s; white-space: nowrap; flex-shrink: 0; }
+  .btn-copy:hover { background: #e2e8f0; border-color: #cbd5e1; color: #1B3A6B; }
+  .btn-copy.copied { background: #dcfce7; border-color: #86efac; color: #16a34a; }
+
+  /* ── FLAG ── */
+  .flg { display: inline-block; font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 4px; vertical-align: middle; letter-spacing: 0.2px; }
   .flg-urgente  { background: #dc2626; color: white; }
   .flg-rilevante{ background: #16a34a; color: white; }
-  .flg-apertura { background: #00897b; color: white; }
+  .flg-apertura { background: #0f766e; color: white; }
 
-  /* BADGE STATO */
+  /* ── BADGE STATO ── */
   .badge { display: inline-block; padding: 3px 9px; border-radius: 20px; font-size: 10.5px; font-weight: 700; white-space: nowrap; }
   .b-aperto      { background: #dcfce7; color: #16a34a; }
   .b-inapertura  { background: #ccfbf1; color: #0f766e; }
@@ -100,8 +204,8 @@
   .b-lavorazione { background: #dbeafe; color: #1d4ed8; }
   .b-chiuso      { background: #fee2e2; color: #dc2626; }
 
-  /* TAG TIPOLOGIA */
-  .tag { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 10.5px; font-weight: 600; margin: 2px 2px 2px 0; white-space: nowrap; }
+  /* ── TAG TIPOLOGIA ── */
+  .tag { display: inline-block; padding: 2px 7px; border-radius: 4px; font-size: 10.5px; font-weight: 600; white-space: nowrap; }
   .t-innovazione            { background: #ede9fe; color: #6d28d9; }
   .t-rs                     { background: #fce7f3; color: #be185d; }
   .t-internazionalizzazione { background: #e0f2fe; color: #0369a1; }
@@ -114,78 +218,152 @@
   .t-startup                { background: #fef3c7; color: #92400e; }
   .t-lavoro                 { background: #f0f9ff; color: #0c4a6e; }
 
-  /* CLIENTI */
-  .ct { display: inline-block; background: #e8f0fb; color: #1B3A6B; border-radius: 4px; padding: 2px 6px; font-size: 10.5px; font-weight: 600; margin: 2px 2px 2px 0; white-space: nowrap; }
-  .ct-potential { display: inline-block; background: #fff3e0; color: #b45309; border-radius: 4px; padding: 2px 6px; font-size: 10.5px; font-weight: 600; margin: 2px 2px 2px 0; white-space: nowrap; border: 1px dashed #f59e0b; }
+  /* ── CLIENTI CHIPS ── */
+  .ct { display: inline-block; background: #e8f0fb; color: #1B3A6B; border-radius: 4px; padding: 2px 6px; font-size: 10.5px; font-weight: 600; white-space: nowrap; }
+  .ct-potential { display: inline-block; background: #fff3e0; color: #b45309; border-radius: 4px; padding: 2px 6px; font-size: 10.5px; font-weight: 600; white-space: nowrap; border: 1px dashed #f59e0b; }
 
-  /* TIPOLOGIA PROCEDURA */
-  .proc { font-size: 10.5px; color: #999; margin-top: 2px; font-style: italic; }
-
-  /* LINK */
-  .btn-link { display: inline-block; background: #1B3A6B; color: white; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 600; text-decoration: none; transition: background 0.2s; white-space: nowrap; }
-  .btn-link:hover { background: #00E5D1; color: #1B3A6B; }
-
-  .contributo { font-weight: 700; color: #1B3A6B; font-size: 12.5px; }
+  /* ── SCADENZA (usata anche nel panel) ── */
   .scadenza { font-size: 12px; color: #444; }
   .scadenza.urg { color: #dc2626; font-weight: 700; }
-  .no-results { text-align: center; padding: 40px; color: #aaa; }
-  .footer { text-align: center; padding: 16px; color: #bbb; font-size: 11px; }
+
+  /* ── LINK ── */
+  .btn-link { display: inline-block; background: #1B3A6B; color: white; padding: 6px 12px; border-radius: 7px; font-size: 11.5px; font-weight: 600; text-decoration: none; transition: background 0.2s; white-space: nowrap; flex-shrink: 0; }
+  .btn-link:hover { background: #00897b; }
+
+  /* ── FOOTER ── */
+  .footer { text-align: center; padding: 20px; color: #cbd5e1; font-size: 11px; }
   .footer em { color: #00E5D1; font-style: normal; }
 
-  @media print { .header { position: static; } .filtri, .urgenza-bar, .apertura-bar { display: none; } }
+  /* ── SIDE PANEL ── */
+  .side-panel { position:fixed; right:-460px; top:0; width:440px; max-width:96vw; height:100vh; background:white; z-index:600; transition:right 0.28s cubic-bezier(.4,0,.2,1); box-shadow:-4px 0 28px rgba(0,0,0,0.14); overflow-y:auto; padding:20px 22px 40px; }
+  .side-panel.open { right:0; }
+  .panel-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.22); z-index:599; }
+  .panel-overlay.open { display:block; }
+  .panel-close { float:right; background:#f0f4f8; border:none; border-radius:50%; width:30px; height:30px; font-size:14px; cursor:pointer; color:#555; line-height:30px; text-align:center; }
+  .panel-close:hover { background:#e2e8f0; }
+  .panel-nome { font-size:15px; font-weight:700; color:#1B3A6B; line-height:1.4; margin:10px 0 3px; clear:both; }
+  .panel-ente { font-size:12px; color:#888; margin-bottom:12px; }
+  .panel-row { display:flex; gap:10px; padding:7px 0; border-bottom:1px solid #f0f4f8; align-items:flex-start; }
+  .panel-lbl { font-size:10px; font-weight:700; text-transform:uppercase; color:#bbb; min-width:76px; padding-top:1px; letter-spacing:0.4px; }
+  .panel-val { font-size:11.5px; color:#1a1a2e; flex:1; }
+  .panel-sec { font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:0.6px; color:#1B3A6B; margin:14px 0 6px; }
+  .panel-actions { margin-top:18px; display:flex; gap:8px; flex-wrap:wrap; }
+
+  /* ── VISTA CLIENTI ── */
+  .clienti-grid { padding:14px 32px 48px; display:grid; grid-template-columns:repeat(auto-fill,minmax(370px,1fr)); gap:14px; }
+  .client-card { background:white; border-radius:10px; box-shadow:0 1px 6px rgba(0,0,0,0.08); overflow:hidden; }
+  .client-card-header { background:#1B3A6B; color:white; padding:11px 15px; display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; cursor:pointer; user-select:none; transition:background 0.15s; }
+  .client-card-header:hover { background:#16336080; }
+  .client-chevron { font-size:14px; margin-left:4px; transition:transform 0.22s; flex-shrink:0; opacity:0.7; }
+  .client-chevron.open { transform:rotate(180deg); }
+  .client-name { font-size:13px; font-weight:700; }
+  .client-stats { display:flex; gap:4px; flex-wrap:wrap; }
+  .cs { font-size:9.5px; font-weight:700; padding:2px 7px; border-radius:10px; }
+  .cs-a { background:#dcfce7; color:#16a34a; }
+  .cs-u { background:#dc2626; color:white; }
+  .cs-i { background:#ccfbf1; color:#0f766e; }
+  .client-bandi { padding:4px 0; display:none; }
+  .client-bandi.open { display:block; }
+  .client-bando-row { display:flex; align-items:center; gap:6px; padding:7px 13px; cursor:pointer; border-bottom:1px solid #f8fafc; transition:background 0.12s; }
+  .client-bando-row:last-child { border-bottom:none; }
+  .client-bando-row:hover { background:#f8fafc; }
+  .client-bando-nome { font-size:11.5px; color:#1B3A6B; font-weight:600; flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .client-bando-contributo { font-size:10px; color:#aaa; white-space:nowrap; flex-shrink:0; }
+
+  /* ── SCADENZARIO ── */
+  .scad-wrap { padding:14px 32px 48px; }
+  .scad-group-title { font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:#1B3A6B; padding:12px 0 8px; border-bottom:2px solid #1B3A6B; margin-bottom:10px; margin-top:20px; }
+  .scad-row { background:white; border-radius:8px; box-shadow:0 1px 4px rgba(0,0,0,0.07); margin-bottom:8px; padding:13px 16px; display:flex; gap:16px; cursor:pointer; transition:box-shadow 0.15s, transform 0.12s; border-left:4px solid #e2e8f0; }
+  .scad-row:hover { box-shadow:0 4px 16px rgba(0,0,0,0.11); transform:translateY(-1px); }
+  .scad-row.s-urg { border-left-color:#dc2626; }
+  .scad-row.s-apt { border-left-color:#0f766e; }
+  .scad-left { flex:1; min-width:0; }
+  .scad-nome { font-size:13px; font-weight:700; color:#1B3A6B; margin-bottom:3px; }
+  .scad-ente { font-size:11px; color:#888; margin-bottom:6px; }
+  .scad-right { text-align:right; flex-shrink:0; }
+  .scad-contributo { font-size:12px; font-weight:700; color:#1B3A6B; margin-bottom:4px; }
+  .scad-data { font-size:11px; color:#555; }
+  .scad-data.urg { color:#dc2626; font-weight:700; }
+
+  @media (max-width: 768px) {
+    .header { padding: 0 16px; }
+    .stats, .tabs, .ris-info, .legend, .cards-wrap { padding-left: 16px; padding-right: 16px; }
+    .filtri-wrap { margin-left: 16px; margin-right: 16px; }
+    .cards-grid { grid-template-columns: 1fr; }
+    .clienti-grid, .scad-wrap { padding-left: 16px; padding-right: 16px; }
+  }
+  @media print { .header { position: static; } .filtri-wrap, .urgenza-bar, .apertura-bar, .tabs { display: none; } }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <div>
-    <div class="header-title">Dashboard Bandi <span>|</span> Next4 International</div>
-    <div class="header-sub">Fonte: next4consulting.it · Invitalia · SIMEST · EIC · europainnovazione.com · portali regionali · Aggiornato al 11/06/2026</div>
+  <div class="header-brand">
+    <div class="header-logo">Next<span>4</span> International</div>
+    <div class="header-divider"></div>
+    <div class="header-tagline">Dashboard Bandi · Aggiornato al 11/06/2026</div>
   </div>
   <div class="header-date" id="header-date"></div>
 </div>
 
 <div class="stats">
-  <div class="stat-card s-aperto"     onclick="quickFilter('aperto')">    <div class="stat-num" id="c-aperto">0</div><div class="stat-label">Aperti</div></div>
-  <div class="stat-card s-inapertura" onclick="quickFilter('inapertura')"><div class="stat-num" id="c-inapertura">0</div><div class="stat-label">In apertura</div></div>
-  <div class="stat-card s-lavorazione"onclick="quickFilter('lavorazione')"><div class="stat-num" id="c-lavorazione">0</div><div class="stat-label">In lavorazione</div></div>
-  <div class="stat-card s-monitorare" onclick="quickFilter('monitorare')"> <div class="stat-num" id="c-monitorare">0</div><div class="stat-label">Da monitorare</div></div>
-  <div class="stat-card s-chiuso"     onclick="quickFilter('chiuso')">     <div class="stat-num" id="c-chiuso">0</div><div class="stat-label">Chiusi</div></div>
-  <div class="stat-card"              onclick="quickFilter('')">            <div class="stat-num" id="c-totale">0</div><div class="stat-label">Totale</div></div>
+  <div class="stat-card s-aperto"     onclick="quickFilter('aperto')">    <div class="stat-dot"></div><div class="stat-num" id="c-aperto">0</div><div class="stat-label">Aperti</div></div>
+  <div class="stat-card s-inapertura" onclick="quickFilter('inapertura')"><div class="stat-dot"></div><div class="stat-num" id="c-inapertura">0</div><div class="stat-label">In apertura</div></div>
+  <div class="stat-card s-lavorazione"onclick="quickFilter('lavorazione')"><div class="stat-dot"></div><div class="stat-num" id="c-lavorazione">0</div><div class="stat-label">In lavorazione</div></div>
+  <div class="stat-card s-monitorare" onclick="quickFilter('monitorare')"> <div class="stat-dot"></div><div class="stat-num" id="c-monitorare">0</div><div class="stat-label">Da monitorare</div></div>
+  <div class="stat-card s-chiuso"     onclick="quickFilter('chiuso')">     <div class="stat-dot"></div><div class="stat-num" id="c-chiuso">0</div><div class="stat-label">Chiusi</div></div>
+  <div class="stat-card stat-total"   onclick="quickFilter('')">            <div class="stat-dot"></div><div class="stat-num" id="c-totale">0</div><div class="stat-label">Totale</div></div>
 </div>
 
 <div id="urgenza-bar"  class="urgenza-bar"  style="display:none;"></div>
 <div id="apertura-bar" class="apertura-bar" style="display:none;"></div>
 
-<div class="filtri">
-  <div><label>Ricerca</label><input id="q" type="text" placeholder="Cerca bando, ente, descrizione..."></div>
-  <div><label>Stato</label><select id="f-stato"></select></div>
-  <div><label>Regione</label><select id="f-regione"></select></div>
-  <div><label>Tipologia</label><select id="f-tipo"></select></div>
-  <div><label>Cliente abbinabile</label><select id="f-cliente"></select></div>
-  <button class="btn-reset" onclick="resetAll()">✕ Reset</button>
-</div>
-<div class="ris-info" id="ris-info"></div>
-<div style="padding:2px 32px 8px;font-size:11px;color:#888;">
-  <span style="display:inline-block;background:#e8f0fb;color:#1B3A6B;border-radius:4px;padding:1px 5px;font-weight:600;font-size:10px;margin-right:4px;">Cliente</span> Sede confermata nella regione &nbsp;·&nbsp;
-  <span style="display:inline-block;background:#fff3e0;color:#b45309;border-radius:4px;padding:1px 5px;font-weight:600;font-size:10px;border:1px dashed #f59e0b;margin-right:4px;">Cliente *</span> Sede assente – aprire entità/sede nella regione entro prima erogazione
+<div class="tabs">
+  <button class="tab active" onclick="switchTab('bandi')">📋 Bandi</button>
+  <button class="tab" onclick="switchTab('clienti')">🏢 Vista Clienti</button>
+  <button class="tab" onclick="switchTab('scadenzario')">📅 Scadenzario</button>
 </div>
 
-<div class="table-wrap">
-  <table>
-    <thead><tr>
-      <th style="min-width:220px">Bando</th>
-      <th>Regione</th>
-      <th>Tipologia</th>
-      <th>Contributo</th>
-      <th>Scadenza / Apertura</th>
-      <th>Stato</th>
-      <th style="min-width:185px">Clienti abbinabili</th>
-      <th>Link</th>
-    </tr></thead>
-    <tbody id="tbody"></tbody>
-  </table>
-  <div class="no-results" id="no-res" style="display:none;">Nessun risultato.</div>
+<div id="view-bandi">
+
+<div class="filtri-wrap">
+  <div class="filtri">
+    <div><label>Ricerca</label><input id="q" type="text" placeholder="Cerca bando, ente, descrizione..."></div>
+    <div><label>Stato</label><select id="f-stato"></select></div>
+    <div><label>Regione</label><select id="f-regione"></select></div>
+    <div><label>Tipologia</label><select id="f-tipo"></select></div>
+    <div><label>Cliente abbinabile</label><select id="f-cliente"></select></div>
+    <div><label>Domande</label><select id="f-domanda"></select></div>
+    <button class="btn-reset" onclick="resetAll()">✕ Reset</button>
+  </div>
+</div>
+
+<div class="ris-info" id="ris-info"></div>
+<div class="legend">
+  <span style="display:inline-block;background:#e8f0fb;color:#1B3A6B;border-radius:4px;padding:1px 5px;font-weight:600;font-size:10px;margin-right:4px;">Cliente</span> Sede confermata nella regione &nbsp;·&nbsp;
+  <span style="display:inline-block;background:#fff3e0;color:#b45309;border-radius:4px;padding:1px 5px;font-weight:600;font-size:10px;border:1px dashed #f59e0b;margin-right:4px;">Cliente *</span> Sede assente – apertura richiesta prima dell'erogazione
+</div>
+
+<div class="cards-wrap">
+  <div class="cards-grid" id="cards-grid"></div>
+  <div class="no-results" id="no-res" style="display:none;">Nessun risultato trovato con i filtri selezionati.</div>
+</div>
+
+</div><!-- /view-bandi -->
+
+<div id="view-clienti" style="display:none;">
+  <div class="clienti-grid" id="clienti-grid"></div>
+</div>
+
+<div id="view-scadenzario" style="display:none;">
+  <div class="scad-wrap" id="scad-wrap"></div>
+</div>
+
+<!-- SIDE PANEL -->
+<div class="panel-overlay" id="panel-overlay" onclick="closePanel()"></div>
+<div class="side-panel" id="side-panel">
+  <button class="panel-close" onclick="closePanel()">✕</button>
+  <div id="panel-content"></div>
 </div>
 
 <div class="footer">Next4 International S.R.L. · <em>next4international.com</em> · Dashboard aggiornata: <span id="footer-date"></span></div>
@@ -668,6 +846,54 @@ const BANDI = [
     link:"https://www.bandi.regione.lombardia.it/servizi/servizio/bandi/dettaglio/attivita-produttive-imprese/start-up-impresa/lombardia-venture-step-destinatari-finali-RLO12025049143" }
 ];
 
+// ─── DE MINIMIS – CLIENTI ────────────────────────────────────────────────
+// Aggiornare manualmente dopo verifica su rna.gov.it (inserire P.IVA e cercare per beneficiario)
+// aiutiRicevuti: totale aiuti de minimis ricevuti negli ultimi 3 anni (€) — valore da RNA
+// dataVerifica:  data dell'ultima consultazione del portale RNA  (es. "15/06/2026")
+const DEMINIMIS_MAX = 300000;
+const CLIENTI = {
+  "Assetia":               { piva: "",             aiutiRicevuti: 0,         dataVerifica: "" },
+  "Azu Tech":              { piva: "17458971003",  aiutiRicevuti: 216092.75, dataVerifica: "15/06/2026" },
+  "Azu Venture":           { piva: "02890350594",  aiutiRicevuti: 83819.63,  dataVerifica: "15/06/2026" },
+  "Boss Technologies SRL": { piva: "04961060268",  aiutiRicevuti: 21043.23,  dataVerifica: "15/06/2026" },
+  "BrainoAI":              { piva: "13049530960",  aiutiRicevuti: 50000,     dataVerifica: "15/06/2026" },
+  "Casavo":                { piva: "10053290960",  aiutiRicevuti: 46514.27,  dataVerifica: "15/06/2026" },
+  "Citynews":              { piva: "10786801000",  aiutiRicevuti: 176437.38, dataVerifica: "15/06/2026" },
+  "Consedin":              { piva: "01916241001",  aiutiRicevuti: 0,         dataVerifica: "15/06/2026" },
+  "Destino Italia":        { piva: "07332890826",  aiutiRicevuti: 0,         dataVerifica: "15/06/2026" },
+  "Digitalmens":           { piva: "05893970656",  aiutiRicevuti: 0,         dataVerifica: "15/06/2026" },
+  "Drop Digital Health":   { piva: "16989241001",  aiutiRicevuti: 283306.32, dataVerifica: "15/06/2026" },
+  "Drycor":                { piva: "",             aiutiRicevuti: 0,         dataVerifica: "" },
+  "EasyRFID":              { piva: "03358871204",  aiutiRicevuti: 161388.71, dataVerifica: "15/06/2026" },
+  "Ecoter":                { piva: "01048061004",  aiutiRicevuti: 0,         dataVerifica: "15/06/2026" },
+  "Ecubit":                { piva: "13753031007",  aiutiRicevuti: 0,         dataVerifica: "15/06/2026" },
+  "Ekore SRL":             { piva: "05493690282",  aiutiRicevuti: 178588.25, dataVerifica: "15/06/2026" },
+  "Fairtile":              { piva: "",             aiutiRicevuti: 0,         dataVerifica: "" },
+  "Fideliomed":            { piva: "12645970018",  aiutiRicevuti: 54377.20,  dataVerifica: "15/06/2026" },
+  "Flex Packaging":        { piva: "02464370655",  aiutiRicevuti: 0,         dataVerifica: "15/06/2026" },
+  "GATIM SRL":             { piva: "02015210798",  aiutiRicevuti: 111736,    dataVerifica: "15/06/2026" },
+  "GGG":                   { piva: "",             aiutiRicevuti: 0,         dataVerifica: "" },
+  "Govtech":               { piva: "16143281000",  aiutiRicevuti: 52167.72,  dataVerifica: "15/06/2026" },
+  "Heres":                 { piva: "03619031200",  aiutiRicevuti: 3849,      dataVerifica: "15/06/2026" },
+  "INTUOS SRL":            { piva: "15541901003",  aiutiRicevuti: 79639.71,  dataVerifica: "15/06/2026" },
+  "Ilios":                 { piva: "",             aiutiRicevuti: 0,         dataVerifica: "" },
+  "Kerr":                  { piva: "12598001001",  aiutiRicevuti: 87893,     dataVerifica: "15/06/2026" },
+  "Leasy":                 { piva: "",             aiutiRicevuti: 0,         dataVerifica: "" },
+  "Leonardo formazione":   { piva: "11074611002",  aiutiRicevuti: 9600,      dataVerifica: "15/06/2026" },
+  "Messagenius":           { piva: "12973601003",  aiutiRicevuti: 55520,     dataVerifica: "15/06/2026" },
+  "Next4Production":       { piva: "02953440597",  aiutiRicevuti: 2002,      dataVerifica: "15/06/2026" },
+  "OralTec":               { piva: "07305330487",  aiutiRicevuti: 3000,      dataVerifica: "15/06/2026" },
+  "ProGen SRL":            { piva: "04753140872",  aiutiRicevuti: 64009,     dataVerifica: "15/06/2026" },
+  "Spartan Tech":          { piva: "11044930961",  aiutiRicevuti: 0,         dataVerifica: "15/06/2026" },
+  "Speri":                 { piva: "01980341000",  aiutiRicevuti: 0,         dataVerifica: "15/06/2026" },
+  "TLC Telecomunicazioni": { piva: "02268530595",  aiutiRicevuti: 8535,      dataVerifica: "15/06/2026" },
+  "Tod Systems":           { piva: "03665340794",  aiutiRicevuti: 30147,     dataVerifica: "15/06/2026" },
+  "Velion SRL":            { piva: "01421440320",  aiutiRicevuti: 51000,     dataVerifica: "15/06/2026" },
+  "WDA":                   { piva: "15274611001",  aiutiRicevuti: 9940,      dataVerifica: "15/06/2026" },
+  "Wink Suite SRL":        { piva: "12885490966",  aiutiRicevuti: 156467,    dataVerifica: "15/06/2026" },
+  "Yourease":              { piva: "04239661202",  aiutiRicevuti: 153197,    dataVerifica: "15/06/2026" },
+};
+
 // ─── CONFIG ──────────────────────────────────────────────────────────────
 const STATO_CFG = {
   aperto:      { label:"Aperto",        cls:"b-aperto" },
@@ -722,10 +948,16 @@ document.addEventListener('DOMContentLoaded', () => {
   fillSelect('f-regione', regioni, v => v||'Tutte le regioni');
   const tipi = ['',...new Set(BANDI.flatMap(b=>b.tipo))].sort();
   fillSelect('f-tipo', tipi, v => v ? TIPO_CFG[v]?.label||v : 'Tutte le tipologie');
-  const clienti = ['',...new Set(BANDI.flatMap(b=>b.clienti).map(c=>c.replace(' *','')))].sort();
-  fillSelect('f-cliente', clienti, v => v||'Tutti i clienti');
+  const clientiMap = {};
+  BANDI.forEach(b => b.clienti.forEach(c => {
+    const n = c.replace(' *','');
+    clientiMap[n] = (clientiMap[n]||0) + 1;
+  }));
+  const clientiSorted = Object.entries(clientiMap).sort((a,b) => b[1]-a[1]).map(([n]) => n);
+  fillSelect('f-cliente', ['', ...clientiSorted], v => v ? `${v} (${clientiMap[v]})` : 'Tutti i clienti');
+  fillSelect('f-domanda', ['','con','senza'], v => v===''?'Tutte':v==='con'?'Con domanda presentata':'Senza domanda');
 
-  ['q','f-stato','f-regione','f-tipo','f-cliente'].forEach(id =>
+  ['q','f-stato','f-regione','f-tipo','f-cliente','f-domanda'].forEach(id =>
     document.getElementById(id).addEventListener(id==='q'?'input':'change', render)
   );
   render();
@@ -737,8 +969,28 @@ function fillSelect(id, vals, labelFn) {
 }
 function quickFilter(stato) { document.getElementById('f-stato').value=stato; render(); }
 function resetAll() {
-  ['q','f-stato','f-regione','f-tipo','f-cliente'].forEach(id => document.getElementById(id).value='');
+  ['q','f-stato','f-regione','f-tipo','f-cliente','f-domanda'].forEach(id => document.getElementById(id).value='');
   render();
+}
+
+function copyLink(btn, url) {
+  const orig = btn.textContent;
+  const doConfirm = () => {
+    btn.textContent = '✓ Copiato!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 2000);
+  };
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(url).then(doConfirm).catch(() => {
+      const ta = Object.assign(document.createElement('textarea'), {value: url, style: 'position:fixed;opacity:0'});
+      document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+      doConfirm();
+    });
+  } else {
+    const ta = Object.assign(document.createElement('textarea'), {value: url, style: 'position:fixed;opacity:0'});
+    document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    doConfirm();
+  }
 }
 
 // ─── RENDER ──────────────────────────────────────────────────────────────
@@ -749,11 +1001,14 @@ function render() {
   const ft = document.getElementById('f-tipo').value;
   const fc = document.getElementById('f-cliente').value;
 
+  const fd = document.getElementById('f-domanda').value;
   const filt = BANDI.filter(b => {
     if (fs && b.stato!==fs) return false;
     if (fr && b.regione!==fr) return false;
     if (ft && !b.tipo.includes(ft)) return false;
     if (fc && !b.clienti.some(c=>c.replace(' *','')=== fc)) return false;
+    if (fd === 'con' && !(b.domande && b.domande.length > 0)) return false;
+    if (fd === 'senza' && b.domande && b.domande.length > 0) return false;
     if (q && ![b.nome,b.ente,b.descrizione,b.regione,...b.clienti].join(' ').toLowerCase().includes(q)) return false;
     return true;
   });
@@ -775,34 +1030,249 @@ function render() {
     return 0;
   });
 
-  const tbody = document.getElementById('tbody');
-  tbody.innerHTML='';
-  document.getElementById('no-res').style.display = filt.length?'none':'block';
+  const grid = document.getElementById('cards-grid');
+  grid.innerHTML = '';
+  document.getElementById('no-res').style.display = filt.length ? 'none' : 'block';
 
   filt.forEach(b => {
     const sc = STATO_CFG[b.stato]||{label:b.stato,cls:''};
-    const tr = document.createElement('tr');
-    tr.innerHTML=`
-      <td>
-        <div class="bando-nome"><a href="${b.link}" target="_blank" rel="noopener">${b.nome}</a>
-          ${b.urgente?'<span class="flg flg-urgente">URGENTE</span>':''}
-          ${b.aperturaImminente?'<span class="flg flg-apertura">APRE PRESTO</span>':''}
-          ${b.altaRilevanza&&!b.urgente&&!b.aperturaImminente?'<span class="flg flg-rilevante">RILEVANTE</span>':''}
+    const card = document.createElement('div');
+    card.className = 'card card-' + b.stato;
+    card.addEventListener('click', e => { if (!e.target.closest('a')) openPanel(b); });
+
+    const doms = b.domande || [];
+    const chip = c => {
+      const n = c.replace(' *','');
+      if (doms.includes(n)) return `<span class="ct-dom" title="Domanda già presentata">✓ ${n}</span>`;
+      if (c.endsWith(' *')) return `<span class="ct-potential">${c}</span>`;
+      return `<span class="ct">${c}</span>`;
+    };
+    const clientiOrd = [...b.clienti].sort((a,z) => {
+      const aD = doms.includes(a.replace(' *','')), zD = doms.includes(z.replace(' *',''));
+      return aD === zD ? 0 : aD ? -1 : 1;
+    });
+    const maxC = 3;
+    const visibili = clientiOrd.slice(0, maxC);
+    const extra = b.clienti.length - maxC;
+    const hasDom = doms.length > 0;
+
+    card.innerHTML = `
+      <div class="card-top">
+        <div class="card-toprow">
+          <span class="badge ${sc.cls}">${sc.label}</span>
+          <div class="card-flags">
+            ${b.urgente?'<span class="flg flg-urgente">URGENTE</span>':''}
+            ${b.aperturaImminente?'<span class="flg flg-apertura">APRE PRESTO</span>':''}
+            ${b.altaRilevanza&&!b.urgente&&!b.aperturaImminente?'<span class="flg flg-rilevante">RILEVANTE</span>':''}
+            ${hasDom?'<span class="flg" style="background:#dcfce7;color:#15803d;border:1px solid #86efac">✓ dom.</span>':''}
+          </div>
+          <span class="card-regione">${b.regione}</span>
         </div>
-        <div class="bando-ente">${b.ente}</div>
-        ${b.descrizione?`<div class="bando-desc">${b.descrizione}</div>`:''}
-        ${b.proc?`<div class="proc">Procedura: ${b.proc}</div>`:''}
-      </td>
-      <td>${b.regione}</td>
-      <td>${b.tipo.map(t=>{const c=TIPO_CFG[t]||{label:t,cls:''};return`<span class="tag ${c.cls}">${c.label}</span>`}).join('')}</td>
-      <td><span class="contributo">${b.contributo}</span></td>
-      <td><span class="scadenza${b.urgente?' urg':''}">${b.scadenza}</span></td>
-      <td><span class="badge ${sc.cls}">${sc.label}</span></td>
-      <td>${b.clienti.length?b.clienti.map(c=>c.endsWith(' *')?`<span class="ct-potential" title="Sede non confermata nella regione – apertura richiesta prima dell'erogazione">${c}</span>`:`<span class="ct">${c}</span>`).join(''):'<span style="color:#ddd;font-size:11px">—</span>'}</td>
-      <td><a href="${b.link}" target="_blank" class="btn-link">→ Apri</a></td>
+        <div class="card-title">${b.nome}</div>
+        <div class="card-ente">${b.ente}</div>
+      </div>
+      <div class="card-meta">
+        <div class="card-meta-item">
+          <span class="card-meta-icon">💰</span>
+          <span class="card-contributo">${b.contributo}</span>
+        </div>
+        <div class="card-meta-item">
+          <span class="card-meta-icon">📅</span>
+          <span class="scadenza${b.urgente?' urg':''}">${b.scadenza}</span>
+        </div>
+      </div>
+      <div class="card-tags">
+        ${b.tipo.map(t=>{const c=TIPO_CFG[t]||{label:t,cls:''};return`<span class="tag ${c.cls}">${c.label}</span>`;}).join('')}
+      </div>
+      <div class="card-footer">
+        <div class="card-clienti">
+          ${visibili.map(c => chip(c)).join('')}
+          ${extra>0?`<span class="ct-extra">+${extra}</span>`:''}
+          ${b.clienti.length===0?'<span class="ct-none">Nessun cliente abbinato</span>':''}
+        </div>
+        <div style="display:flex;gap:6px;flex-shrink:0">
+          <button class="btn-copy" onclick="copyLink(this,'${b.link}');event.stopPropagation()">🔗 Copia</button>
+          <a href="${b.link}" target="_blank" class="btn-link" onclick="event.stopPropagation()">→ Apri</a>
+        </div>
+      </div>
     `;
-    tbody.appendChild(tr);
+    grid.appendChild(card);
   });
+}
+
+// ─── TAB SWITCHING ───────────────────────────────────────────────────────
+function switchTab(tab) {
+  closePanel();
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => { if (t.textContent.toLowerCase().includes(tab === 'bandi' ? 'bandi' : tab === 'clienti' ? 'clienti' : 'scadenzario')) t.classList.add('active'); });
+  document.getElementById('view-bandi').style.display      = tab === 'bandi'      ? '' : 'none';
+  document.getElementById('view-clienti').style.display    = tab === 'clienti'    ? '' : 'none';
+  document.getElementById('view-scadenzario').style.display= tab === 'scadenzario'? '' : 'none';
+  if (tab === 'clienti')    renderClienti();
+  if (tab === 'scadenzario') renderScadenzario();
+}
+
+// ─── SIDE PANEL ──────────────────────────────────────────────────────────
+function openPanel(b) {
+  const sc = STATO_CFG[b.stato] || {label:b.stato, cls:''};
+  const pRow = (lbl, val) => `<div class="panel-row"><span class="panel-lbl">${lbl}</span><span class="panel-val">${val}</span></div>`;
+  document.getElementById('panel-content').innerHTML = `
+    <div class="panel-nome">${b.nome}</div>
+    <div class="panel-ente">${b.ente}</div>
+    <span class="badge ${sc.cls}">${sc.label}</span>
+    ${b.urgente ? '<span class="flg flg-urgente" style="margin-left:6px">URGENTE</span>' : ''}
+    ${b.aperturaImminente ? '<span class="flg flg-apertura" style="margin-left:6px">APRE PRESTO</span>' : ''}
+    <div style="margin-top:14px">
+      ${pRow('Regione', b.regione)}
+      ${pRow('Contributo', `<strong>${b.contributo}</strong>`)}
+      ${pRow('Scadenza', `<span class="scadenza${b.urgente?' urg':''}">${b.scadenza}</span>`)}
+      ${pRow('Procedura', b.proc || '—')}
+    </div>
+    <div class="panel-sec">Tipologie</div>
+    <div>${b.tipo.map(t => { const c = TIPO_CFG[t]||{label:t,cls:''}; return `<span class="tag ${c.cls}">${c.label}</span>`; }).join('')}</div>
+    ${b.descrizione ? `<div class="panel-sec">Descrizione</div><div style="font-size:11.5px;color:#444;line-height:1.6">${b.descrizione}</div>` : ''}
+    <div class="panel-sec">Clienti abbinabili (${b.clienti.length})</div>
+    <div>${b.clienti.length ? [...b.clienti].sort((a,z)=>{const aD=(b.domande||[]).includes(a.replace(' *','')),zD=(b.domande||[]).includes(z.replace(' *',''));return aD===zD?0:aD?-1:1;}).map(c => {
+      const n=c.replace(' *','');
+      if((b.domande||[]).includes(n)) return `<span class="ct-dom" title="Domanda già presentata">✓ ${n}</span>`;
+      if(c.endsWith(' *')) return `<span class="ct-potential">${c}</span>`;
+      return `<span class="ct">${c}</span>`;
+    }).join('') : '<span style="color:#aaa;font-size:11px">Nessuno</span>'}</div>
+    <div class="panel-actions">
+      <a href="${b.link}" target="_blank" class="btn-link">→ Pagina ufficiale</a>
+      <button class="btn-copy" onclick="copyLink(this,'${b.link}')">🔗 Copia link</button>
+    </div>
+  `;
+  document.getElementById('side-panel').classList.add('open');
+  document.getElementById('panel-overlay').classList.add('open');
+}
+function closePanel() {
+  document.getElementById('side-panel').classList.remove('open');
+  document.getElementById('panel-overlay').classList.remove('open');
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
+
+// ─── DE MINIMIS SECTION ──────────────────────────────────────────────────
+function dmSection(name) {
+  const d = CLIENTI[name];
+  if (!d) return '';
+  const fmtEur = n => '€' + Math.round(n).toLocaleString('it-IT');
+  const ricevuti = d.aiutiRicevuti || 0;
+  const perc = Math.min(ricevuti / DEMINIMIS_MAX * 100, 100);
+  const residuo = DEMINIMIS_MAX - ricevuti;
+  const fillCls = perc >= 90 ? 'dm-fill-danger' : perc >= 75 ? 'dm-fill-alert' : perc >= 50 ? 'dm-fill-warn' : 'dm-fill-ok';
+  const resCls  = perc >= 90 ? 'dm-res-danger'  : perc >= 75 ? 'dm-res-alert'  : perc >= 50 ? 'dm-res-warn'  : 'dm-res-ok';
+  const piva = d.piva || '';
+  const rnaHref = 'https://www.rna.gov.it/RegistroNazionaleTransparenza/faces/pages/ricercaAiuto.jspx';
+  const rnaBtn  = `<a href="${rnaHref}" target="_blank" class="dm-rna-btn" onclick="event.stopPropagation()">${piva ? `🔍 RNA · ${piva}` : '🔍 Verifica RNA'}</a>`;
+
+  if (!d.dataVerifica) {
+    return `<div class="dm-section">
+      <div class="dm-unverified">
+        <span class="dm-unverified-label">De minimis non ancora verificato</span>
+        ${rnaBtn}
+      </div>
+    </div>`;
+  }
+  return `<div class="dm-section">
+    <div class="dm-bar-row">
+      <span class="dm-lbl">De minimis</span>
+      <div class="dm-track"><div class="dm-fill ${fillCls}" style="width:${perc.toFixed(1)}%"></div></div>
+      <span class="dm-amounts">${fmtEur(ricevuti)} / ${fmtEur(DEMINIMIS_MAX)}</span>
+    </div>
+    <div class="dm-info-row">
+      <span class="dm-residuo ${resCls}">Residuo: ${fmtEur(residuo)}</span>
+      <span class="dm-date">RNA al ${d.dataVerifica}</span>
+      ${rnaBtn}
+    </div>
+  </div>`;
+}
+
+// ─── VISTA CLIENTI ───────────────────────────────────────────────────────
+function renderClienti() {
+  const map = {};
+  BANDI.forEach(b => {
+    b.clienti.forEach(c => {
+      const name = c.replace(' *','');
+      if (!map[name]) map[name] = [];
+      map[name].push({b, star: c.endsWith(' *')});
+    });
+  });
+  const sorted = Object.entries(map).sort((a,b) => {
+    const aA = a[1].filter(x => x.b.stato==='aperto').length;
+    const bA = b[1].filter(x => x.b.stato==='aperto').length;
+    return bA - aA;
+  });
+  document.getElementById('clienti-grid').innerHTML = sorted.map(([name, entries]) => {
+    const aperti   = entries.filter(x => x.b.stato==='aperto');
+    const urgenti  = aperti.filter(x => x.b.urgente);
+    const inAp     = entries.filter(x => x.b.stato==='inapertura');
+    const attivi   = entries.filter(x => x.b.stato !== 'chiuso' && x.b.stato !== 'monitorare');
+    const rows = attivi
+      .sort((a,b) => ORDINE[a.b.stato]-ORDINE[b.b.stato] || (b.b.urgente?1:0)-(a.b.urgente?1:0))
+      .map(({b, star}) => {
+        const sc = STATO_CFG[b.stato]||{label:b.stato,cls:''};
+        const idx = BANDI.indexOf(b);
+        return `<div class="client-bando-row" onclick="openPanel(BANDI[${idx}])">
+          <span class="badge ${sc.cls}" style="font-size:9px;padding:2px 6px;white-space:nowrap">${sc.label}</span>
+          ${b.urgente ? '<span class="flg flg-urgente" style="font-size:8px">URG</span>' : ''}
+          <span class="client-bando-nome" title="${b.nome}">${b.nome}${star?' *':''}</span>
+          <span class="client-bando-contributo">${b.contributo.length > 22 ? b.contributo.substring(0,22)+'…' : b.contributo}</span>
+        </div>`;
+      }).join('');
+    const dm = dmSection(name);
+    return `<div class="client-card">
+      <div class="client-card-header" onclick="this.querySelector('.client-chevron').classList.toggle('open');this.parentElement.querySelector('.client-bandi').classList.toggle('open')">
+        <span class="client-name">${name}</span>
+        <span class="client-stats">
+          ${aperti.length ? `<span class="cs cs-a">${aperti.length} aperti</span>` : ''}
+          ${urgenti.length ? `<span class="cs cs-u">${urgenti.length} urgenti</span>` : ''}
+          ${inAp.length ? `<span class="cs cs-i">${inAp.length} in apertura</span>` : ''}
+        </span>
+        <span class="client-chevron">▾</span>
+      </div>
+      ${dm}
+      <div class="client-bandi">${rows || '<div style="padding:10px 14px;font-size:11px;color:#aaa">Nessun bando attivo</div>'}</div>
+    </div>`;
+  }).join('');
+}
+
+// ─── SCADENZARIO ─────────────────────────────────────────────────────────
+function renderScadenzario() {
+  const attivi = BANDI.filter(b => b.stato === 'aperto' || b.stato === 'inapertura');
+  const aperti    = attivi.filter(b => b.stato === 'aperto').sort((a,b) => (b.urgente?1:0)-(a.urgente?1:0)||(b.altaRilevanza?1:0)-(a.altaRilevanza?1:0));
+  const inApertura = attivi.filter(b => b.stato === 'inapertura').sort((a,b) => (b.aperturaImminente?1:0)-(a.aperturaImminente?1:0)||(b.altaRilevanza?1:0)-(a.altaRilevanza?1:0));
+
+  const renderGroup = (title, bandi) => {
+    if (!bandi.length) return '';
+    return `<div class="scad-group-title">${title} (${bandi.length})</div>` +
+      bandi.map(b => {
+        const idx = BANDI.indexOf(b);
+        const cls = b.urgente ? 's-urg' : b.aperturaImminente ? 's-apt' : '';
+        return `<div class="scad-row ${cls}" onclick="openPanel(BANDI[${idx}])">
+          <div class="scad-left">
+            <div class="scad-nome">${b.nome}
+              ${b.urgente ? '<span class="flg flg-urgente">URGENTE</span>' : ''}
+              ${b.aperturaImminente ? '<span class="flg flg-apertura">APRE PRESTO</span>' : ''}
+              ${b.altaRilevanza&&!b.urgente&&!b.aperturaImminente ? '<span class="flg flg-rilevante">RILEVANTE</span>' : ''}
+            </div>
+            <div class="scad-ente">${b.ente} · ${b.regione}</div>
+            <div style="margin-top:6px">
+              ${b.clienti.slice(0,6).map(c => c.endsWith(' *') ? `<span class="ct-potential">${c}</span>` : `<span class="ct">${c}</span>`).join('')}
+              ${b.clienti.length > 6 ? `<span style="font-size:10px;color:#aaa"> +${b.clienti.length-6}</span>` : ''}
+            </div>
+          </div>
+          <div class="scad-right">
+            <div class="scad-contributo">${b.contributo}</div>
+            <div class="scad-data${b.urgente?' urg':''}">${b.scadenza}</div>
+          </div>
+        </div>`;
+      }).join('');
+  };
+
+  document.getElementById('scad-wrap').innerHTML =
+    renderGroup('🟢 Bandi Aperti', aperti) +
+    renderGroup('🔵 In Apertura', inApertura);
 }
 </script>
 </body>
