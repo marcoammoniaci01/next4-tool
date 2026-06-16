@@ -1226,7 +1226,10 @@ function renderPipeline() {
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td class="td-cliente">${p.cliente}</td>
-      <td class="td-bando"><span title="${p.bando}">${p.bando}</span></td>
+      <td class="td-bando">
+        <span title="${p.bando}">${p.bando}</span>
+        ${p.note ? `<div style="font-size:10px;color:#94a3b8;margin-top:3px;font-style:italic;line-height:1.4">${p.note}</div>` : ''}
+      </td>
       <td>
         <select class="p-stato-sel" style="background:${sc.bg};color:${sc.color};border-color:${sc.bg}"
           onchange="updatePipelineStato('${p.id}', this)">
