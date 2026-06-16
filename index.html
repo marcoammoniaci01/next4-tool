@@ -522,8 +522,8 @@
     </div>
     <div class="modal-row2">
       <div class="modal-field">
-        <label>Retainer (€)</label>
-        <input type="number" id="m-retainer" placeholder="1500" min="0">
+        <label>Retainer (€) (0 se non previsto)</label>
+        <input type="number" id="m-retainer" placeholder="es. 1500 · lascia 0 se non previsto" min="0">
       </div>
       <div class="modal-field">
         <label>Retainer pagato?</label>
@@ -532,8 +532,8 @@
     </div>
     <div class="modal-row2">
       <div class="modal-field">
-        <label>Success fee %</label>
-        <input type="number" id="m-sf-perc" placeholder="6" min="0" max="100" step="0.5">
+        <label>Success fee % (0 se non prevista)</label>
+        <input type="number" id="m-sf-perc" placeholder="es. 6 · lascia 0 se non prevista" min="0" max="100" step="0.5">
       </div>
       <div class="modal-field">
         <label>Contributo max bando (€)</label>
@@ -1375,9 +1375,9 @@ function saveModalPipeline() {
     bando: document.getElementById('m-bando').value,
     cliente: document.getElementById('m-cliente').value,
     stato: document.getElementById('m-stato').value,
-    retainer: parseFloat(document.getElementById('m-retainer').value) || 0,
+    retainer: (v => v === '' ? 0 : parseFloat(v) || 0)(document.getElementById('m-retainer').value.trim()),
     retainerPagato: document.getElementById('m-ret-pagato').value === 'true',
-    successFeePerc: parseFloat(document.getElementById('m-sf-perc').value) || 6,
+    successFeePerc: (v => v === '' ? 0 : parseFloat(v) || 0)(document.getElementById('m-sf-perc').value.trim()),
     contributoMax: parseFloat(document.getElementById('m-contrib-max').value) || 0,
     contributoConc: parseFloat(document.getElementById('m-contrib-conc').value) || 0,
     serviziAccessori,
