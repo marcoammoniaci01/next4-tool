@@ -311,6 +311,21 @@
   .pkpi.p-teal   { border-top-color:#0f766e; }
   .pkpi.p-green  { border-top-color:#16a34a; }
   .pkpi.p-gold   { border-top-color:#d97706; }
+  .pkpi.p-purple { border-top-color:#7c3aed; }
+  .pkpi-val.purple { color:#7c3aed; }
+
+  /* servizi accessori */
+  .sa-list { margin-top:10px; display:flex; flex-direction:column; gap:6px; }
+  .sa-row { display:grid; grid-template-columns:1fr 100px 110px 28px; gap:6px; align-items:center; }
+  .sa-row select, .sa-row input { border:1.5px solid #e2e8f0; border-radius:6px; padding:7px 8px; font-size:12px; font-family:inherit; outline:none; background:#f8fafc; width:100%; }
+  .sa-row select:focus, .sa-row input:focus { border-color:#7c3aed; background:white; }
+  .sa-remove { background:#fee2e2; border:none; border-radius:6px; color:#dc2626; font-size:14px; cursor:pointer; padding:0; width:28px; height:34px; display:flex; align-items:center; justify-content:center; }
+  .sa-remove:hover { background:#fca5a5; }
+  .btn-add-sa { background:#f5f3ff; border:1.5px solid #c4b5fd; color:#7c3aed; border-radius:7px; padding:7px 14px; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; margin-top:8px; }
+  .btn-add-sa:hover { background:#ede9fe; }
+  .sa-header { display:grid; grid-template-columns:1fr 100px 110px 28px; gap:6px; font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:2px; }
+  .td-sa { font-size:11px; color:#7c3aed; font-weight:700; white-space:nowrap; }
+  .td-sa-detail { font-size:10px; color:#a78bfa; }
 
   .pipeline-toolbar { display:flex; align-items:center; gap:10px; margin-bottom:14px; flex-wrap:wrap; }
   .pipeline-toolbar select { border:1.5px solid #e2e8f0; border-radius:8px; padding:7px 12px; font-size:12px; background:#f8fafc; color:#1a1a2e; outline:none; font-family:inherit; }
@@ -458,6 +473,7 @@
           <th>Bando</th>
           <th>Stato</th>
           <th>Retainer</th>
+          <th>Servizi accessori</th>
           <th>Success fee attesa</th>
           <th>Importo concesso</th>
           <th>Fee su concesso</th>
@@ -527,6 +543,12 @@
     <div class="modal-field">
       <label>Importo concesso (€) — compilare solo se concesso/incassato</label>
       <input type="number" id="m-contrib-conc" placeholder="0" min="0">
+    </div>
+    <div class="modal-field">
+      <label>Servizi accessori (consulenze, Export Manager, marketing…)</label>
+      <div class="sa-header"><span>Tipo servizio</span><span>Importo (€)</span><span>Pagato?</span><span></span></div>
+      <div class="sa-list" id="m-sa-list"></div>
+      <button class="btn-add-sa" type="button" onclick="addServizioRow()">+ Aggiungi servizio</button>
     </div>
     <div class="modal-field">
       <label>Note</label>
@@ -1142,6 +1164,11 @@ function renderPipeline() {
   const totConcessi = concessi.reduce((s,p) => s + (p.contributoConc||0), 0);
   const feeConc = concessi.reduce((s,p) => s + (p.contributoConc||0) * (p.successFeePerc||0) / 100, 0);
 
+  // servizi accessori
+  const totSA = attivi.reduce((s,p) => s + (p.serviziAccessori||[]).reduce((ss,sa) => ss + (sa.importo||0), 0), 0);
+  const totSAPagati = attivi.reduce((s,p) => s + (p.serviziAccessori||[]).filter(sa=>sa.pagato).reduce((ss,sa) => ss + (sa.importo||0), 0), 0);
+  const nSA = attivi.reduce((s,p) => s + (p.serviziAccessori||[]).length, 0);
+
   document.getElementById('pipeline-kpi').innerHTML = `
     <div class="pkpi p-blue">
       <div class="pkpi-icon">📝</div>
@@ -1161,11 +1188,17 @@ function renderPipeline() {
       <div class="pkpi-lbl">Contributi concessi</div>
       <div class="pkpi-sub">Success fee maturata: ${fmtEurFull(feeConc)}</div>
     </div>
+    <div class="pkpi p-purple">
+      <div class="pkpi-icon">🛠</div>
+      <div class="pkpi-val purple">${fmtEurFull(totSA)}</div>
+      <div class="pkpi-lbl">Servizi accessori</div>
+      <div class="pkpi-sub">${nSA} servizi · Incassato: ${fmtEurFull(totSAPagati)}</div>
+    </div>
     <div class="pkpi p-gold">
       <div class="pkpi-icon">💰</div>
-      <div class="pkpi-val gold">${fmtEurFull(retainerPagati + feeConc)}</div>
-      <div class="pkpi-lbl">Fee incassate totali</div>
-      <div class="pkpi-sub">Retainer + success fee su concessi</div>
+      <div class="pkpi-val gold">${fmtEurFull(retainerPagati + feeConc + totSAPagati)}</div>
+      <div class="pkpi-lbl">Incassato totale</div>
+      <div class="pkpi-sub">Retainer + fee concessi + servizi</div>
     </div>
   `;
 
@@ -1183,6 +1216,13 @@ function renderPipeline() {
       return `<option value="${s}"${p.stato===s?' selected':''}>${c.label}</option>`;
     }).join('');
 
+    const sa = p.serviziAccessori || [];
+    const totSARow = sa.reduce((s,x) => s + (x.importo||0), 0);
+    const saLabel = sa.length === 0
+      ? '<span style="color:#cbd5e1;font-size:11px">—</span>'
+      : `<span class="td-sa">${fmtEurFull(totSARow)}</span>
+         <div class="td-sa-detail">${sa.map(x=>`${x.tipo}${x.pagato?' ✓':''}`).join(' · ')}</div>`;
+
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td class="td-cliente">${p.cliente}</td>
@@ -1199,6 +1239,7 @@ function renderPipeline() {
           ${p.retainerPagato?'✓ pagato':'✗ non pagato'}
         </span>
       </td>
+      <td>${saLabel}</td>
       <td class="td-euro blue">${['presentato','istruttoria'].includes(p.stato) ? fmtEurFull(sfAtt) : '—'}</td>
       <td>
         <input type="number" value="${p.contributoConc||0}" min="0"
@@ -1245,6 +1286,30 @@ function deletePipeline(id) {
   renderPipeline();
 }
 
+const SA_TIPI = [
+  'Consulenza strategica','Temporary Export Manager','Marketing e comunicazione',
+  'Digital marketing','Business development','Legal advisory',
+  'Financial advisory','Ricerca e selezione personale','Formazione','Altro'
+];
+
+function addServizioRow(tipo, importo, pagato) {
+  const list = document.getElementById('m-sa-list');
+  const div = document.createElement('div');
+  div.className = 'sa-row';
+  div.innerHTML = `
+    <select class="sa-tipo">
+      ${SA_TIPI.map(t=>`<option value="${t}"${t===(tipo||'')?' selected':''}>${t}</option>`).join('')}
+    </select>
+    <input type="number" class="sa-importo" placeholder="0" min="0" value="${importo||''}">
+    <select class="sa-pagato">
+      <option value="false"${!pagato?' selected':''}>✗ Non pagato</option>
+      <option value="true"${pagato?' selected':''}>✓ Pagato</option>
+    </select>
+    <button class="sa-remove" type="button" onclick="this.parentElement.remove()">×</button>
+  `;
+  list.appendChild(div);
+}
+
 function openModalPipeline(editId) {
   const modal = document.getElementById('modal-pipeline');
   // Popola select clienti
@@ -1253,6 +1318,8 @@ function openModalPipeline(editId) {
   document.getElementById('m-cliente').innerHTML = clientiList.map(c=>`<option value="${c}">${c}</option>`).join('');
   // Popola select bandi
   document.getElementById('m-bando').innerHTML = BANDI.map(b=>`<option value="${b.nome}">${b.nome}</option>`).join('');
+
+  document.getElementById('m-sa-list').innerHTML = '';
 
   if (editId) {
     const p = getPipeline().find(x => x.id === editId);
@@ -1268,6 +1335,7 @@ function openModalPipeline(editId) {
       document.getElementById('m-contrib-max').value = p.contributoMax || '';
       document.getElementById('m-contrib-conc').value = p.contributoConc || '';
       document.getElementById('m-note').value = p.note || '';
+      (p.serviziAccessori||[]).forEach(sa => addServizioRow(sa.tipo, sa.importo, sa.pagato));
     }
   } else {
     document.getElementById('m-edit-id').value = '';
@@ -1282,6 +1350,14 @@ function closeModalPipeline() { document.getElementById('modal-pipeline').classL
 
 function saveModalPipeline() {
   const editId = document.getElementById('m-edit-id').value;
+  // raccoglie servizi accessori
+  const saRows = [...document.getElementById('m-sa-list').querySelectorAll('.sa-row')];
+  const serviziAccessori = saRows.map(row => ({
+    tipo:    row.querySelector('.sa-tipo').value,
+    importo: parseFloat(row.querySelector('.sa-importo').value) || 0,
+    pagato:  row.querySelector('.sa-pagato').value === 'true',
+  })).filter(sa => sa.importo > 0 || sa.tipo);
+
   const entry = {
     id: editId || 'p' + Date.now(),
     bando: document.getElementById('m-bando').value,
@@ -1292,6 +1368,7 @@ function saveModalPipeline() {
     successFeePerc: parseFloat(document.getElementById('m-sf-perc').value) || 6,
     contributoMax: parseFloat(document.getElementById('m-contrib-max').value) || 0,
     contributoConc: parseFloat(document.getElementById('m-contrib-conc').value) || 0,
+    serviziAccessori,
     dataContratto: document.getElementById('m-data').value,
     note: document.getElementById('m-note').value,
   };
