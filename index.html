@@ -385,9 +385,9 @@
   .btn-ap:disabled { opacity:0.55; cursor:default; }
   .bando-chk { width:14px; height:14px; cursor:pointer; accent-color:#1B3A6B; flex-shrink:0; margin-right:2px; }
   /* AP Modal */
-  .ap-bando-sf-row { display:grid; grid-template-columns:1fr 90px; gap:10px; align-items:center; background:#f8fafc; border-radius:6px; padding:8px 12px; margin-bottom:6px; }
+  .ap-bando-sf-row { display:grid; grid-template-columns:1fr 110px 80px; gap:8px; align-items:center; background:#f8fafc; border-radius:6px; padding:8px 12px; margin-bottom:6px; }
   .ap-bando-sf-row .ap-bando-label { font-size:12px; font-weight:600; color:#1B3A6B; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .ap-sf-input { border:1.5px solid #e2e8f0; border-radius:6px; padding:6px 8px; font-size:12px; font-family:inherit; width:100%; text-align:center; outline:none; }
+  .ap-sf-input { border:1.5px solid #e2e8f0; border-radius:6px; padding:6px 8px; font-size:12px; font-family:inherit; width:100%; text-align:right; outline:none; }
   .ap-sf-input:focus { border-color:#1B3A6B; }
 
   @media (max-width: 768px) {
@@ -399,9 +399,37 @@
     .p-table { font-size:11px; }
   }
   @media print { .header { position: static; } .filtri-wrap, .urgenza-bar, .apertura-bar, .tabs { display: none; } }
+
+  /* ── Password Gate ────────────────────────────────────────────────────── */
+  #pw-gate { position:fixed; inset:0; z-index:99999; background:#0d1b2e; display:flex; align-items:center; justify-content:center; }
+  #pw-gate.hidden { display:none; }
+  .pw-box { background:#fff; border-radius:16px; padding:40px 44px; width:360px; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.45); }
+  .pw-logo { font-size:22pt; font-weight:700; color:#113e76; letter-spacing:-0.5px; margin-bottom:4px; }
+  .pw-logo span { color:#00b8d4; }
+  .pw-sub { font-size:10pt; color:#64748b; margin-bottom:28px; letter-spacing:0.2px; }
+  .pw-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.6px; color:#64748b; text-align:left; display:block; margin-bottom:6px; }
+  .pw-input { width:100%; border:1.5px solid #e2e8f0; border-radius:8px; padding:11px 14px; font-size:13px; font-family:inherit; outline:none; color:#1a1a1a; transition:border-color 0.15s; box-sizing:border-box; }
+  .pw-input:focus { border-color:#113e76; }
+  .pw-input.pw-error { border-color:#ef4444; animation:pw-shake 0.35s; }
+  @keyframes pw-shake { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-7px)} 40%,80%{transform:translateX(7px)} }
+  .pw-btn { width:100%; margin-top:14px; background:#113e76; color:#fff; border:none; border-radius:8px; padding:12px; font-size:13px; font-weight:700; font-family:inherit; cursor:pointer; transition:background 0.15s; }
+  .pw-btn:hover { background:#1a52a0; }
+  .pw-err { font-size:11px; color:#ef4444; margin-top:10px; min-height:15px; }
 </style>
 </head>
 <body>
+
+<div id="pw-gate">
+  <div class="pw-box">
+    <div class="pw-logo">Next<span>4</span> International</div>
+    <div class="pw-sub">Dashboard Bandi · Accesso riservato</div>
+    <label class="pw-label" for="pw-input">Password</label>
+    <input type="password" id="pw-input" class="pw-input" placeholder="Inserisci la password"
+           onkeydown="if(event.key==='Enter')verificaPassword()" autofocus>
+    <button class="pw-btn" onclick="verificaPassword()">Accedi →</button>
+    <div class="pw-err" id="pw-err"></div>
+  </div>
+</div>
 
 <div class="header">
   <div class="header-brand">
@@ -611,11 +639,13 @@
       <input type="text" id="ap-citta" placeholder="es. 00100 – Roma (RM)">
     </div>
     <div style="border-top:1.5px solid #e2e8f0;margin:14px 0 10px"></div>
-    <div style="font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px">Bandi selezionati · Success Fee</div>
+    <div style="display:grid;grid-template-columns:1fr 110px 80px;gap:8px;padding:2px 12px 6px;font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.4px">
+      <span>Bando</span><span style="text-align:right">Retainer (€)</span><span style="text-align:center">Succ. Fee</span>
+    </div>
     <div id="ap-sf-rows"></div>
     <div style="background:#eff6ff;border-radius:8px;padding:10px 14px;margin-top:10px;font-size:12px">
-      <strong>Retainer Fee totale:</strong> &euro; <span id="ap-retainer-tot" style="font-size:13px;font-weight:800"></span>,00 &nbsp;
-      (<span id="ap-num-bandi"></span> bandi × €1.500) · oltre IVA e oneri di legge
+      <strong>Retainer totale: € <span id="ap-retainer-tot" style="font-size:13px;font-weight:800"></span>,00</strong>
+      &nbsp;(<span id="ap-num-bandi"></span> bandi) · oltre IVA e oneri di legge
     </div>
     <div class="modal-actions">
       <button class="btn-modal-cancel" onclick="closeApModal()">Annulla</button>
@@ -634,6 +664,28 @@
 <div class="footer">Next4 International S.R.L. · <em>next4international.com</em> · Dashboard aggiornata: <span id="footer-date"></span></div>
 
 <script>
+// ── Password Gate ─────────────────────────────────────────────────────────
+(function() {
+  if (sessionStorage.getItem('n4auth') === '1') {
+    document.getElementById('pw-gate').classList.add('hidden');
+  }
+})();
+
+function verificaPassword() {
+  const input = document.getElementById('pw-input');
+  if (input.value === 'next4international') {
+    sessionStorage.setItem('n4auth', '1');
+    document.getElementById('pw-gate').classList.add('hidden');
+    document.getElementById('pw-err').textContent = '';
+  } else {
+    input.classList.add('pw-error');
+    document.getElementById('pw-err').textContent = 'Password errata. Riprova.';
+    input.value = '';
+    input.focus();
+    setTimeout(() => input.classList.remove('pw-error'), 400);
+  }
+}
+
 // ─── DATI BANDI ─────────────────────────────────────────────────────────
 // stato: aperto | inapertura | monitorare | lavorazione | chiuso
 // urgente: scadenza <= 30 gg  |  aperturaImminente: apertura <= 20 gg
@@ -1818,23 +1870,34 @@ function openApModal(clienteName) {
   document.getElementById('ap-client-name-display').textContent = clienteName;
   document.getElementById('ap-piva-display').textContent = d.piva || '—';
   document.getElementById('ap-num-bandi').textContent = bandiSel.length;
-  document.getElementById('ap-retainer-tot').textContent = (bandiSel.length * 1500).toLocaleString('it-IT');
   document.getElementById('ap-sf-rows').innerHTML = bandiSel.map(({idx, b}) => {
     const defSF = b.nome.toLowerCase().includes('voucher') ? 3 : 6;
     return `<div class="ap-bando-sf-row">
       <div class="ap-bando-label" title="${b.nome}">${b.nome}</div>
-      <div style="display:flex;align-items:center;gap:6px">
-        <input class="ap-sf-input" type="number" id="ap-sf-${idx}" value="${defSF}" min="0" max="100" step="0.5">
+      <input class="ap-sf-input" type="number" id="ap-ret-${idx}" value="1500" min="0" step="100" oninput="aggiornaRetainerTot()">
+      <div style="display:flex;align-items:center;gap:4px">
+        <input class="ap-sf-input" type="number" id="ap-sf-${idx}" value="${defSF}" min="0" max="100" step="0.5" style="text-align:center">
         <span style="font-size:11px;color:#94a3b8">%</span>
       </div>
     </div>`;
   }).join('');
+  aggiornaRetainerTot();
   document.getElementById('modal-ap').classList.add('open');
 }
 
 function closeApModal() {
   document.getElementById('modal-ap').classList.remove('open');
   _apCurrentCliente = null;
+}
+
+function aggiornaRetainerTot() {
+  const sel = selectedBandiPerCliente[_apCurrentCliente];
+  if (!sel) return;
+  const tot = Array.from(sel).reduce((s, idx) => {
+    const el = document.getElementById('ap-ret-' + idx);
+    return s + (el ? parseFloat(el.value) || 0 : 0);
+  }, 0);
+  document.getElementById('ap-retainer-tot').textContent = tot.toLocaleString('it-IT');
 }
 
 function generaActionPlanHTML() {
@@ -1851,7 +1914,8 @@ function generaActionPlanHTML() {
   const n = bandiSel.length;
   const sfData = bandiSel.map(({idx, b}) => ({
     nome: b.nome, ente: b.ente, contributo: b.contributo,
-    sfPerc: parseFloat(document.getElementById('ap-sf-' + idx).value) || 6
+    sfPerc: parseFloat(document.getElementById('ap-sf-' + idx).value) || 6,
+    retainer: parseFloat(document.getElementById('ap-ret-' + idx).value) || 0
   }));
 
   // ── numeri in lettere per retainer ──
@@ -1860,9 +1924,9 @@ function generaActionPlanHTML() {
     'millecinquecento', 'tremila', 'quattromilacinquecento', 'seimila',
     'settemilacinquecento', 'novemila', 'diecimilacinquecento', 'dodicimila'
   ];
-  const fmtRetainer = k => {
-    const v = k * 1500;
-    const lit = k <= 8 ? retainerStr[k] : '';
+  const fmtRetainerAmt = v => {
+    const k = v / 1500;
+    const lit = Number.isInteger(k) && k >= 1 && k <= 8 ? retainerStr[k] : '';
     return `<strong>Euro ${v.toLocaleString('it-IT')},00</strong>${lit ? ` (${lit} virgola zero zero)` : ''} oltre IVA e oneri di legge`;
   };
   const ordLettera = ['','primo','secondo','terzo','quarto','quinto','sesto','settimo','ottavo','nono','decimo'];
@@ -1888,20 +1952,13 @@ function generaActionPlanHTML() {
       </ul>
     </div>`).join('');
 
-  // ── retainer rows ──
-  let retainerRows = '';
-  if (n === 1) {
-    retainerRows = `<tr>
-      <td>Supporto per la predisposizione e presentazione del bando.</td>
-      <td>${fmtRetainer(1)}</td>
-    </tr>`;
-  } else {
-    for (let k = 1; k <= n; k++) {
-      const desc = k === 1
-        ? `Supporto per la predisposizione e presentazione di <strong>1 bando</strong>.`
-        : `Supporto per la predisposizione e presentazione di <strong>${k} bandi</strong>.`;
-      retainerRows += `<tr><td>${desc}</td><td>${fmtRetainer(k)}</td></tr>`;
-    }
+  // ── retainer rows (una per bando) ──
+  let retainerRows = sfData.map(bd =>
+    `<tr><td>Supporto per la predisposizione e presentazione di <strong>${bd.nome}</strong>.</td><td>${fmtRetainerAmt(bd.retainer)}</td></tr>`
+  ).join('');
+  if (n > 1) {
+    const totRet = sfData.reduce((s, bd) => s + bd.retainer, 0);
+    retainerRows += `<tr><td><strong>Totale complessivo</strong></td><td>${fmtRetainerAmt(totRet)}</td></tr>`;
   }
 
   // ── success fee blocks (Allegato B) ──
@@ -2055,8 +2112,7 @@ function generaActionPlanHTML() {
   const jsonData = {
     clienteName, formaGiur, indirizzo, citta, piva,
     bandi: sfData,
-    retainerPerBando: 1500,
-    retainerTotale: n * 1500,
+    retainerTotale: sfData.reduce((s, bd) => s + bd.retainer, 0),
     data: new Date().toLocaleDateString('it-IT')
   };
 
