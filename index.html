@@ -354,6 +354,14 @@
   .p-stato-sel { border:1.5px solid #e2e8f0; border-radius:6px; padding:4px 8px; font-size:11px; font-weight:700; cursor:pointer; font-family:inherit; background:white; outline:none; }
   .empty-pipeline { text-align:center; padding:60px 20px; color:#94a3b8; font-size:14px; }
 
+  /* ── TOAST ── */
+  #ap-toast { position:fixed; bottom:28px; right:28px; z-index:9999; display:flex; flex-direction:column; gap:8px; pointer-events:none; }
+  .ap-toast-item { padding:12px 18px; border-radius:10px; font-size:13px; font-weight:600; font-family:inherit; box-shadow:0 4px 20px rgba(0,0,0,0.18); opacity:0; transform:translateY(10px); transition:opacity 0.25s,transform 0.25s; pointer-events:none; max-width:340px; line-height:1.4; }
+  .ap-toast-item.show { opacity:1; transform:translateY(0); }
+  .ap-toast-ok   { background:#dcfce7; color:#15803d; border:1.5px solid #86efac; }
+  .ap-toast-warn { background:#fef9c3; color:#854d0e; border:1.5px solid #fde047; }
+  .ap-toast-err  { background:#fee2e2; color:#dc2626; border:1.5px solid #fca5a5; }
+
   /* modal aggiungi voce */
   .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); z-index:700; align-items:center; justify-content:center; }
   .modal-overlay.open { display:flex; }
@@ -572,6 +580,8 @@
     </div>
   </div>
 </div>
+
+<div id="ap-toast"></div>
 
 <!-- MODAL ACTION PLAN -->
 <div class="modal-overlay" id="modal-ap">
@@ -2022,12 +2032,14 @@ function generaActionPlanHTML() {
 </div>
 </body></html>`;
 
-  // apri anteprima
+  // apri anteprima HTML
   const win = window.open('', '_blank');
   win.document.write(html);
   win.document.close();
 
-  // scarica JSON per script Python
+  closeApModal();
+
+  // invia al server locale per generare il .docx
   const jsonData = {
     clienteName, formaGiur, indirizzo, citta, piva,
     bandi: sfData,
@@ -2035,13 +2047,42 @@ function generaActionPlanHTML() {
     retainerTotale: n * 1500,
     data: new Date().toLocaleDateString('it-IT')
   };
-  const blob = new Blob([JSON.stringify(jsonData, null, 2)], {type:'application/json'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'action_plan_' + clienteName.replace(/\s+/g,'_').toLowerCase() + '.json';
-  a.click();
 
-  closeApModal();
+  const genBtn = document.querySelector('#modal-ap .btn-modal-save');
+  if (genBtn) { genBtn.textContent = '⏳ Generazione in corso…'; genBtn.disabled = true; }
+
+  fetch('http://localhost:5050/genera', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(jsonData)
+  })
+  .then(r => r.json())
+  .then(res => {
+    if (res.ok) {
+      showToast('✅ File Word salvato in contratti/', 'ok');
+    } else {
+      showToast('❌ Errore: ' + res.error, 'err');
+    }
+  })
+  .catch(() => {
+    showToast('⚠ Server non attivo.\nAvvia: python3 scripts/server_action_plan.py', 'warn');
+  })
+  .finally(() => {
+    if (genBtn) { genBtn.textContent = '📄 Genera Anteprima + JSON'; genBtn.disabled = false; }
+  });
+}
+
+function showToast(msg, type='ok', duration=5000) {
+  const container = document.getElementById('ap-toast');
+  const el = document.createElement('div');
+  el.className = `ap-toast-item ap-toast-${type}`;
+  el.textContent = msg;
+  container.appendChild(el);
+  requestAnimationFrame(() => { requestAnimationFrame(() => el.classList.add('show')); });
+  setTimeout(() => {
+    el.classList.remove('show');
+    setTimeout(() => el.remove(), 300);
+  }, duration);
 }
 
 // ─── VISTA CLIENTI ───────────────────────────────────────────────────────
