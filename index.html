@@ -627,16 +627,16 @@
     <div class="modal-row2">
       <div class="modal-field">
         <label>Forma Giuridica</label>
-        <input type="text" id="ap-forma" value="S.R.L.">
+        <input type="text" id="ap-forma" value="S.R.L." oninput="this.style.borderColor='';this.style.background=''">
       </div>
       <div class="modal-field">
         <label>Indirizzo sede legale</label>
-        <input type="text" id="ap-indirizzo" placeholder="es. Via Roma 10">
+        <input type="text" id="ap-indirizzo" placeholder="es. Via Roma 10" oninput="this.style.borderColor='';this.style.background=''">
       </div>
     </div>
     <div class="modal-field">
       <label>CAP &amp; Città (sede legale)</label>
-      <input type="text" id="ap-citta" placeholder="es. 00100 – Roma (RM)">
+      <input type="text" id="ap-citta" placeholder="es. 00100 – Roma (RM)" oninput="this.style.borderColor='';this.style.background=''">
     </div>
     <div style="border-top:1.5px solid #e2e8f0;margin:14px 0 10px"></div>
     <div style="display:grid;grid-template-columns:1fr 110px 80px;gap:8px;padding:2px 12px 6px;font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.4px">
@@ -1187,46 +1187,48 @@ const BANDI = [
 // dataVerifica:  data dell'ultima consultazione del portale RNA  (es. "15/06/2026")
 const DEMINIMIS_MAX = 300000;
 const CLIENTI = {
-  "Assetia":               { piva: "",             aiutiRicevuti: 0,         dataVerifica: "" },
-  "Azu Tech":              { piva: "17458971003",  aiutiRicevuti: 216092.75, dataVerifica: "15/06/2026" },
-  "Azu Venture":           { piva: "02890350594",  aiutiRicevuti: 83819.63,  dataVerifica: "15/06/2026" },
-  "Boss Technologies SRL": { piva: "04961060268",  aiutiRicevuti: 21043.23,  dataVerifica: "15/06/2026" },
-  "BrainoAI":              { piva: "13049530960",  aiutiRicevuti: 50000,     dataVerifica: "15/06/2026" },
-  "Casavo":                { piva: "10053290960",  aiutiRicevuti: 46514.27,  dataVerifica: "15/06/2026" },
-  "Citynews":              { piva: "10786801000",  aiutiRicevuti: 176437.38, dataVerifica: "15/06/2026" },
-  "Consedin":              { piva: "01916241001",  aiutiRicevuti: 0,         dataVerifica: "15/06/2026" },
-  "Destino Italia":        { piva: "07332890826",  aiutiRicevuti: 0,         dataVerifica: "15/06/2026" },
-  "Digitalmens":           { piva: "05893970656",  aiutiRicevuti: 0,         dataVerifica: "15/06/2026" },
-  "Drop Digital Health":   { piva: "16989241001",  aiutiRicevuti: 283306.32, dataVerifica: "15/06/2026" },
-  "Drycor":                { piva: "",             aiutiRicevuti: 0,         dataVerifica: "" },
-  "EasyRFID":              { piva: "03358871204",  aiutiRicevuti: 161388.71, dataVerifica: "15/06/2026" },
-  "Ecoter":                { piva: "01048061004",  aiutiRicevuti: 0,         dataVerifica: "15/06/2026" },
-  "Ecubit":                { piva: "13753031007",  aiutiRicevuti: 0,         dataVerifica: "15/06/2026" },
-  "Ekore SRL":             { piva: "05493690282",  aiutiRicevuti: 178588.25, dataVerifica: "15/06/2026" },
-  "Fairtile":              { piva: "",             aiutiRicevuti: 0,         dataVerifica: "" },
-  "Fideliomed":            { piva: "12645970018",  aiutiRicevuti: 54377.20,  dataVerifica: "15/06/2026" },
-  "Flex Packaging":        { piva: "02464370655",  aiutiRicevuti: 0,         dataVerifica: "15/06/2026" },
-  "GATIM SRL":             { piva: "02015210798",  aiutiRicevuti: 111736,    dataVerifica: "15/06/2026" },
-  "GGG":                   { piva: "",             aiutiRicevuti: 0,         dataVerifica: "" },
-  "Govtech":               { piva: "16143281000",  aiutiRicevuti: 52167.72,  dataVerifica: "15/06/2026" },
-  "Heres":                 { piva: "03619031200",  aiutiRicevuti: 3849,      dataVerifica: "15/06/2026" },
-  "INTUOS SRL":            { piva: "15541901003",  aiutiRicevuti: 79639.71,  dataVerifica: "15/06/2026" },
-  "Ilios":                 { piva: "",             aiutiRicevuti: 0,         dataVerifica: "" },
-  "Kerr":                  { piva: "12598001001",  aiutiRicevuti: 87893,     dataVerifica: "15/06/2026" },
-  "Leasy":                 { piva: "",             aiutiRicevuti: 0,         dataVerifica: "" },
-  "Leonardo formazione":   { piva: "11074611002",  aiutiRicevuti: 9600,      dataVerifica: "15/06/2026" },
-  "Messagenius":           { piva: "12973601003",  aiutiRicevuti: 55520,     dataVerifica: "15/06/2026" },
-  "Next4Production":       { piva: "02953440597",  aiutiRicevuti: 2002,      dataVerifica: "15/06/2026" },
-  "OralTec":               { piva: "07305330487",  aiutiRicevuti: 3000,      dataVerifica: "15/06/2026" },
-  "ProGen SRL":            { piva: "04753140872",  aiutiRicevuti: 64009,     dataVerifica: "15/06/2026" },
-  "Spartan Tech":          { piva: "11044930961",  aiutiRicevuti: 0,         dataVerifica: "15/06/2026" },
-  "Speri":                 { piva: "01980341000",  aiutiRicevuti: 0,         dataVerifica: "15/06/2026" },
-  "TLC Telecomunicazioni": { piva: "02268530595",  aiutiRicevuti: 8535,      dataVerifica: "15/06/2026" },
-  "Tod Systems":           { piva: "03665340794",  aiutiRicevuti: 30147,     dataVerifica: "15/06/2026" },
-  "Velion SRL":            { piva: "01421440320",  aiutiRicevuti: 51000,     dataVerifica: "15/06/2026" },
-  "WDA":                   { piva: "15274611001",  aiutiRicevuti: 9940,      dataVerifica: "15/06/2026" },
-  "Wink Suite SRL":        { piva: "12885490966",  aiutiRicevuti: 156467,    dataVerifica: "15/06/2026" },
-  "Yourease":              { piva: "04239661202",  aiutiRicevuti: 153197,    dataVerifica: "15/06/2026" },
+  // piva, aiutiRicevuti, dataVerifica — dati de minimis
+  // formaGiur, indirizzo, citta — precompilano il modal Action Plan (aggiungi quando disponibili)
+  "Assetia":               { piva: "",             aiutiRicevuti: 0,         dataVerifica: "",           formaGiur: "",        indirizzo: "", citta: "" },
+  "Azu Tech":              { piva: "17458971003",  aiutiRicevuti: 216092.75, dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
+  "Azu Venture":           { piva: "02890350594",  aiutiRicevuti: 83819.63,  dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
+  "Boss Technologies SRL": { piva: "04961060268",  aiutiRicevuti: 21043.23,  dataVerifica: "15/06/2026", formaGiur: "S.R.L.",  indirizzo: "", citta: "" },
+  "BrainoAI":              { piva: "13049530960",  aiutiRicevuti: 50000,     dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
+  "Casavo":                { piva: "10053290960",  aiutiRicevuti: 46514.27,  dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
+  "Citynews":              { piva: "10786801000",  aiutiRicevuti: 176437.38, dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
+  "Consedin":              { piva: "01916241001",  aiutiRicevuti: 0,         dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
+  "Destino Italia":        { piva: "07332890826",  aiutiRicevuti: 0,         dataVerifica: "15/06/2026", formaGiur: "S.R.L.",  indirizzo: "Piazza Virgilio, 4", citta: "90141 – Palermo (PA)" },
+  "Digitalmens":           { piva: "05893970656",  aiutiRicevuti: 0,         dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
+  "Drop Digital Health":   { piva: "16989241001",  aiutiRicevuti: 283306.32, dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
+  "Drycor":                { piva: "",             aiutiRicevuti: 0,         dataVerifica: "",           formaGiur: "",        indirizzo: "", citta: "" },
+  "EasyRFID":              { piva: "03358871204",  aiutiRicevuti: 161388.71, dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
+  "Ecoter":                { piva: "01048061004",  aiutiRicevuti: 0,         dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
+  "Ecubit":                { piva: "13753031007",  aiutiRicevuti: 0,         dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
+  "Ekore SRL":             { piva: "05493690282",  aiutiRicevuti: 178588.25, dataVerifica: "15/06/2026", formaGiur: "S.R.L.",  indirizzo: "", citta: "" },
+  "Fairtile":              { piva: "",             aiutiRicevuti: 0,         dataVerifica: "",           formaGiur: "",        indirizzo: "", citta: "" },
+  "Fideliomed":            { piva: "12645970018",  aiutiRicevuti: 54377.20,  dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
+  "Flex Packaging":        { piva: "02464370655",  aiutiRicevuti: 0,         dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
+  "GATIM SRL":             { piva: "02015210798",  aiutiRicevuti: 111736,    dataVerifica: "15/06/2026", formaGiur: "S.R.L.",  indirizzo: "", citta: "" },
+  "GGG":                   { piva: "",             aiutiRicevuti: 0,         dataVerifica: "",           formaGiur: "",        indirizzo: "", citta: "" },
+  "Govtech":               { piva: "16143281000",  aiutiRicevuti: 52167.72,  dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
+  "Heres":                 { piva: "03619031200",  aiutiRicevuti: 3849,      dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
+  "INTUOS SRL":            { piva: "15541901003",  aiutiRicevuti: 79639.71,  dataVerifica: "15/06/2026", formaGiur: "S.R.L.",  indirizzo: "", citta: "" },
+  "Ilios":                 { piva: "",             aiutiRicevuti: 0,         dataVerifica: "",           formaGiur: "",        indirizzo: "", citta: "" },
+  "Kerr":                  { piva: "12598001001",  aiutiRicevuti: 87893,     dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
+  "Leasy":                 { piva: "",             aiutiRicevuti: 0,         dataVerifica: "",           formaGiur: "",        indirizzo: "", citta: "" },
+  "Leonardo formazione":   { piva: "11074611002",  aiutiRicevuti: 9600,      dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
+  "Messagenius":           { piva: "12973601003",  aiutiRicevuti: 55520,     dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
+  "Next4Production":       { piva: "02953440597",  aiutiRicevuti: 2002,      dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
+  "OralTec":               { piva: "07305330487",  aiutiRicevuti: 3000,      dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
+  "ProGen SRL":            { piva: "04753140872",  aiutiRicevuti: 64009,     dataVerifica: "15/06/2026", formaGiur: "S.R.L.",  indirizzo: "", citta: "" },
+  "Spartan Tech":          { piva: "11044930961",  aiutiRicevuti: 0,         dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
+  "Speri":                 { piva: "01980341000",  aiutiRicevuti: 0,         dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
+  "TLC Telecomunicazioni": { piva: "02268530595",  aiutiRicevuti: 8535,      dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
+  "Tod Systems":           { piva: "03665340794",  aiutiRicevuti: 30147,     dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
+  "Velion SRL":            { piva: "01421440320",  aiutiRicevuti: 51000,     dataVerifica: "15/06/2026", formaGiur: "S.R.L.",  indirizzo: "", citta: "" },
+  "WDA":                   { piva: "15274611001",  aiutiRicevuti: 9940,      dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
+  "Wink Suite SRL":        { piva: "12885490966",  aiutiRicevuti: 156467,    dataVerifica: "15/06/2026", formaGiur: "S.R.L.",  indirizzo: "", citta: "" },
+  "Yourease":              { piva: "04239661202",  aiutiRicevuti: 153197,    dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
 };
 
 // ─── PIPELINE ────────────────────────────────────────────────────────────
@@ -1860,6 +1862,25 @@ function toggleBandoSel(clienteName, bandoIdx) {
   }
 }
 
+function _inferFormaGiur(nome) {
+  const n = nome.toUpperCase();
+  if (n.includes('SRLS') || n.includes('S.R.L.S')) return 'S.R.L.S.';
+  if (n.includes(' SRL') || n.includes('S.R.L'))   return 'S.R.L.';
+  if (n.includes(' SPA') || n.includes('S.P.A'))   return 'S.P.A.';
+  if (n.includes(' SNC') || n.includes('S.N.C'))   return 'S.N.C.';
+  if (n.includes(' SAS') || n.includes('S.A.S'))   return 'S.A.S.';
+  return '';
+}
+
+function _setApField(id, value, fallback) {
+  const el = document.getElementById(id);
+  const val = value || fallback || '';
+  el.value = val;
+  // bordo verde se precompilato da dati, grigio se vuoto
+  el.style.borderColor = val ? '#22c55e' : '';
+  el.style.background  = val ? '#f0fdf4' : '';
+}
+
 function openApModal(clienteName) {
   const sel = selectedBandiPerCliente[clienteName];
   if (!sel || sel.size === 0) return;
@@ -1869,6 +1890,11 @@ function openApModal(clienteName) {
   document.getElementById('ap-modal-title').textContent = '📄 Action Plan – ' + clienteName;
   document.getElementById('ap-client-name-display').textContent = clienteName;
   document.getElementById('ap-piva-display').textContent = d.piva || '—';
+
+  // Precompila campi anagrafici dove disponibili
+  _setApField('ap-forma',    d.formaGiur,  _inferFormaGiur(clienteName));
+  _setApField('ap-indirizzo', d.indirizzo, '');
+  _setApField('ap-citta',     d.citta,     '');
   document.getElementById('ap-num-bandi').textContent = bandiSel.length;
   document.getElementById('ap-sf-rows').innerHTML = bandiSel.map(({idx, b}) => {
     const defSF = b.nome.toLowerCase().includes('voucher') ? 3 : 6;
