@@ -948,6 +948,57 @@
   .btn-task-save { background: #7c3aed; color: white; border: none; border-radius: 10px; padding: 10px 22px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; transition: background 0.15s; }
   .btn-task-save:hover { background: #6d28d9; }
 
+  /* ── KANBAN ── */
+  .kanban-wrap { padding: 16px 24px 48px; overflow-x: auto; min-height: calc(100vh - 120px); }
+  .kanban-kpi-row { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:18px; }
+  .kanban-kpi { background:white; border-radius:10px; padding:12px 16px; display:flex; flex-direction:column; gap:2px; box-shadow:0 1px 4px rgba(0,0,0,0.06); min-width:110px; border-top:3px solid transparent; flex:1; transition:box-shadow 0.15s; }
+  .kanban-kpi:hover { box-shadow:0 4px 14px rgba(0,0,0,0.10); }
+  .kanban-kpi-num { font-size:22px; font-weight:800; line-height:1; }
+  .kanban-kpi-lbl { font-size:10px; color:#94a3b8; font-weight:600; white-space:nowrap; }
+  .kanban-kpi-purple { border-top-color:#7c3aed; } .kanban-kpi-purple .kanban-kpi-num { color:#7c3aed; }
+  .kanban-kpi-green  { border-top-color:#16a34a; } .kanban-kpi-green  .kanban-kpi-num { color:#16a34a; }
+  .kanban-kpi-orange { border-top-color:#ea580c; } .kanban-kpi-orange .kanban-kpi-num { color:#ea580c; }
+  .kanban-kpi-blue   { border-top-color:#1d4ed8; } .kanban-kpi-blue   .kanban-kpi-num { color:#1d4ed8; }
+  .kanban-board { display:flex; gap:12px; min-width:max-content; align-items:flex-start; padding-bottom:12px; }
+  .k-col { width:220px; background:#f8fafc; border-radius:12px; padding:10px; display:flex; flex-direction:column; gap:8px; min-height:160px; transition:background 0.15s, outline 0.15s; }
+  .k-col.drag-over { background:#eff6ff; outline:2px dashed #3b82f6; }
+  .k-col-perso { background:#fff5f5; border:1.5px dashed #fecaca; }
+  .k-col-perso.drag-over { background:#fef2f2; outline:2px dashed #dc2626; }
+  .k-col-header { display:flex; align-items:center; justify-content:space-between; padding-bottom:8px; border-bottom:1.5px solid #e2e8f0; margin-bottom:2px; }
+  .k-col-title { font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:0.7px; display:flex; align-items:center; gap:5px; }
+  .k-col-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+  .k-col-count { font-size:10px; font-weight:700; background:white; border-radius:5px; padding:2px 7px; color:#64748b; box-shadow:0 1px 2px rgba(0,0,0,0.06); }
+  .k-col-empty { font-size:10px; color:#cbd5e1; text-align:center; padding:18px 0; }
+  .k-col-drop-hint { font-size:10px; color:#93c5fd; text-align:center; padding:8px 0; display:none; }
+  .k-col.drag-over .k-col-drop-hint, .k-col-perso.drag-over .k-col-drop-hint { display:block; }
+  .k-card { background:white; border:1.5px solid #f1f5f9; border-radius:10px; padding:10px 11px; cursor:grab; user-select:none; transition:transform 0.12s, box-shadow 0.15s, opacity 0.15s, border-color 0.15s; position:relative; animation:taskIn 0.25s both; }
+  .k-card:hover { transform:translateY(-2px); box-shadow:0 6px 18px rgba(0,0,0,0.11); border-color:#e2e8f0; }
+  .k-card:active { cursor:grabbing; }
+  .k-card.k-dragging { opacity:0.3; transform:scale(0.95); }
+  .k-card-top { display:flex; align-items:flex-start; gap:7px; margin-bottom:8px; }
+  .k-card-ico { font-size:18px; line-height:1; flex-shrink:0; }
+  .k-card-bando { font-size:11px; font-weight:700; color:#1a1a2e; flex:1; min-width:0; line-height:1.35; }
+  .k-card-client { display:flex; align-items:center; gap:6px; margin-bottom:8px; }
+  .k-card-avatar { width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:7px; font-weight:800; color:white; flex-shrink:0; }
+  .k-card-nome { font-size:10px; color:#64748b; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .k-card-footer { display:flex; align-items:center; justify-content:space-between; padding-top:8px; border-top:1px solid #f8fafc; }
+  .k-card-importo { font-size:10px; font-weight:800; color:#1a1a2e; }
+  .k-card-data { font-size:9px; color:#cbd5e1; }
+  .k-card-perso .k-card-bando { text-decoration:line-through; color:#94a3b8; }
+
+  /* dark kanban */
+  body.dark .kanban-kpi { background:#162035; }
+  body.dark .kanban-kpi-lbl { color:#4a6080; }
+  body.dark .k-col { background:#0e1929; }
+  body.dark .k-col-perso { background:#1a0a0a; border-color:#7f1d1d; }
+  body.dark .k-col-header { border-color:#1e2d47; }
+  body.dark .k-col-count { background:#162035; }
+  body.dark .k-card { background:#162035; border-color:#1e2d47; }
+  body.dark .k-card:hover { border-color:#2d3f5e; }
+  body.dark .k-card-bando { color:#dde4f0; }
+  body.dark .k-card-importo { color:#dde4f0; }
+  body.dark .k-card-footer { border-color:#1e2d47; }
+
   /* dark task */
   body.dark .task-item { background: #162035; box-shadow: 0 1px 4px rgba(0,0,0,0.4); }
   body.dark .task-note { color: #dde4f0; }
@@ -1155,6 +1206,7 @@
 </div>
 <div class="tabs" id="tabs-riservata" style="display:none;">
   <button class="tab active" onclick="switchTab('pipeline')">💼 Pipeline</button>
+  <button class="tab" onclick="switchTab('kanban')">🗂 Kanban</button>
   <button class="tab" onclick="switchTab('task')">✅ Task</button>
 </div>
 
@@ -1273,6 +1325,13 @@
     </div>
     <div id="task-stats" style="margin-bottom:20px;"></div>
     <div id="task-list"></div>
+  </div>
+</div>
+
+<div id="view-kanban" style="display:none;">
+  <div class="kanban-wrap">
+    <div class="kanban-kpi-row" id="kanban-kpi"></div>
+    <div class="kanban-board" id="kanban-board"></div>
   </div>
 </div>
 
@@ -1603,7 +1662,7 @@ function showHub() {
   document.getElementById('data-toolbar').style.display = 'none';
   document.getElementById('tabs-finanza').style.display = 'none';
   document.getElementById('tabs-riservata').style.display = 'none';
-  ['view-bandi','view-clienti','view-scadenzario','view-pipeline','view-task'].forEach(id => {
+  ['view-bandi','view-clienti','view-scadenzario','view-pipeline','view-task','view-kanban'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.style.display = 'none';
   });
@@ -3320,7 +3379,7 @@ function switchTab(tab) {
 
   // aggiorna active nel gruppo tabs corretto
   const finanzaTabs = ['bandi','clienti','scadenzario'];
-  const riservTabs  = ['pipeline','task'];
+  const riservTabs  = ['pipeline','kanban','task'];
   const groupId = finanzaTabs.includes(tab) ? 'tabs-finanza' : 'tabs-riservata';
   const groupTabs = finanzaTabs.includes(tab) ? finanzaTabs : riservTabs;
   document.querySelectorAll('#' + groupId + ' .tab').forEach((t, i) => {
@@ -3328,7 +3387,7 @@ function switchTab(tab) {
   });
 
   // mostra/nascondi views
-  ['bandi','clienti','scadenzario','pipeline','task'].forEach(v => {
+  ['bandi','clienti','scadenzario','pipeline','kanban','task'].forEach(v => {
     const el = document.getElementById('view-' + v);
     if (!el) return;
     if (v === tab) {
@@ -3344,6 +3403,7 @@ function switchTab(tab) {
   if (tab === 'clienti')     renderClienti();
   if (tab === 'scadenzario') renderScadenzario();
   if (tab === 'pipeline')    renderPipeline();
+  if (tab === 'kanban')      renderKanban();
   if (tab === 'task')        renderTask();
 }
 
@@ -4638,6 +4698,137 @@ function renderTask() {
     if (done.length)      { html += sectionHead('ts-done',     '✅ Completate');     html += done.map(taskRow).join(''); }
   }
   document.getElementById('task-list').innerHTML = html;
+}
+
+// ─── KANBAN ──────────────────────────────────────────────────────────────
+const KANBAN_STATI = [
+  { id:'proposto',    label:'Proposto',       dot:'#7c3aed' },
+  { id:'firmato',     label:'Firmato',        dot:'#1d4ed8' },
+  { id:'lavorazione', label:'In lavorazione', dot:'#ea580c' },
+  { id:'presentato',  label:'Presentato',     dot:'#0369a1' },
+  { id:'istruttoria', label:'Istruttoria',    dot:'#b45309' },
+  { id:'concesso',    label:'Concesso',       dot:'#16a34a' },
+  { id:'incassato',   label:'Incassato',      dot:'#059669' },
+  { id:'perso',       label:'Perso',          dot:'#dc2626' },
+];
+
+let _kDragId = null;
+
+function renderKanban() {
+  const pl = getPipeline();
+
+  // KPI
+  const attivi   = pl.filter(p => p.stato !== 'perso');
+  const pipeline = attivi.reduce((s,p) => s + (p.contributoMax||0), 0);
+  const daPresent = attivi.filter(p => ['proposto','firmato','lavorazione'].includes(p.stato)).length;
+  const presentati = pl.filter(p => ['presentato','istruttoria','concesso','incassato'].includes(p.stato));
+  const concessi   = pl.filter(p => ['concesso','incassato'].includes(p.stato));
+  const tasso = presentati.length ? Math.round(concessi.length / presentati.length * 100) : 0;
+
+  const fmtK = n => n >= 1000000
+    ? '€ ' + (n/1000000).toLocaleString('it-IT',{maximumFractionDigits:2}) + 'M'
+    : n >= 1000 ? '€ ' + (n/1000).toLocaleString('it-IT',{maximumFractionDigits:0}) + 'k'
+    : n ? '€ ' + Math.round(n).toLocaleString('it-IT') : '—';
+
+  document.getElementById('kanban-kpi').innerHTML = `
+    <div class="kanban-kpi kanban-kpi-purple">
+      <div class="kanban-kpi-num">${attivi.length}</div>
+      <div class="kanban-kpi-lbl">Pratiche attive</div>
+    </div>
+    <div class="kanban-kpi kanban-kpi-green">
+      <div class="kanban-kpi-num">${fmtK(pipeline)}</div>
+      <div class="kanban-kpi-lbl">Valore pipeline</div>
+    </div>
+    <div class="kanban-kpi kanban-kpi-orange">
+      <div class="kanban-kpi-num">${daPresent}</div>
+      <div class="kanban-kpi-lbl">Da presentare</div>
+    </div>
+    <div class="kanban-kpi kanban-kpi-blue">
+      <div class="kanban-kpi-num">${tasso}%</div>
+      <div class="kanban-kpi-lbl">Tasso di successo</div>
+    </div>`;
+
+  // Board
+  const board = document.getElementById('kanban-board');
+  board.innerHTML = KANBAN_STATI.map(s => {
+    const cards  = pl.filter(p => p.stato === s.id);
+    const isPerso = s.id === 'perso';
+    const colCls = 'k-col' + (isPerso ? ' k-col-perso' : '');
+    const cardHtml = cards.map(p => {
+      const bObj = BANDI.find(b => b.nome === p.bando);
+      const ico  = bObj ? getBandoIco(bObj) : '📄';
+      const avColor = clientAvatarColor(p.cliente);
+      const avInit  = clientInitials(p.cliente);
+      const importo = p.contributoMax ? fmtK(p.contributoMax) : '—';
+      const data    = p.dataContratto || '';
+      return `<div class="k-card${isPerso ? ' k-card-perso' : ''}" draggable="true" data-kid="${p.id}">
+        <div class="k-card-top">
+          <div class="k-card-ico">${ico}</div>
+          <div class="k-card-bando">${p.bando}</div>
+        </div>
+        <div class="k-card-client">
+          <div class="k-card-avatar" style="background:${avColor}">${avInit}</div>
+          <div class="k-card-nome">${p.cliente}</div>
+        </div>
+        <div class="k-card-footer">
+          <div class="k-card-importo">${importo}</div>
+          <div class="k-card-data">${data}</div>
+        </div>
+      </div>`;
+    }).join('');
+
+    return `<div class="${colCls}" data-kstato="${s.id}">
+      <div class="k-col-header">
+        <div class="k-col-title">
+          <div class="k-col-dot" style="background:${s.dot}"></div>
+          ${s.label}
+        </div>
+        <div class="k-col-count">${cards.length}</div>
+      </div>
+      ${cards.length === 0 ? '<div class="k-col-empty">—</div>' : ''}
+      ${cardHtml}
+      <div class="k-col-drop-hint">Rilascia qui</div>
+    </div>`;
+  }).join('');
+
+  // Drag & drop
+  board.querySelectorAll('.k-card').forEach(card => {
+    card.addEventListener('dragstart', e => {
+      _kDragId = card.dataset.kid;
+      setTimeout(() => card.classList.add('k-dragging'), 0);
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    card.addEventListener('dragend', () => {
+      card.classList.remove('k-dragging');
+      board.querySelectorAll('.k-col').forEach(c => c.classList.remove('drag-over'));
+    });
+  });
+
+  board.querySelectorAll('.k-col').forEach(col => {
+    col.addEventListener('dragover', e => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      col.classList.add('drag-over');
+    });
+    col.addEventListener('dragleave', e => {
+      if (!col.contains(e.relatedTarget)) col.classList.remove('drag-over');
+    });
+    col.addEventListener('drop', e => {
+      e.preventDefault();
+      col.classList.remove('drag-over');
+      if (!_kDragId) return;
+      const nuovoStato = col.dataset.kstato;
+      const pl2 = getPipeline();
+      const entry = pl2.find(p => String(p.id) === String(_kDragId));
+      if (entry && entry.stato !== nuovoStato) {
+        entry.stato = nuovoStato;
+        savePipeline(pl2);
+        render();         // aggiorna contatori bandi
+        renderKanban();
+      }
+      _kDragId = null;
+    });
+  });
 }
 
 // ─── RIPPLE SULLE CARD ────────────────────────────────────────────────────
