@@ -1206,7 +1206,6 @@
 </div>
 <div class="tabs" id="tabs-riservata" style="display:none;">
   <button class="tab active" onclick="switchTab('pipeline')">💼 Pipeline</button>
-  <button class="tab" onclick="switchTab('kanban')">🗂 Kanban</button>
   <button class="tab" onclick="switchTab('task')">✅ Task</button>
 </div>
 
@@ -1279,38 +1278,13 @@
     <div id="pipeline-funnel" style="display:none;"></div>
     <div class="pipeline-kpi" id="pipeline-kpi"></div>
     <div class="pipeline-toolbar">
-      <select id="pf-stato" onchange="renderPipeline()">
-        <option value="">Tutti gli stati</option>
-        <option value="proposto">Proposto</option>
-        <option value="firmato">Firmato</option>
-        <option value="lavorazione">In lavorazione</option>
-        <option value="presentato">Presentato</option>
-        <option value="istruttoria">In istruttoria</option>
-        <option value="concesso">Concesso</option>
-        <option value="incassato">Incassato</option>
-        <option value="perso">Perso</option>
-      </select>
       <select id="pf-cliente" onchange="renderPipeline()"><option value="">Tutti i clienti</option></select>
       <button class="btn-add-p" onclick="openModalPipeline()">+ Aggiungi voce</button>
       <button class="btn-export-p" onclick="exportPipeline()">↓ Esporta JS</button>
     </div>
-    <table class="p-table" id="p-table">
-      <thead>
-        <tr>
-          <th>Cliente</th>
-          <th>Bando</th>
-          <th>Stato</th>
-          <th>Retainer</th>
-          <th>Servizi accessori</th>
-          <th>Success fee attesa</th>
-          <th>Importo concesso</th>
-          <th>Fee su concesso</th>
-          <th>Contratto</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody id="p-tbody"></tbody>
-    </table>
+    <div style="overflow-x:auto;padding-bottom:32px;">
+      <div class="kanban-board" id="pipeline-kanban" style="min-width:max-content;"></div>
+    </div>
     <div class="empty-pipeline" id="p-empty" style="display:none">
       Nessuna voce in pipeline.<br><span style="font-size:12px">Clicca <strong>+ Aggiungi voce</strong> per iniziare a tracciare i tuoi incarichi.</span>
     </div>
@@ -1325,13 +1299,6 @@
     </div>
     <div id="task-stats" style="margin-bottom:20px;"></div>
     <div id="task-list"></div>
-  </div>
-</div>
-
-<div id="view-kanban" style="display:none;">
-  <div class="kanban-wrap">
-    <div class="kanban-kpi-row" id="kanban-kpi"></div>
-    <div class="kanban-board" id="kanban-board"></div>
   </div>
 </div>
 
@@ -1662,7 +1629,7 @@ function showHub() {
   document.getElementById('data-toolbar').style.display = 'none';
   document.getElementById('tabs-finanza').style.display = 'none';
   document.getElementById('tabs-riservata').style.display = 'none';
-  ['view-bandi','view-clienti','view-scadenzario','view-pipeline','view-task','view-kanban'].forEach(id => {
+  ['view-bandi','view-clienti','view-scadenzario','view-pipeline','view-task'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.style.display = 'none';
   });
@@ -2717,13 +2684,24 @@ function allertaAction(idx) {
   if (window._alerteActions && window._alerteActions[idx]) window._alerteActions[idx]();
 }
 
+const KANBAN_STATI = [
+  { id:'proposto',    label:'Proposto',       dot:'#7c3aed' },
+  { id:'firmato',     label:'Firmato',        dot:'#1d4ed8' },
+  { id:'lavorazione', label:'In lavorazione', dot:'#ea580c' },
+  { id:'presentato',  label:'Presentato',     dot:'#0369a1' },
+  { id:'istruttoria', label:'Istruttoria',    dot:'#b45309' },
+  { id:'concesso',    label:'Concesso',       dot:'#16a34a' },
+  { id:'incassato',   label:'Incassato',      dot:'#059669' },
+  { id:'perso',       label:'Perso',          dot:'#dc2626' },
+];
+let _kDragId = null;
+
 function renderPipeline() {
   const pl = getPipeline();
 
   renderCruscotto(pl);
   renderFunnel(pl);
 
-  const fs = document.getElementById('pf-stato').value;
   const fc = document.getElementById('pf-cliente').value;
 
   // Popola filtro clienti
@@ -2733,7 +2711,7 @@ function renderPipeline() {
   sel.innerHTML = '<option value="">Tutti i clienti</option>' +
     clientiPL.map(c => `<option value="${c}"${c===prev?' selected':''}>${c}</option>`).join('');
 
-  const filt = pl.filter(p => (!fs || p.stato === fs) && (!fc || p.cliente === fc));
+  const filt = pl.filter(p => !fc || p.cliente === fc);
 
   // KPI
   const attivi = pl.filter(p => p.stato !== 'perso');
@@ -2784,65 +2762,100 @@ function renderPipeline() {
     </div>
   `;
 
-  const tbody = document.getElementById('p-tbody');
-  tbody.innerHTML = '';
   document.getElementById('p-empty').style.display = filt.length ? 'none' : 'block';
-  document.getElementById('p-table').style.display = filt.length ? '' : 'none';
 
-  filt.forEach(p => {
-    const sc = PIPELINE_STATO_CFG[p.stato] || { label:p.stato, bg:'#f1f5f9', color:'#64748b' };
-    const sfAtt = (p.contributoMax||0) * (p.successFeePerc||0) / 100;
-    const sfConc = (p.contributoConc||0) * (p.successFeePerc||0) / 100;
-    const statoSel = Object.keys(PIPELINE_STATO_CFG).map(s => {
-      const c = PIPELINE_STATO_CFG[s];
-      return `<option value="${s}"${p.stato===s?' selected':''}>${c.label}</option>`;
+  // ── KANBAN BOARD ──
+  const board = document.getElementById('pipeline-kanban');
+  board.innerHTML = KANBAN_STATI.map(s => {
+    const cards   = filt.filter(p => p.stato === s.id);
+    const isPerso = s.id === 'perso';
+    const colCls  = 'k-col' + (isPerso ? ' k-col-perso' : '');
+
+    const cardHtml = cards.map(p => {
+      const bObj    = BANDI.find(b => b.nome === p.bando);
+      const ico     = bObj ? getBandoIco(bObj) : '📄';
+      const avColor = clientAvatarColor(p.cliente);
+      const avInit  = clientInitials(p.cliente);
+      const contributo = p.contributoMax ? fmtEurFull(p.contributoMax) : null;
+      const retainer   = p.retainer ? fmtEurFull(p.retainer) : null;
+      const retTag     = p.retainer
+        ? `<span style="font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px;background:${p.retainerPagato?'#dcfce7':'#fef3c7'};color:${p.retainerPagato?'#15803d':'#92400e'}">${p.retainerPagato?'✓':'⏳'} ${fmtEurFull(p.retainer)}</span>`
+        : '';
+      return `<div class="k-card" draggable="true" data-kid="${p.id}">
+        <div class="k-card-top">
+          <div class="k-card-ico">${ico}</div>
+          <div class="k-card-bando">${p.bando}</div>
+        </div>
+        <div class="k-card-client">
+          <div class="k-card-avatar" style="background:${avColor}">${avInit}</div>
+          <div class="k-card-nome">${p.cliente}</div>
+        </div>
+        ${contributo || retTag ? `<div style="display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap;">
+          ${contributo ? `<span style="font-size:10px;font-weight:800;color:#1a1a2e">↑ ${contributo}</span>` : ''}
+          ${retTag}
+        </div>` : ''}
+        <div class="k-card-footer">
+          <div style="display:flex;gap:4px;">
+            <button onclick="editPipeline('${p.id}')" style="background:none;border:none;cursor:pointer;font-size:13px;padding:2px;line-height:1" title="Modifica">✏️</button>
+            <button onclick="deletePipeline('${p.id}')" style="background:none;border:none;cursor:pointer;font-size:13px;padding:2px;line-height:1" title="Elimina">🗑️</button>
+          </div>
+          <div class="k-card-data">${p.dataContratto||''}</div>
+        </div>
+      </div>`;
     }).join('');
 
-    const sa = p.serviziAccessori || [];
-    const totSARow = sa.reduce((s,x) => s + (x.importo||0), 0);
-    const saLabel = sa.length === 0
-      ? '<span style="color:#cbd5e1;font-size:11px">—</span>'
-      : `<span class="td-sa">${fmtEurFull(totSARow)}</span>
-         <div class="td-sa-detail">${sa.map(x=>`${x.tipo}${x.pagato?' ✓':''}`).join(' · ')}</div>`;
+    return `<div class="${colCls}" data-kstato="${s.id}">
+      <div class="k-col-header">
+        <div class="k-col-title">
+          <div class="k-col-dot" style="background:${s.dot}"></div>
+          ${s.label}
+        </div>
+        <div class="k-col-count">${cards.length}</div>
+      </div>
+      ${cards.length === 0 ? '<div class="k-col-empty">—</div>' : ''}
+      ${cardHtml}
+      <div class="k-col-drop-hint">Rilascia qui</div>
+    </div>`;
+  }).join('');
 
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td class="td-cliente">${p.cliente}</td>
-      <td class="td-bando">
-        <span title="${p.bando}">${p.bando}</span>
-        ${p.note ? `<div style="font-size:10px;color:#94a3b8;margin-top:3px;font-style:italic;line-height:1.4">${p.note}</div>` : ''}
-      </td>
-      <td>
-        <select class="p-stato-sel" style="background:${sc.bg};color:${sc.color};border-color:${sc.bg}"
-          onchange="updatePipelineStato('${p.id}', this)">
-          ${statoSel}
-        </select>
-      </td>
-      <td>
-        <span class="td-euro ${p.retainerPagato?'green':'gray'}">${fmtEurFull(p.retainer||0)}</span>
-        <span class="p-tag-ret ${p.retainerPagato?'p-ret-ok':'p-ret-no'}" style="margin-left:4px">
-          ${p.retainerPagato?'✓ pagato':'✗ non pagato'}
-        </span>
-      </td>
-      <td>${saLabel}</td>
-      <td>
-        <span class="td-euro blue">${['presentato','istruttoria','concesso','incassato'].includes(p.stato) && sfAtt ? fmtEurFull(sfAtt) : '—'}</span>
-        ${p.successFeePerc ? `<span class="p-tag-ret ${p.successFeePagata?'p-ret-ok':'p-ret-no'}" style="margin-left:4px">${p.successFeePagata?'✓ pagata':'✗ non pagata'}</span>` : ''}
-      </td>
-      <td>
-        <input type="number" value="${p.contributoConc||0}" min="0"
-          style="width:110px;border:1.5px solid #e2e8f0;border-radius:6px;padding:4px 8px;font-size:11px;font-family:inherit"
-          onchange="updatePipelineConc('${p.id}', this.value)"
-          ${!['concesso','incassato'].includes(p.stato)?'disabled style="opacity:0.4;width:110px"':''}>
-      </td>
-      <td class="td-euro gold">${['concesso','incassato'].includes(p.stato) && p.contributoConc ? fmtEurFull(sfConc) : '—'}</td>
-      <td style="font-size:11px;color:#94a3b8">${p.dataContratto||'—'}</td>
-      <td>
-        <button onclick="editPipeline('${p.id}')" style="background:none;border:none;cursor:pointer;font-size:13px;padding:4px" title="Modifica">✏️</button>
-        <button onclick="deletePipeline('${p.id}')" style="background:none;border:none;cursor:pointer;font-size:13px;padding:4px" title="Elimina">🗑️</button>
-      </td>
-    `;
-    tbody.appendChild(tr);
+  // drag & drop
+  board.querySelectorAll('.k-card').forEach(card => {
+    card.addEventListener('dragstart', e => {
+      _kDragId = card.dataset.kid;
+      setTimeout(() => card.classList.add('k-dragging'), 0);
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    card.addEventListener('dragend', () => {
+      card.classList.remove('k-dragging');
+      board.querySelectorAll('.k-col').forEach(c => c.classList.remove('drag-over'));
+    });
+  });
+
+  board.querySelectorAll('.k-col').forEach(col => {
+    col.addEventListener('dragover', e => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      col.classList.add('drag-over');
+    });
+    col.addEventListener('dragleave', e => {
+      if (!col.contains(e.relatedTarget)) col.classList.remove('drag-over');
+    });
+    col.addEventListener('drop', e => {
+      e.preventDefault();
+      col.classList.remove('drag-over');
+      if (!_kDragId) return;
+      const pl2   = getPipeline();
+      const entry = pl2.find(p => String(p.id) === String(_kDragId));
+      if (entry && entry.stato !== col.dataset.kstato) {
+        entry.stato = col.dataset.kstato;
+        entry.updatedAt = Date.now();
+        savePipeline(pl2);
+        syncBandoStatoFromPipeline(entry.bando);
+        render();
+        renderPipeline();
+      }
+      _kDragId = null;
+    });
   });
 }
 
@@ -3379,7 +3392,7 @@ function switchTab(tab) {
 
   // aggiorna active nel gruppo tabs corretto
   const finanzaTabs = ['bandi','clienti','scadenzario'];
-  const riservTabs  = ['pipeline','kanban','task'];
+  const riservTabs  = ['pipeline','task'];
   const groupId = finanzaTabs.includes(tab) ? 'tabs-finanza' : 'tabs-riservata';
   const groupTabs = finanzaTabs.includes(tab) ? finanzaTabs : riservTabs;
   document.querySelectorAll('#' + groupId + ' .tab').forEach((t, i) => {
@@ -3387,7 +3400,7 @@ function switchTab(tab) {
   });
 
   // mostra/nascondi views
-  ['bandi','clienti','scadenzario','pipeline','kanban','task'].forEach(v => {
+  ['bandi','clienti','scadenzario','pipeline','task'].forEach(v => {
     const el = document.getElementById('view-' + v);
     if (!el) return;
     if (v === tab) {
@@ -3403,7 +3416,6 @@ function switchTab(tab) {
   if (tab === 'clienti')     renderClienti();
   if (tab === 'scadenzario') renderScadenzario();
   if (tab === 'pipeline')    renderPipeline();
-  if (tab === 'kanban')      renderKanban();
   if (tab === 'task')        renderTask();
 }
 
@@ -4698,137 +4710,6 @@ function renderTask() {
     if (done.length)      { html += sectionHead('ts-done',     '✅ Completate');     html += done.map(taskRow).join(''); }
   }
   document.getElementById('task-list').innerHTML = html;
-}
-
-// ─── KANBAN ──────────────────────────────────────────────────────────────
-const KANBAN_STATI = [
-  { id:'proposto',    label:'Proposto',       dot:'#7c3aed' },
-  { id:'firmato',     label:'Firmato',        dot:'#1d4ed8' },
-  { id:'lavorazione', label:'In lavorazione', dot:'#ea580c' },
-  { id:'presentato',  label:'Presentato',     dot:'#0369a1' },
-  { id:'istruttoria', label:'Istruttoria',    dot:'#b45309' },
-  { id:'concesso',    label:'Concesso',       dot:'#16a34a' },
-  { id:'incassato',   label:'Incassato',      dot:'#059669' },
-  { id:'perso',       label:'Perso',          dot:'#dc2626' },
-];
-
-let _kDragId = null;
-
-function renderKanban() {
-  const pl = getPipeline();
-
-  // KPI
-  const attivi   = pl.filter(p => p.stato !== 'perso');
-  const pipeline = attivi.reduce((s,p) => s + (p.contributoMax||0), 0);
-  const daPresent = attivi.filter(p => ['proposto','firmato','lavorazione'].includes(p.stato)).length;
-  const presentati = pl.filter(p => ['presentato','istruttoria','concesso','incassato'].includes(p.stato));
-  const concessi   = pl.filter(p => ['concesso','incassato'].includes(p.stato));
-  const tasso = presentati.length ? Math.round(concessi.length / presentati.length * 100) : 0;
-
-  const fmtK = n => n >= 1000000
-    ? '€ ' + (n/1000000).toLocaleString('it-IT',{maximumFractionDigits:2}) + 'M'
-    : n >= 1000 ? '€ ' + (n/1000).toLocaleString('it-IT',{maximumFractionDigits:0}) + 'k'
-    : n ? '€ ' + Math.round(n).toLocaleString('it-IT') : '—';
-
-  document.getElementById('kanban-kpi').innerHTML = `
-    <div class="kanban-kpi kanban-kpi-purple">
-      <div class="kanban-kpi-num">${attivi.length}</div>
-      <div class="kanban-kpi-lbl">Pratiche attive</div>
-    </div>
-    <div class="kanban-kpi kanban-kpi-green">
-      <div class="kanban-kpi-num">${fmtK(pipeline)}</div>
-      <div class="kanban-kpi-lbl">Valore pipeline</div>
-    </div>
-    <div class="kanban-kpi kanban-kpi-orange">
-      <div class="kanban-kpi-num">${daPresent}</div>
-      <div class="kanban-kpi-lbl">Da presentare</div>
-    </div>
-    <div class="kanban-kpi kanban-kpi-blue">
-      <div class="kanban-kpi-num">${tasso}%</div>
-      <div class="kanban-kpi-lbl">Tasso di successo</div>
-    </div>`;
-
-  // Board
-  const board = document.getElementById('kanban-board');
-  board.innerHTML = KANBAN_STATI.map(s => {
-    const cards  = pl.filter(p => p.stato === s.id);
-    const isPerso = s.id === 'perso';
-    const colCls = 'k-col' + (isPerso ? ' k-col-perso' : '');
-    const cardHtml = cards.map(p => {
-      const bObj = BANDI.find(b => b.nome === p.bando);
-      const ico  = bObj ? getBandoIco(bObj) : '📄';
-      const avColor = clientAvatarColor(p.cliente);
-      const avInit  = clientInitials(p.cliente);
-      const importo = p.contributoMax ? fmtK(p.contributoMax) : '—';
-      const data    = p.dataContratto || '';
-      return `<div class="k-card${isPerso ? ' k-card-perso' : ''}" draggable="true" data-kid="${p.id}">
-        <div class="k-card-top">
-          <div class="k-card-ico">${ico}</div>
-          <div class="k-card-bando">${p.bando}</div>
-        </div>
-        <div class="k-card-client">
-          <div class="k-card-avatar" style="background:${avColor}">${avInit}</div>
-          <div class="k-card-nome">${p.cliente}</div>
-        </div>
-        <div class="k-card-footer">
-          <div class="k-card-importo">${importo}</div>
-          <div class="k-card-data">${data}</div>
-        </div>
-      </div>`;
-    }).join('');
-
-    return `<div class="${colCls}" data-kstato="${s.id}">
-      <div class="k-col-header">
-        <div class="k-col-title">
-          <div class="k-col-dot" style="background:${s.dot}"></div>
-          ${s.label}
-        </div>
-        <div class="k-col-count">${cards.length}</div>
-      </div>
-      ${cards.length === 0 ? '<div class="k-col-empty">—</div>' : ''}
-      ${cardHtml}
-      <div class="k-col-drop-hint">Rilascia qui</div>
-    </div>`;
-  }).join('');
-
-  // Drag & drop
-  board.querySelectorAll('.k-card').forEach(card => {
-    card.addEventListener('dragstart', e => {
-      _kDragId = card.dataset.kid;
-      setTimeout(() => card.classList.add('k-dragging'), 0);
-      e.dataTransfer.effectAllowed = 'move';
-    });
-    card.addEventListener('dragend', () => {
-      card.classList.remove('k-dragging');
-      board.querySelectorAll('.k-col').forEach(c => c.classList.remove('drag-over'));
-    });
-  });
-
-  board.querySelectorAll('.k-col').forEach(col => {
-    col.addEventListener('dragover', e => {
-      e.preventDefault();
-      e.dataTransfer.dropEffect = 'move';
-      col.classList.add('drag-over');
-    });
-    col.addEventListener('dragleave', e => {
-      if (!col.contains(e.relatedTarget)) col.classList.remove('drag-over');
-    });
-    col.addEventListener('drop', e => {
-      e.preventDefault();
-      col.classList.remove('drag-over');
-      if (!_kDragId) return;
-      const nuovoStato = col.dataset.kstato;
-      const pl2 = getPipeline();
-      const entry = pl2.find(p => String(p.id) === String(_kDragId));
-      if (entry && entry.stato !== nuovoStato) {
-        entry.stato = nuovoStato;
-        savePipeline(pl2);
-        render();         // aggiorna contatori bandi
-        renderKanban();
-      }
-      _kDragId = null;
-    });
-  });
 }
 
 // ─── RIPPLE SULLE CARD ────────────────────────────────────────────────────
