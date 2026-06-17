@@ -948,6 +948,13 @@
   .btn-task-save { background: #7c3aed; color: white; border: none; border-radius: 10px; padding: 10px 22px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; transition: background 0.15s; }
   .btn-task-save:hover { background: #6d28d9; }
 
+  /* ── PIPELINE VIEW TOGGLE ── */
+  .pl-view-toggle { display:flex; background:#f1f5f9; border-radius:8px; padding:3px; gap:2px; }
+  .pl-view-btn { background:none; border:none; border-radius:6px; padding:5px 12px; font-size:11px; font-weight:700; color:#64748b; cursor:pointer; font-family:inherit; transition:all 0.15s; white-space:nowrap; }
+  .pl-view-btn.active { background:white; color:#1a1a2e; box-shadow:0 1px 4px rgba(0,0,0,0.10); }
+  body.dark .pl-view-toggle { background:#0e1929; }
+  body.dark .pl-view-btn.active { background:#162035; color:#dde4f0; }
+
   /* ── KANBAN ── */
   .kanban-wrap { padding: 16px 24px 48px; overflow-x: auto; min-height: calc(100vh - 120px); }
   .kanban-kpi-row { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:18px; }
@@ -1278,12 +1285,28 @@
     <div id="pipeline-funnel" style="display:none;"></div>
     <div class="pipeline-kpi" id="pipeline-kpi"></div>
     <div class="pipeline-toolbar">
+      <div class="pl-view-toggle">
+        <button class="pl-view-btn active" id="pl-btn-kanban" onclick="setPipelineView('kanban')">🗂 Kanban</button>
+        <button class="pl-view-btn" id="pl-btn-lista" onclick="setPipelineView('lista')">☰ Lista</button>
+      </div>
       <select id="pf-cliente" onchange="renderPipeline()"><option value="">Tutti i clienti</option></select>
       <button class="btn-add-p" onclick="openModalPipeline()">+ Aggiungi voce</button>
       <button class="btn-export-p" onclick="exportPipeline()">↓ Esporta JS</button>
     </div>
-    <div style="overflow-x:auto;padding-bottom:32px;">
+    <div id="pl-kanban-wrap" style="overflow-x:auto;padding-bottom:32px;">
       <div class="kanban-board" id="pipeline-kanban" style="min-width:max-content;"></div>
+    </div>
+    <div id="pl-lista-wrap" style="display:none;">
+      <table class="p-table" id="p-table">
+        <thead>
+          <tr>
+            <th>Cliente</th><th>Bando</th><th>Stato</th><th>Retainer</th>
+            <th>Servizi accessori</th><th>Success fee attesa</th>
+            <th>Importo concesso</th><th>Fee su concesso</th><th>Contratto</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="p-tbody"></tbody>
+      </table>
     </div>
     <div class="empty-pipeline" id="p-empty" style="display:none">
       Nessuna voce in pipeline.<br><span style="font-size:12px">Clicca <strong>+ Aggiungi voce</strong> per iniziare a tracciare i tuoi incarichi.</span>
@@ -2684,6 +2707,17 @@ function allertaAction(idx) {
   if (window._alerteActions && window._alerteActions[idx]) window._alerteActions[idx]();
 }
 
+let _pipelineView = 'kanban';
+
+function setPipelineView(v) {
+  _pipelineView = v;
+  document.getElementById('pl-btn-kanban').classList.toggle('active', v === 'kanban');
+  document.getElementById('pl-btn-lista').classList.toggle('active', v === 'lista');
+  document.getElementById('pl-kanban-wrap').style.display = v === 'kanban' ? '' : 'none';
+  document.getElementById('pl-lista-wrap').style.display  = v === 'lista'  ? '' : 'none';
+  renderPipeline();
+}
+
 const KANBAN_STATI = [
   { id:'proposto',    label:'Proposto',       dot:'#7c3aed' },
   { id:'firmato',     label:'Firmato',        dot:'#1d4ed8' },
@@ -2763,6 +2797,63 @@ function renderPipeline() {
   `;
 
   document.getElementById('p-empty').style.display = filt.length ? 'none' : 'block';
+
+  // ── LISTA TABELLARE ──
+  if (_pipelineView === 'lista') {
+    const tbody = document.getElementById('p-tbody');
+    tbody.innerHTML = '';
+    filt.forEach(p => {
+      const sc = PIPELINE_STATO_CFG[p.stato] || { label:p.stato, bg:'#f1f5f9', color:'#64748b' };
+      const sfAtt  = (p.contributoMax||0) * (p.successFeePerc||0) / 100;
+      const sfConc = (p.contributoConc||0) * (p.successFeePerc||0) / 100;
+      const statoSel = Object.keys(PIPELINE_STATO_CFG).map(s => {
+        const c = PIPELINE_STATO_CFG[s];
+        return `<option value="${s}"${p.stato===s?' selected':''}>${c.label}</option>`;
+      }).join('');
+      const sa = p.serviziAccessori || [];
+      const totSARow = sa.reduce((s,x) => s + (x.importo||0), 0);
+      const saLabel = sa.length === 0
+        ? '<span style="color:#cbd5e1;font-size:11px">—</span>'
+        : `<span class="td-sa">${fmtEurFull(totSARow)}</span>
+           <div class="td-sa-detail">${sa.map(x=>`${x.tipo}${x.pagato?' ✓':''}`).join(' · ')}</div>`;
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td class="td-cliente">${p.cliente}</td>
+        <td class="td-bando">
+          <span title="${p.bando}">${p.bando}</span>
+          ${p.note ? `<div style="font-size:10px;color:#94a3b8;margin-top:3px;font-style:italic;line-height:1.4">${p.note}</div>` : ''}
+        </td>
+        <td>
+          <select class="p-stato-sel" style="background:${sc.bg};color:${sc.color};border-color:${sc.bg}"
+            onchange="updatePipelineStato('${p.id}', this)">${statoSel}</select>
+        </td>
+        <td>
+          <span class="td-euro ${p.retainerPagato?'green':'gray'}">${fmtEurFull(p.retainer||0)}</span>
+          <span class="p-tag-ret ${p.retainerPagato?'p-ret-ok':'p-ret-no'}" style="margin-left:4px">
+            ${p.retainerPagato?'✓ pagato':'✗ non pagato'}
+          </span>
+        </td>
+        <td>${saLabel}</td>
+        <td>
+          <span class="td-euro blue">${['presentato','istruttoria','concesso','incassato'].includes(p.stato) && sfAtt ? fmtEurFull(sfAtt) : '—'}</span>
+          ${p.successFeePerc ? `<span class="p-tag-ret ${p.successFeePagata?'p-ret-ok':'p-ret-no'}" style="margin-left:4px">${p.successFeePagata?'✓ pagata':'✗ non pagata'}</span>` : ''}
+        </td>
+        <td>
+          <input type="number" value="${p.contributoConc||0}" min="0"
+            style="width:110px;border:1.5px solid #e2e8f0;border-radius:6px;padding:4px 8px;font-size:11px;font-family:inherit"
+            onchange="updatePipelineConc('${p.id}', this.value)"
+            ${!['concesso','incassato'].includes(p.stato)?'disabled style="opacity:0.4;width:110px"':''}>
+        </td>
+        <td class="td-euro gold">${['concesso','incassato'].includes(p.stato) && p.contributoConc ? fmtEurFull(sfConc) : '—'}</td>
+        <td style="font-size:11px;color:#94a3b8">${p.dataContratto||'—'}</td>
+        <td>
+          <button onclick="editPipeline('${p.id}')" style="background:none;border:none;cursor:pointer;font-size:13px;padding:4px" title="Modifica">✏️</button>
+          <button onclick="deletePipeline('${p.id}')" style="background:none;border:none;cursor:pointer;font-size:13px;padding:4px" title="Elimina">🗑️</button>
+        </td>`;
+      tbody.appendChild(tr);
+    });
+    return;
+  }
 
   // ── KANBAN BOARD ──
   const board = document.getElementById('pipeline-kanban');
