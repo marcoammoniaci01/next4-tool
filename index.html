@@ -8,8 +8,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Inter', 'Segoe UI', Arial, sans-serif; background: #f0f4f9; color: #1a1a2e; font-size: 14px; }
+  body { font-family: 'Inter', 'Segoe UI', Arial, sans-serif; background: radial-gradient(ellipse 90% 45% at 50% 0%, #dce8fc 0%, #f0f4f9 58%); min-height: 100vh; color: #1a1a2e; font-size: 14px; }
 
+
+  /* ── LOGO PILL ── */
+  .header-logo-pill { background: white; border-radius: 8px; padding: 4px 10px; display: flex; align-items: center; }
+  .header-logo-pill img { height: 26px; width: auto; display: block; }
   /* ── HEADER ── */
   .header {
     background: linear-gradient(135deg, #0d1f40 0%, #1B3A6B 100%);
@@ -59,6 +63,16 @@
   .s-chiuso      .stat-num { color: #dc2626; }
   .stat-total    .stat-num { color: #1B3A6B; }
 
+
+  /* ── STAT MINI BAR ── */
+  .stat-bar { height: 4px; border-radius: 2px; margin-top: 8px; background: #f1f5f9; overflow: hidden; }
+  .stat-bar-fill { height: 100%; border-radius: 2px; transition: width 0.6s ease; }
+  .s-aperto      .stat-bar-fill { background: #16a34a; }
+  .s-inapertura  .stat-bar-fill { background: #0f766e; }
+  .s-monitorare  .stat-bar-fill { background: #d97706; }
+  .s-lavorazione .stat-bar-fill { background: #2563eb; }
+  .s-chiuso      .stat-bar-fill { background: #dc2626; }
+  .stat-total    .stat-bar-fill { background: #1B3A6B; }
   /* ── ALERT BANNERS ── */
   .urgenza-bar  { margin: 14px 32px 0; background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 10px 14px; font-size: 12px; color: #92400e; }
   .urgenza-bar strong { color: #78350f; }
@@ -66,6 +80,11 @@
   .apertura-bar strong { color: #14532d; }
   .u-item { display: inline-block; margin: 2px 14px 2px 0; }
 
+
+  /* ── SEARCH ICON ── */
+  .search-wrap { position: relative; }
+  .search-wrap::before { content: '🔍'; position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 12px; pointer-events: none; opacity: 0.45; z-index: 1; }
+  .search-wrap input { padding-left: 30px !important; }
   /* ── TABS ── */
   .tabs { display: flex; gap: 6px; padding: 18px 32px 0; }
   .tab {
@@ -105,11 +124,28 @@
   .cards-wrap { padding: 12px 32px 56px; }
   .cards-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 14px;
   }
+  @media (max-width: 1024px) { .cards-grid { grid-template-columns: repeat(2, 1fr); } }
   .no-results { text-align: center; padding: 60px 20px; color: #94a3b8; font-size: 14px; }
 
+
+  /* ── CARD HEADER BAND ── */
+  @keyframes bandShimmer {
+    0%   { background-position: -200% center; }
+    100% { background-position:  200% center; }
+  }
+  .card-band {
+    height: 5px; width: 100%; flex-shrink: 0;
+    background-size: 200% 100%;
+    animation: bandShimmer 3s linear infinite;
+  }
+  .card-aperto      .card-band { background-image: linear-gradient(90deg,#16a34a,#4ade80,#bbf7d0,#4ade80,#16a34a); }
+  .card-inapertura  .card-band { background-image: linear-gradient(90deg,#0f766e,#2dd4bf,#99f6e4,#2dd4bf,#0f766e); }
+  .card-monitorare  .card-band { background-image: linear-gradient(90deg,#d97706,#fbbf24,#fef08a,#fbbf24,#d97706); }
+  .card-lavorazione .card-band { background-image: linear-gradient(90deg,#2563eb,#60a5fa,#bfdbfe,#60a5fa,#2563eb); }
+  .card-chiuso      .card-band { background-image: linear-gradient(90deg,#dc2626,#f87171,#fecaca,#f87171,#dc2626); }
   /* ── BANDO CARD ── */
   .card {
     background: white;
@@ -118,19 +154,15 @@
     display: flex;
     flex-direction: column;
     cursor: pointer;
-    transition: transform 0.15s, box-shadow 0.18s;
+    transition: transform 0.18s, box-shadow 0.22s, border-color 0.22s;
     overflow: hidden;
-    border-left: 4px solid #e2e8f0;
+    border: 1.5px solid transparent;
   }
-  .card:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.11); }
-  .card-aperto      { border-left-color: #16a34a; }
-  .card-inapertura  { border-left-color: #0f766e; }
-  .card-monitorare  { border-left-color: #d97706; }
-  .card-lavorazione { border-left-color: #2563eb; }
-  .card-chiuso      { border-left-color: #dc2626; opacity: 0.72; }
+  .card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(0,0,0,0.11); }
 
-  .card-top { padding: 14px 16px 10px; flex: 1; }
-  .card-toprow { display: flex; align-items: center; gap: 5px; margin-bottom: 9px; flex-wrap: wrap; }
+  .card-top { padding: 14px 16px 10px; flex: 1; position: relative; }
+  .card-ico { position: absolute; top: 10px; right: 12px; font-size: 24px; line-height: 1; opacity: 0.75; pointer-events: none; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.08)); }
+  .card-toprow { display: flex; align-items: center; gap: 5px; margin-bottom: 9px; flex-wrap: wrap; padding-right: 34px; }
   .card-flags { display: flex; gap: 4px; }
   .card-regione { font-size: 10px; color: #94a3b8; margin-left: auto; white-space: nowrap; font-weight: 500; }
   .card-title {
@@ -182,6 +214,14 @@
   .dm-unverified-label { font-size: 10px; color: #cbd5e1; font-style: italic; }
   .dm-no-piva { font-size: 9.5px; color: #e2e8f0; }
 
+
+  /* ── PANEL HERO STRIP ── */
+  .panel-hero { height: 6px; margin: -20px -22px 16px; border-radius: 0; }
+  .panel-hero-aperto      { background: linear-gradient(90deg,#16a34a,#4ade80); }
+  .panel-hero-inapertura  { background: linear-gradient(90deg,#0f766e,#2dd4bf); }
+  .panel-hero-monitorare  { background: linear-gradient(90deg,#d97706,#fbbf24); }
+  .panel-hero-lavorazione { background: linear-gradient(90deg,#2563eb,#60a5fa); }
+  .panel-hero-chiuso      { background: linear-gradient(90deg,#dc2626,#f87171); }
   /* ── DOMANDA PRESENTATA ── */
   .ct-dom { display: inline-block; background: #dcfce7; color: #15803d; border-radius: 4px; padding: 2px 6px; font-size: 10.5px; font-weight: 700; white-space: nowrap; border: 1px solid #86efac; }
 
@@ -189,6 +229,10 @@
   .btn-copy { background: #f1f5f9; border: 1.5px solid #e2e8f0; color: #64748b; padding: 6px 10px; border-radius: 7px; font-size: 11.5px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.15s; white-space: nowrap; flex-shrink: 0; }
   .btn-copy:hover { background: #e2e8f0; border-color: #cbd5e1; color: #1B3A6B; }
   .btn-copy.copied { background: #dcfce7; border-color: #86efac; color: #16a34a; }
+  .btn-scheda { background: white; border: 1.5px solid #1B3A6B; color: #1B3A6B; padding: 6px 11px; border-radius: 7px; font-size: 11.5px; font-weight: 700; cursor: pointer; font-family: inherit; transition: all 0.15s; white-space: nowrap; flex-shrink: 0; display:inline-flex; align-items:center; gap:4px; text-decoration:none; }
+  .btn-scheda:hover { background: #1B3A6B; color: white; }
+  body.dark .btn-scheda { background: #0c1a3a; border-color: #4a7fcb; color: #93c5fd; }
+  body.dark .btn-scheda:hover { background: #1B3A6B; color: white; }
 
   /* ── FLAG ── */
   .flg { display: inline-block; font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 4px; vertical-align: middle; letter-spacing: 0.2px; }
@@ -267,8 +311,38 @@
   .client-bando-row { display:flex; align-items:center; gap:6px; padding:7px 13px; cursor:pointer; border-bottom:1px solid #f8fafc; transition:background 0.12s; }
   .client-bando-row:last-child { border-bottom:none; }
   .client-bando-row:hover { background:#f8fafc; }
+  .client-bando-row.incompat-row { background:#fafafa; opacity:0.72; }
+  .client-bando-row.incompat-row:hover { background:#f3f4f6; }
   .client-bando-nome { font-size:11.5px; color:#1B3A6B; font-weight:600; flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .client-bando-contributo { font-size:10px; color:#aaa; white-space:nowrap; flex-shrink:0; }
+
+  /* ── TOOLBAR CLIENTI ── */
+  .clienti-toolbar { padding: 16px 32px 10px; display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+  .clienti-search-wrap { position:relative; flex:1; min-width:180px; }
+  .clienti-search-wrap::before { content:'🔍'; position:absolute; left:10px; top:50%; transform:translateY(-50%); font-size:12px; pointer-events:none; opacity:0.4; }
+  .clienti-search { width:100%; padding:8px 12px 8px 32px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:13px; font-family:inherit; outline:none; transition:border-color 0.15s; background:white; color:#1a1a2e; }
+  .clienti-search:focus { border-color:#1B3A6B; }
+  .clienti-sort { padding:8px 12px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:12px; font-family:inherit; color:#64748b; background:white; cursor:pointer; outline:none; transition:border-color 0.15s; }
+  .clienti-sort:focus { border-color:#1B3A6B; }
+  .clienti-count { font-size:11px; color:#94a3b8; font-weight:600; white-space:nowrap; flex-shrink:0; }
+
+  /* ── AVATAR + TOP BAND ── */
+  .client-card-top-band { height:4px; width:100%; flex-shrink:0; transition:opacity 0.2s; }
+  .client-avatar { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:800; color:white; flex-shrink:0; letter-spacing:0.3px; border:2px solid rgba(255,255,255,0.25); }
+  .client-info { display:flex; flex-direction:column; gap:3px; flex:1; min-width:0; }
+  .client-actions { display:flex; align-items:center; gap:4px; flex-shrink:0; flex-wrap:wrap; justify-content:flex-end; }
+
+  /* ── PORTFOLIO BAR ── */
+  .client-portfolio-bar { height:3px; width:100%; display:flex; background:#e9eef5; flex-shrink:0; }
+  .cpb-seg { height:100%; transition:width 0.5s ease; }
+  .cpb-aperto    { background:#16a34a; }
+  .cpb-inapertura{ background:#0f766e; }
+  .cpb-lavorazione{ background:#2563eb; }
+
+  /* ── CARD VUOTA (nessun bando) ── */
+  .client-card-empty { opacity:0.55; }
+  .client-card-empty .client-card-top-band { opacity:0.3; }
+  .client-empty-note { padding:10px 14px; font-size:11px; color:#b0b8c8; font-style:italic; text-align:center; }
 
   /* ── SCADENZARIO ── */
   .scad-wrap { padding:14px 32px 48px; }
@@ -294,6 +368,8 @@
   /* ── DE MINIMIS CHIP WARNING ── */
   .ct-dm-warn { display:inline-block; background:#fff3e0; color:#b45309; border-radius:4px; padding:2px 6px; font-size:10.5px; font-weight:700; white-space:nowrap; border:1px solid #fcd34d; }
   .ct-dm-danger { display:inline-block; background:#fee2e2; color:#dc2626; border-radius:4px; padding:2px 6px; font-size:10.5px; font-weight:700; white-space:nowrap; border:1px solid #fca5a5; }
+  /* ── INCOMPATIBILITÀ BILANCI (SIMEST) ── */
+  .ct-incompat { display:inline-block; background:#f5f5f5; color:#9ca3af; border-radius:4px; padding:2px 6px; font-size:10.5px; font-weight:600; white-space:nowrap; border:1px solid #d1d5db; text-decoration:line-through; }
 
   /* ── PIPELINE TAB ── */
   .pipeline-wrap { padding:14px 32px 56px; }
@@ -390,6 +466,293 @@
   .ap-sf-input { border:1.5px solid #e2e8f0; border-radius:6px; padding:6px 8px; font-size:12px; font-family:inherit; width:100%; text-align:right; outline:none; }
   .ap-sf-input:focus { border-color:#1B3A6B; }
 
+  
+  /* ── CARD SCROLL REVEAL ── */
+  .card { opacity: 0; transform: translateY(28px); transition: opacity 0.45s cubic-bezier(.25,.8,.25,1), transform 0.45s cubic-bezier(.25,.8,.25,1); }
+  .card.card-visible { opacity: 1; transform: translateY(0); }
+
+  /* ── SEARCH HIGHLIGHT ── */
+  mark { background: #fef08a; color: #1a1a2e; border-radius: 2px; padding: 0 1px; }
+
+  /* ── HOVER GLOW SULLE CARD ── */
+  .card { will-change: transform; }
+  .card-aperto:hover     { box-shadow: 0 10px 36px rgba(22,163,74,0.32),  0 2px 8px rgba(22,163,74,0.14);  border-color: rgba(22,163,74,0.30); }
+  .card-inapertura:hover { box-shadow: 0 10px 36px rgba(15,118,110,0.32), 0 2px 8px rgba(15,118,110,0.14); border-color: rgba(15,118,110,0.30); }
+  .card-monitorare:hover { box-shadow: 0 10px 36px rgba(217,119,6,0.30),  0 2px 8px rgba(217,119,6,0.13);  border-color: rgba(217,119,6,0.28); }
+  .card-lavorazione:hover{ box-shadow: 0 10px 36px rgba(37,99,235,0.32),  0 2px 8px rgba(37,99,235,0.14);  border-color: rgba(37,99,235,0.30); }
+  .card-chiuso:hover     { box-shadow: 0 10px 36px rgba(220,38,38,0.28),  0 2px 8px rgba(220,38,38,0.12);  border-color: rgba(220,38,38,0.25); }
+
+  /* ── STAT CARD PULSE ── */
+  @keyframes statPop {
+    0%   { transform: scale(1); }
+    45%  { transform: scale(1.04); }
+    100% { transform: scale(1); }
+  }
+  .stat-card.just-loaded { animation: statPop 0.5s cubic-bezier(.34,1.56,.64,1) both; }
+
+  /* ── SHIMMER SU BOTTONI PRIMARI ── */
+  .btn-modal-save, .btn-data-primary, .btn-add-p {
+    position: relative; overflow: hidden;
+  }
+  .btn-modal-save::after, .btn-data-primary::after, .btn-add-p::after {
+    content: ''; position: absolute; top: 0; left: -100%;
+    width: 60%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.18), transparent);
+    transition: left 0.45s;
+    pointer-events: none;
+  }
+  .btn-modal-save:hover::after, .btn-data-primary:hover::after, .btn-add-p:hover::after {
+    left: 150%;
+  }
+
+  /* ── PANEL SLIDE PIÙ FLUIDO ── */
+  .side-panel { transition: right 0.32s cubic-bezier(.4,0,.2,1); }
+
+  /* ── CARD ICON BOUNCE SULL'HOVER ── */
+  .card:hover .card-ico { animation: icoBounce 0.4s cubic-bezier(.34,1.56,.64,1); }
+  @keyframes icoBounce {
+    0%   { transform: scale(1) rotate(0deg); }
+    50%  { transform: scale(1.3) rotate(-8deg); }
+    100% { transform: scale(1) rotate(0deg); }
+  }
+
+  /* ── RIPPLE CLICK ── */
+  .card { overflow: hidden; }
+  .ripple {
+    position: absolute; border-radius: 50%; pointer-events: none;
+    background: rgba(27,58,107,0.12);
+    transform: scale(0); animation: rippleAnim 0.55s linear;
+  }
+  @keyframes rippleAnim { to { transform: scale(4); opacity: 0; } }
+
+  /* ── TAB FADE ── */
+  .tab-view { animation: tabFadeIn 0.28s ease both; }
+  @keyframes tabFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── SCROLL TO TOP ── */
+  #btn-top {
+    position: fixed; bottom: 28px; right: 28px; z-index: 800;
+    width: 42px; height: 42px; border-radius: 50%;
+    background: #1B3A6B; color: white; border: none;
+    font-size: 18px; cursor: pointer; box-shadow: 0 4px 18px rgba(0,0,0,0.2);
+    opacity: 0; transform: translateY(12px) scale(0.85);
+    transition: opacity 0.25s, transform 0.25s;
+    pointer-events: none;
+    display: flex; align-items: center; justify-content: center;
+  }
+  #btn-top.visible { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+  #btn-top:hover { background: #00897b; transform: translateY(-2px) scale(1.05); }
+  body.dark #btn-top { background: #1B3A6B; }
+
+  /* ── SEARCH SHORTCUT HINT ── */
+  .search-hint {
+    position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+    font-size: 10px; font-weight: 700; color: #94a3b8;
+    background: #f1f5f9; border: 1px solid #e2e8f0;
+    border-radius: 4px; padding: 1px 5px; pointer-events: none;
+    transition: opacity 0.2s;
+  }
+  .search-wrap:focus-within .search-hint { opacity: 0; }
+  body.dark .search-hint { background: #1e3050; border-color: #2d3f5e; color: #4a6080; }
+
+  /* ── DARK MODE TOGGLE ── */
+  .btn-darkmode {
+    background: rgba(255,255,255,0.1);
+    border: 1.5px solid rgba(255,255,255,0.2);
+    border-radius: 20px;
+    padding: 5px 12px;
+    color: white;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s;
+    white-space: nowrap;
+    margin-left: 8px;
+  }
+  .btn-darkmode:hover { background: rgba(255,255,255,0.2); }
+
+  /* ══════════════════════════════════════════════════════
+     DARK MODE
+  ══════════════════════════════════════════════════════ */
+  body.dark {
+    background: radial-gradient(ellipse 90% 45% at 50% 0%, #0d1b30 0%, #0a1220 58%);
+    color: #dde4f0;
+  }
+
+  /* stat cards */
+  body.dark .stat-card { background: #162035; box-shadow: 0 1px 4px rgba(0,0,0,0.4); }
+  body.dark .stat-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.45); }
+  body.dark .stat-num  { }
+  body.dark .stat-label { color: #6b7fa3; }
+  body.dark .stat-bar { background: #243050; }
+
+  /* alert bars */
+  body.dark .urgenza-bar  { background: #2a1f05; border-color: #78450a; color: #fcd34d; }
+  body.dark .urgenza-bar strong { color: #fef3c7; }
+  body.dark .apertura-bar { background: #0a2012; border-color: #14532d; color: #4ade80; }
+
+  /* tabs */
+  body.dark .tab { background: #162035; border-color: #2d3f5e; color: #94a3b8; }
+  body.dark .tab:hover { border-color: #4a7fcb; color: #93c5fd; }
+  body.dark .tab.active { background: #1B3A6B; border-color: #1B3A6B; color: white; }
+
+  /* data toolbar */
+  body.dark .data-toolbar { background: #0f1e35; border-color: #1e3050; }
+  body.dark .btn-data { background: #162035; border-color: #2d3f5e; color: #94a3b8; }
+  body.dark .btn-data:hover { border-color: #4a7fcb; color: #93c5fd; }
+  body.dark .btn-data-primary { background: #1B3A6B; }
+  body.dark .btn-data-primary:hover { background: #2a52a0; }
+
+  /* filtri */
+  body.dark .filtri-wrap { background: #162035; box-shadow: 0 1px 4px rgba(0,0,0,0.4); }
+  body.dark .filtri input,
+  body.dark .filtri select { background: #0f1e35; border-color: #2d3f5e; color: #dde4f0; }
+  body.dark .filtri input:focus,
+  body.dark .filtri select:focus { border-color: #4a7fcb; background: #162035; }
+  body.dark .filtri label { color: #4a6080; }
+  body.dark .btn-reset { background: #162035; border-color: #2d3f5e; color: #6b7fa3; }
+  body.dark .btn-reset:hover { background: #1e2d45; color: #93c5fd; }
+  body.dark .ris-info { color: #4a6080; }
+  body.dark .legend { color: #4a6080; }
+
+  /* bando cards */
+  body.dark .card { background: #162035; box-shadow: 0 1px 6px rgba(0,0,0,0.45); }
+  body.dark .card:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.55); }
+  body.dark .card-title { color: #93c5fd; }
+  body.dark .card-ente  { color: #4a6080; }
+  body.dark .card-meta  { border-top-color: #1e3050; }
+  body.dark .card-meta-item { color: #94a3b8; }
+  body.dark .card-contributo { color: #93c5fd; }
+  body.dark .card-tags  { }
+  body.dark .card-footer { border-top-color: #1e3050; }
+  body.dark .ct-extra   { background: #1e3050; color: #6b7fa3; }
+  body.dark .ct-none    { color: #2d3f5e; }
+  body.dark .ct         { background: #1a3060; color: #93c5fd; }
+  body.dark .ct-potential { background: #2a1a00; color: #fbbf24; border-color: #78450a; }
+  body.dark .ct-dom     { background: #0a2012; color: #4ade80; border-color: #14532d; }
+  body.dark .ct-dm-warn  { background: #2a1a00; color: #fbbf24; border-color: #78450a; }
+  body.dark .ct-dm-danger{ background: #2a0a0a; color: #f87171; border-color: #7f1d1d; }
+  body.dark .ct-incompat { background: #1a1a1a; color: #4b5563; border-color: #374151; }
+  body.dark .btn-copy   { background: #1e3050; border-color: #2d3f5e; color: #6b7fa3; }
+  body.dark .btn-copy:hover { background: #243050; border-color: #4a6080; color: #93c5fd; }
+  body.dark .btn-link   { background: #1B3A6B; }
+  body.dark .btn-link:hover { background: #00897b; }
+
+  /* no-results */
+  body.dark .no-results { color: #4a6080; }
+
+  /* tags */
+  body.dark .t-innovazione             { background: #1a0a3a; color: #c4b5fd; }
+  body.dark .t-rs                      { background: #2a0a1a; color: #f9a8d4; }
+  body.dark .t-internazionalizzazione  { background: #0a1e3a; color: #7dd3fc; }
+  body.dark .t-digitale                { background: #0a2010; color: #86efac; }
+  body.dark .t-impresa                 { background: #2a1205; color: #fdba74; }
+  body.dark .t-fiscale                 { background: #0a2010; color: #86efac; }
+  body.dark .t-step                    { background: #1a0a3a; color: #c4b5fd; }
+  body.dark .t-ambiente                { background: #0a2010; color: #86efac; }
+  body.dark .t-cultura                 { background: #2a0a18; color: #f9a8d4; }
+  body.dark .t-startup                 { background: #2a1800; color: #fcd34d; }
+  body.dark .t-lavoro                  { background: #0a1a2a; color: #7dd3fc; }
+
+  /* badges */
+  body.dark .b-aperto      { background: #0a2012; color: #4ade80; }
+  body.dark .b-inapertura  { background: #0a1e1a; color: #2dd4bf; }
+  body.dark .b-monitorare  { background: #2a1800; color: #fcd34d; }
+  body.dark .b-lavorazione { background: #0a1a3a; color: #93c5fd; }
+  body.dark .b-chiuso      { background: #2a0a0a; color: #f87171; }
+
+  /* de minimis section */
+  body.dark .dm-section { background: #0f1e35; border-bottom-color: #1e3050; }
+  body.dark .dm-track   { background: #1e3050; }
+  body.dark .dm-lbl     { color: #4a6080; }
+  body.dark .dm-amounts { color: #4a6080; }
+  body.dark .dm-date    { color: #2d3f5e; }
+  body.dark .dm-rna-btn { background: #162035; border-color: #2d3f5e; color: #4a6080; }
+  body.dark .dm-rna-btn:hover { color: #93c5fd; border-color: #4a7fcb; }
+  body.dark .dm-unverified-label { color: #2d3f5e; }
+  body.dark .dm-no-piva { color: #1e3050; }
+
+  /* side panel */
+  body.dark .side-panel { background: #0f1e35; }
+  body.dark .panel-close { background: #162035; color: #94a3b8; }
+  body.dark .panel-close:hover { background: #1e3050; }
+  body.dark .panel-nome { color: #93c5fd; }
+  body.dark .panel-ente { color: #4a6080; }
+  body.dark .panel-row  { border-bottom-color: #1e3050; }
+  body.dark .panel-lbl  { color: #4a6080; }
+  body.dark .panel-val  { color: #dde4f0; }
+  body.dark .panel-sec  { color: #4a7fcb; }
+
+  /* panel overlay rimane semi-trasparente, ok */
+
+  /* vista clienti */
+  body.dark .client-card { background: #162035; box-shadow: 0 1px 6px rgba(0,0,0,0.4); }
+  body.dark .client-card-header { background: #0d1f40; }
+  body.dark .client-card-header:hover { background: #162035; }
+  body.dark .client-bandi { }
+  body.dark .client-bando-row { border-bottom-color: #0f1e35; }
+  body.dark .client-bando-row:hover { background: #0f1e35; }
+  body.dark .clienti-search { background:#0d1f40; border-color:#1e3050; color:#dde4f0; }
+  body.dark .clienti-search:focus { border-color:#4a7fcb; }
+  body.dark .clienti-sort { background:#0d1f40; border-color:#1e3050; color:#6b8fb5; }
+  body.dark .client-portfolio-bar { background:#0f1e35; }
+  body.dark .client-empty-note { color:#2d4060; }
+  body.dark .client-bando-nome { color: #93c5fd; }
+  body.dark .client-bando-contributo { color: #4a6080; }
+
+  /* scadenzario */
+  body.dark .scad-group-title { color: #93c5fd; border-bottom-color: #1B3A6B; }
+  body.dark .scad-row { background: #162035; box-shadow: 0 1px 4px rgba(0,0,0,0.4); border-left-color: #2d3f5e; }
+  body.dark .scad-row:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.55); }
+  body.dark .scad-nome { color: #93c5fd; }
+  body.dark .scad-ente { color: #4a6080; }
+  body.dark .scad-data { color: #6b7fa3; }
+  body.dark .scad-contributo { color: #93c5fd; }
+
+  /* pipeline */
+  body.dark .pkpi { background: #162035; box-shadow: 0 1px 4px rgba(0,0,0,0.4); }
+  body.dark .pkpi-lbl { color: #4a6080; }
+  body.dark .pkpi-sub { color: #2d3f5e; }
+  body.dark .pipeline-toolbar select { background: #162035; border-color: #2d3f5e; color: #dde4f0; }
+  body.dark .p-table { background: #162035; }
+  body.dark .p-table th { background: #0a1220; }
+  body.dark .p-table td { border-bottom-color: #1e3050; }
+  body.dark .p-table tr:hover td { background: #0f1e35; }
+  body.dark .p-table .td-cliente { color: #93c5fd; }
+  body.dark .p-table .td-bando  { color: #94a3b8; }
+  body.dark .p-stato-sel { background: #162035; border-color: #2d3f5e; color: #dde4f0; }
+  body.dark .btn-add-p { background: #1B3A6B; }
+  body.dark .btn-export-p { background: #162035; border-color: #2d3f5e; color: #6b7fa3; }
+  body.dark .btn-export-p:hover { border-color: #4a7fcb; color: #93c5fd; }
+  body.dark .sa-row select,
+  body.dark .sa-row input { background: #162035; border-color: #2d3f5e; color: #dde4f0; }
+  body.dark .btn-add-sa { background: #1a0a3a; border-color: #6d28d9; color: #c4b5fd; }
+  body.dark .btn-add-sa:hover { background: #1a0a45; }
+
+  /* modal */
+  body.dark .modal-box { background: #0f1e35; }
+  body.dark .modal-title { color: #93c5fd; }
+  body.dark .modal-field label { color: #4a6080; }
+  body.dark .modal-field input,
+  body.dark .modal-field select,
+  body.dark .modal-field textarea { background: #162035; border-color: #2d3f5e; color: #dde4f0; }
+  body.dark .modal-field input:focus,
+  body.dark .modal-field select:focus { border-color: #4a7fcb; background: #1e3050; }
+  body.dark .btn-modal-cancel { background: #162035; color: #6b7fa3; border-color: #2d3f5e; }
+  body.dark .btn-modal-save { background: #1B3A6B; }
+
+  /* footer */
+  body.dark .footer { color: #2d3f5e; }
+
+  /* search wrap dark */
+  body.dark .search-wrap::before { opacity: 0.3; }
+
+  /* mark in dark mode */
+  body.dark mark { background: #854d0e; color: #fef3c7; }
+
   @media (max-width: 768px) {
     .header { padding: 0 16px; }
     .stats, .tabs, .ris-info, .legend, .cards-wrap { padding-left: 16px; padding-right: 16px; }
@@ -415,6 +778,285 @@
   /* tag checkbox nel modal nuovo bando */
   .nb-tipo-label { display:flex; align-items:center; gap:5px; font-size:11px; cursor:pointer; background:#f1f5f9; border:1.5px solid #e2e8f0; border-radius:6px; padding:4px 8px; user-select:none; transition:border-color 0.12s,background 0.12s; }
   .nb-tipo-label:has(input:checked) { border-color:#1B3A6B; background:#eff6ff; color:#1B3A6B; font-weight:700; }
+
+  /* ── HUB HOME ── */
+  #view-hub { min-height: calc(100vh - 58px); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 32px; }
+  .hub-welcome { font-size: 13px; color: #94a3b8; margin-bottom: 8px; font-weight: 500; }
+  .hub-title { font-size: 26px; font-weight: 800; color: #1B3A6B; margin-bottom: 40px; }
+  .hub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; width: 100%; max-width: 680px; }
+  .hub-card {
+    background: white; border-radius: 20px; padding: 36px 32px;
+    box-shadow: 0 4px 24px rgba(27,58,107,0.10);
+    border: 2px solid transparent;
+    cursor: pointer; transition: all 0.22s cubic-bezier(.25,.8,.25,1);
+    display: flex; flex-direction: column; align-items: flex-start; gap: 12px;
+    position: relative; overflow: hidden;
+  }
+  .hub-card::before {
+    content: ''; position: absolute; inset: 0;
+    opacity: 0; transition: opacity 0.22s;
+  }
+  .hub-card-finanza::before { background: linear-gradient(135deg, rgba(27,58,107,0.04) 0%, rgba(0,229,209,0.06) 100%); }
+  .hub-card-riservata::before { background: linear-gradient(135deg, rgba(124,58,237,0.04) 0%, rgba(220,38,38,0.04) 100%); }
+  .hub-card:hover { transform: translateY(-5px); box-shadow: 0 16px 48px rgba(27,58,107,0.15); }
+  .hub-card:hover::before { opacity: 1; }
+  .hub-card-finanza:hover { border-color: #1B3A6B; }
+  .hub-card-riservata:hover { border-color: #7c3aed; }
+  .hub-card-icon { font-size: 36px; line-height: 1; }
+  .hub-card-label { font-size: 18px; font-weight: 800; color: #1B3A6B; }
+  .hub-card-riservata .hub-card-label { color: #7c3aed; }
+  .hub-card-desc { font-size: 12px; color: #94a3b8; line-height: 1.6; }
+  .hub-card-arrow { position: absolute; bottom: 20px; right: 22px; font-size: 20px; color: #e2e8f0; transition: all 0.2s; }
+  .hub-card:hover .hub-card-arrow { color: #1B3A6B; transform: translateX(4px); }
+  .hub-card-riservata:hover .hub-card-arrow { color: #7c3aed; }
+  @keyframes hubCardIn { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+  .hub-card { animation: hubCardIn 0.4s cubic-bezier(.25,.8,.25,1) both; }
+  .hub-card:nth-child(2) { animation-delay: 0.08s; }
+
+  /* dark hub */
+  body.dark #view-hub .hub-title { color: #93c5fd; }
+  body.dark .hub-card { background: #162035; box-shadow: 0 4px 24px rgba(0,0,0,0.35); }
+  body.dark .hub-card-finanza:hover { border-color: #4a7fcb; }
+  body.dark .hub-card-riservata:hover { border-color: #a78bfa; }
+  body.dark .hub-card-label { color: #93c5fd; }
+  body.dark .hub-card-riservata .hub-card-label { color: #a78bfa; }
+  body.dark .hub-card-desc { color: #4a6080; }
+  body.dark .hub-card-arrow { color: #2d3f5e; }
+
+  /* ── SECTION NAV (breadcrumb) ── */
+  .section-nav { display: flex; align-items: center; gap: 10px; padding: 12px 32px 0; }
+  .btn-home { background: none; border: none; cursor: pointer; font-size: 12px; font-weight: 700; color: #94a3b8; font-family: inherit; padding: 4px 0; transition: color 0.15s; display: flex; align-items: center; gap: 5px; }
+  .btn-home:hover { color: #1B3A6B; }
+  .section-nav-sep { font-size: 12px; color: #e2e8f0; }
+  .section-nav-label { font-size: 12px; font-weight: 700; color: #1B3A6B; }
+  .section-nav-label-riservata { color: #7c3aed; }
+  body.dark .btn-home:hover { color: #93c5fd; }
+  body.dark .section-nav-sep { color: #2d3f5e; }
+  body.dark .section-nav-label { color: #93c5fd; }
+  body.dark .section-nav-label-riservata { color: #a78bfa; }
+
+  /* ── TASK ── */
+  .task-wrap { padding: 14px 32px 56px; }
+  .task-topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+  .btn-task-fab { background: #7c3aed; color: white; border: none; border-radius: 12px; padding: 10px 20px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; display: flex; align-items: center; gap: 7px; transition: background 0.15s, transform 0.12s; }
+  .btn-task-fab:hover { background: #6d28d9; transform: translateY(-1px); }
+  .btn-task-fab .fab-ico { font-size: 18px; font-weight: 400; line-height: 1; }
+  .task-list { display: flex; flex-direction: column; gap: 8px; }
+  .task-item {
+    background: white; border-radius: 12px; padding: 14px 16px;
+    display: flex; align-items: flex-start; gap: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+    transition: box-shadow 0.15s, opacity 0.2s, transform 0.15s, border-color 0.15s;
+    animation: taskIn 0.3s cubic-bezier(.25,.8,.25,1) both;
+  }
+  @keyframes taskIn { from { opacity:0; transform:translateX(-12px); } to { opacity:1; transform:translateX(0); } }
+  .task-item.done { opacity: 0.5; }
+  .task-item.done .task-note { text-decoration: line-through; color: #94a3b8; }
+  .task-check { width: 20px; height: 20px; border-radius: 50%; border: 2px solid #7c3aed; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.15s; background: white; margin-top: 2px; }
+  .task-check.checked { background: #7c3aed; border-color: #7c3aed; }
+  .task-check.checked::after { content: '✓'; color: white; font-size: 12px; font-weight: 800; }
+  .task-body { flex: 1; min-width: 0; }
+  .task-cliente-badge { display: inline-block; background: #ede9fe; color: #6d28d9; font-size: 10px; font-weight: 700; border-radius: 6px; padding: 2px 8px; max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .task-strumento-badge { display: inline-block; background: #eff6ff; color: #1d4ed8; font-size: 10px; font-weight: 700; border-radius: 6px; padding: 2px 8px; max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  body.dark .task-strumento-badge { background: #0c1a3a; color: #60a5fa; }
+  .task-note { font-size: 13px; color: #1a1a2e; line-height: 1.45; word-break: break-word; }
+  .task-meta { display: flex; align-items: center; gap: 10px; margin-top: 6px; }
+  .task-date { font-size: 10px; color: #cbd5e1; white-space: nowrap; }
+  .task-scad { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; border-radius: 6px; padding: 2px 7px; white-space: nowrap; }
+  .task-scad-ok     { background: #f0fdf4; color: #16a34a; }
+  .task-scad-soon   { background: #fefce8; color: #ca8a04; }
+  .task-scad-urgent { background: #fff7ed; color: #ea580c; }
+  .task-scad-over   { background: #fef2f2; color: #dc2626; }
+  body.dark .task-scad-ok     { background: #052e16; color: #4ade80; }
+  body.dark .task-scad-soon   { background: #1c1a05; color: #facc15; }
+  body.dark .task-scad-urgent { background: #1c0f05; color: #fb923c; }
+  body.dark .task-scad-over   { background: #1c0505; color: #f87171; }
+  .task-del { background: none; border: none; cursor: pointer; color: #e2e8f0; font-size: 16px; padding: 0 2px; transition: color 0.15s; flex-shrink: 0; margin-top: 2px; }
+  .task-del:hover { color: #dc2626; }
+  .task-edit { background: none; border: none; cursor: pointer; color: #e2e8f0; font-size: 13px; padding: 0 2px; transition: color 0.15s; flex-shrink: 0; }
+  .task-edit:hover { color: #7c3aed; }
+  body.dark .task-edit { color: #2d3f5e; }
+  body.dark .task-edit:hover { color: #a78bfa; }
+  .task-pin-btn { background: none; border: 1.5px solid #e2e8f0; border-radius: 7px; cursor: pointer; font-size: 11px; font-weight: 700; padding: 2px 8px; color: #94a3b8; font-family: inherit; transition: all 0.15s; white-space: nowrap; flex-shrink: 0; }
+  .task-pin-btn:hover { border-color: #f59e0b; color: #d97706; background: #fffbeb; }
+  .task-pin-btn.active { background: #fef3c7; border-color: #f59e0b; color: #b45309; }
+  .task-item.monitored { border-left: 3px solid #f59e0b; }
+  .task-section-monitored { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #d97706; margin: 0 0 8px; display: flex; align-items: center; gap: 6px; }
+  .task-section-monitored::after { content: ''; flex: 1; height: 1px; background: #fde68a; }
+  body.dark .task-pin-btn { border-color: #2d3f5e; color: #4a6080; }
+  body.dark .task-pin-btn:hover { border-color: #f59e0b; color: #fbbf24; background: #1c1505; }
+  body.dark .task-pin-btn.active { background: #1c1505; border-color: #d97706; color: #fbbf24; }
+  body.dark .task-item.monitored { border-left-color: #d97706; }
+  body.dark .task-section-monitored { color: #fbbf24; }
+  body.dark .task-section-monitored::after { background: #3a2a00; }
+  .task-empty { text-align: center; padding: 48px 20px; color: #94a3b8; font-size: 13px; }
+
+  /* ── TASK KPI ── */
+  .task-kpi-row { display:flex; gap:10px; flex-wrap:wrap; }
+  .task-kpi { background:white; border-radius:10px; padding:10px 16px; display:flex; flex-direction:column; gap:3px; box-shadow:0 1px 4px rgba(0,0,0,0.07); min-width:90px; border-top:3px solid transparent; flex:1; }
+  .task-kpi-num   { font-size:24px; font-weight:800; line-height:1; }
+  .task-kpi-label { font-size:10px; color:#94a3b8; font-weight:600; white-space:nowrap; }
+  .task-kpi-over   { border-top-color:#dc2626; } .task-kpi-over   .task-kpi-num { color:#dc2626; }
+  .task-kpi-urgent { border-top-color:#ea580c; } .task-kpi-urgent .task-kpi-num { color:#ea580c; }
+  .task-kpi-soon   { border-top-color:#ca8a04; } .task-kpi-soon   .task-kpi-num { color:#ca8a04; }
+  .task-kpi-normal { border-top-color:#3b82f6; } .task-kpi-normal .task-kpi-num { color:#3b82f6; }
+  .task-kpi-done   { border-top-color:#16a34a; } .task-kpi-done   .task-kpi-num { color:#16a34a; }
+
+  /* ── TASK LIST ── */
+  .task-list { display: flex; flex-direction: column; gap: 10px; }
+
+  /* ── PRIORITY BORDER ── */
+  .task-item { border-left: 3px solid #e2e8f0; }
+  .task-item.prio-over   { border-left-color: #dc2626; }
+  .task-item.prio-urgent { border-left-color: #ea580c; }
+  .task-item.prio-soon   { border-left-color: #ca8a04; }
+  .task-item.prio-normal { border-left-color: #3b82f6; }
+  .task-item:not(.done):hover { box-shadow: 0 4px 18px rgba(0,0,0,0.10); transform: translateY(-1px); }
+
+  /* ── SECTION HEADERS ── */
+  .task-section { display:flex; align-items:center; gap:10px; margin:28px 0 10px; }
+  .task-section:first-child { margin-top:4px; }
+  .task-section-lbl { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:1px; white-space:nowrap; }
+  .task-section::after { content:''; flex:1; height:1px; }
+  .ts-monitored .task-section-lbl { color:#d97706; } .ts-monitored::after { background:#fde68a; }
+  .ts-urgenti   .task-section-lbl { color:#dc2626; } .ts-urgenti::after   { background:#fecaca; }
+  .ts-scadenza  .task-section-lbl { color:#ca8a04; } .ts-scadenza::after  { background:#fde68a; }
+  .ts-normali   .task-section-lbl { color:#3b82f6; } .ts-normali::after   { background:#bfdbfe; }
+  .ts-done      .task-section-lbl { color:#94a3b8; } .ts-done::after      { background:#e2e8f0; }
+
+  /* task modal */
+  .task-modal-overlay { position: fixed; inset: 0; background: rgba(10,15,30,0.48); z-index: 1200; display: flex; align-items: center; justify-content: center; animation: overlayIn 0.18s ease; }
+  @keyframes overlayIn { from { opacity:0; } to { opacity:1; } }
+  .task-modal { background: white; border-radius: 20px; width: 100%; max-width: 480px; box-shadow: 0 24px 64px rgba(10,15,30,0.2); animation: modalIn 0.22s cubic-bezier(.25,.8,.25,1); overflow: hidden; }
+  @keyframes modalIn { from { opacity:0; transform:translateY(18px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } }
+  .task-modal-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px 16px; border-bottom: 1px solid #f1f5f9; }
+  .task-modal-title { font-size: 15px; font-weight: 800; color: #1a1a2e; }
+  .task-modal-close { background: none; border: none; font-size: 22px; cursor: pointer; color: #cbd5e1; line-height: 1; padding: 0; transition: color 0.15s; }
+  .task-modal-close:hover { color: #1a1a2e; }
+  .task-modal-body { padding: 20px 24px; display: flex; flex-direction: column; gap: 4px; }
+  .task-modal-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #94a3b8; margin-bottom: 5px; display: block; }
+  .task-modal-group { margin-bottom: 16px; }
+  .task-modal-select { width: 100%; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 10px 12px; font-size: 13px; font-family: inherit; background: white; color: #1a1a2e; outline: none; transition: border-color 0.15s; cursor: pointer; }
+  .task-modal-select:focus { border-color: #7c3aed; }
+  .task-modal-input { width: 100%; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 10px 12px; font-size: 13px; font-family: inherit; background: white; color: #1a1a2e; outline: none; transition: border-color 0.15s; box-sizing: border-box; margin-top: 8px; }
+  .task-modal-input:focus { border-color: #7c3aed; }
+  .task-modal-textarea { width: 100%; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 10px 12px; font-size: 13px; font-family: inherit; background: white; color: #1a1a2e; outline: none; resize: vertical; transition: border-color 0.15s; box-sizing: border-box; min-height: 90px; }
+  .task-modal-textarea:focus { border-color: #7c3aed; }
+  .task-modal-footer { display: flex; gap: 10px; justify-content: flex-end; padding: 0 24px 20px; }
+  .btn-task-cancel { background: #f1f5f9; color: #64748b; border: none; border-radius: 10px; padding: 10px 18px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.15s; }
+  .btn-task-cancel:hover { background: #e2e8f0; }
+  .btn-task-save { background: #7c3aed; color: white; border: none; border-radius: 10px; padding: 10px 22px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; transition: background 0.15s; }
+  .btn-task-save:hover { background: #6d28d9; }
+
+  /* dark task */
+  body.dark .task-item { background: #162035; box-shadow: 0 1px 4px rgba(0,0,0,0.4); }
+  body.dark .task-note { color: #dde4f0; }
+  body.dark .task-cliente-badge { background: #2d1f4e; color: #a78bfa; }
+  body.dark .task-date { color: #2d3f5e; }
+  body.dark .task-del { color: #2d3f5e; }
+  body.dark #view-task [style*="font-weight:800;color:#1a1a2e"] { color: #dde4f0 !important; }
+  body.dark .task-kpi { background: #162035; }
+  body.dark .task-kpi-label { color: #4a6080; }
+  body.dark .task-section-lbl { opacity: 0.9; }
+  body.dark .ts-normali::after { background: #1e3a6e; }
+  body.dark .ts-urgenti::after { background: #3b0a0a; }
+  body.dark .ts-scadenza::after { background: #3b2e00; }
+  body.dark .ts-done::after { background: #1e2d47; }
+  body.dark .task-check { background: #162035; }
+  body.dark .task-modal { background: #162035; }
+  body.dark .task-modal-header { border-color: #1e2d47; }
+  body.dark .task-modal-title { color: #dde4f0; }
+  body.dark .task-modal-select, body.dark .task-modal-input, body.dark .task-modal-textarea { background: #1e2d47; border-color: #2d3f5e; color: #dde4f0; }
+
+  /* ── Centro Allerte (hub) ──────────────────────────────────────────────── */
+  #hub-allerte { width:100%; max-width:680px; margin-top:28px; }
+  .allerte-box { background:#fff; border-radius:16px; box-shadow:0 2px 12px rgba(0,0,0,0.07); overflow:hidden; }
+  .allerte-header { display:flex; align-items:center; justify-content:space-between; padding:14px 20px; border-bottom:1.5px solid #f1f5f9; }
+  .allerte-title { font-size:13px; font-weight:800; color:#1a1a2e; display:flex; align-items:center; gap:8px; }
+  .allerte-badge { background:#dc2626; color:#fff; border-radius:20px; font-size:10px; font-weight:800; padding:1px 7px; }
+  .allerte-badge.ok { background:#16a34a; }
+  .allerte-list { padding:8px 0; }
+  .allerta-item { display:flex; align-items:flex-start; gap:12px; padding:10px 20px; border-bottom:1px solid #f8fafc; transition:background 0.12s; }
+  .allerta-item:last-child { border-bottom:none; }
+  .allerta-item:hover { background:#fafafa; }
+  .allerta-ico { font-size:16px; flex-shrink:0; margin-top:1px; }
+  .allerta-body { flex:1; min-width:0; }
+  .allerta-label { font-size:12px; font-weight:700; color:#1a1a2e; }
+  .allerta-sub { font-size:11px; color:#94a3b8; margin-top:2px; line-height:1.4; }
+  .allerta-link { font-size:10px; font-weight:700; color:#1B3A6B; background:#eff6ff; border-radius:5px; padding:1px 7px; text-decoration:none; white-space:nowrap; flex-shrink:0; align-self:center; cursor:pointer; border:none; font-family:inherit; }
+  .allerta-link:hover { background:#dbeafe; }
+  .allerte-ok { text-align:center; padding:20px; color:#16a34a; font-size:13px; font-weight:700; }
+  .allerta-cat { font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:0.8px; padding:6px 20px 2px; color:#94a3b8; }
+  body.dark .allerte-box { background:#162035; }
+  body.dark .allerte-header { border-color:#1e2d47; }
+  body.dark .allerta-item { border-color:#1e2d47; }
+  body.dark .allerta-item:hover { background:#1e2d47; }
+  body.dark .allerta-label { color:#dde4f0; }
+  body.dark .allerta-sub { color:#4a6080; }
+  body.dark .allerta-link { background:#0c1a3a; color:#60a5fa; }
+  body.dark .allerta-cat { color:#2d3f5e; }
+  body.dark .allerte-title { color:#dde4f0; }
+
+  /* ── Cruscotto Finanziario ──────────────────────────────────────────────── */
+  #pipeline-cruscotto { margin-bottom:18px; background:#fff; border-radius:16px; box-shadow:0 1px 6px rgba(0,0,0,0.07); overflow:hidden; }
+  .cru-header { display:flex; align-items:center; justify-content:space-between; padding:14px 20px; cursor:pointer; user-select:none; border-bottom:1.5px solid #f1f5f9; }
+  .cru-title { font-size:13px; font-weight:800; color:#1a1a2e; display:flex; align-items:center; gap:8px; }
+  .cru-toggle { font-size:11px; color:#94a3b8; }
+  .cru-body { padding:16px 20px 20px; }
+  .cru-summary { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:10px; margin-bottom:20px; }
+  .cru-card { background:#f8fafc; border-radius:10px; padding:12px 14px; }
+  .cru-card-val { font-size:18px; font-weight:800; color:#1B3A6B; }
+  .cru-card-val.green { color:#16a34a; }
+  .cru-card-val.purple { color:#7c3aed; }
+  .cru-card-lbl { font-size:10px; color:#94a3b8; margin-top:3px; font-weight:600; }
+  .cru-chart-wrap { overflow-x:auto; padding-bottom:4px; }
+  .cru-chart { display:flex; align-items:flex-end; gap:8px; height:100px; min-width:360px; }
+  .cru-bar-col { display:flex; flex-direction:column; align-items:center; gap:3px; flex:1; min-width:40px; }
+  .cru-bar-stack { display:flex; flex-direction:column; justify-content:flex-end; width:100%; height:88px; gap:1px; }
+  .cru-bar-seg { border-radius:3px 3px 0 0; min-height:2px; transition:height 0.4s cubic-bezier(.25,.8,.25,1); }
+  .cru-bar-seg.ret  { background:#2563eb; border-radius:3px 3px 0 0; }
+  .cru-bar-seg.fee  { background:#16a34a; }
+  .cru-bar-seg.sa   { background:#7c3aed; }
+  .cru-bar-label { font-size:9px; color:#94a3b8; white-space:nowrap; }
+  .cru-bar-total { font-size:9px; font-weight:700; color:#1a1a2e; white-space:nowrap; margin-bottom:2px; }
+  .cru-legend { display:flex; gap:14px; flex-wrap:wrap; margin-top:12px; }
+  .cru-leg-item { display:flex; align-items:center; gap:5px; font-size:10px; color:#64748b; }
+  .cru-leg-dot { width:8px; height:8px; border-radius:2px; }
+  body.dark #pipeline-cruscotto { background:#162035; }
+  body.dark .cru-header { border-color:#1e2d47; }
+  body.dark .cru-title { color:#dde4f0; }
+  body.dark .cru-card { background:#1e2d47; }
+  body.dark .cru-bar-total { color:#dde4f0; }
+  body.dark .cru-bar-label { color:#4a6080; }
+
+  /* ── Funnel di conversione ───────────────────────────────────────────────── */
+  #pipeline-funnel { margin-bottom:18px; background:#fff; border-radius:16px; box-shadow:0 1px 6px rgba(0,0,0,0.07); padding:16px 20px; }
+  .funnel-title { font-size:13px; font-weight:800; color:#1a1a2e; margin-bottom:14px; }
+  .funnel-track { display:flex; align-items:center; gap:0; overflow-x:auto; padding-bottom:4px; }
+  .funnel-step { display:flex; flex-direction:column; align-items:center; min-width:72px; flex:1; position:relative; }
+  .funnel-step-bar { height:8px; width:100%; position:relative; }
+  .funnel-step-fill { height:8px; border-radius:4px; transition:width 0.5s cubic-bezier(.25,.8,.25,1); }
+  .funnel-step-count { font-size:16px; font-weight:800; color:#1B3A6B; margin-top:6px; }
+  .funnel-step-label { font-size:9px; color:#94a3b8; text-align:center; font-weight:600; margin-top:2px; white-space:nowrap; }
+  .funnel-step-pct { font-size:9px; font-weight:700; color:#16a34a; }
+  .funnel-sep { color:#e2e8f0; font-size:14px; flex-shrink:0; margin-bottom:20px; }
+  .funnel-winrate { display:flex; align-items:center; gap:12px; margin-top:16px; padding-top:12px; border-top:1.5px solid #f1f5f9; flex-wrap:wrap; }
+  .funnel-wr-item { display:flex; align-items:center; gap:6px; font-size:12px; }
+  .funnel-wr-val { font-weight:800; color:#16a34a; font-size:15px; }
+  .funnel-wr-val.red { color:#dc2626; }
+  .funnel-wr-lbl { color:#94a3b8; }
+  body.dark #pipeline-funnel { background:#162035; }
+  body.dark .funnel-title { color:#dde4f0; }
+  body.dark .funnel-step-count { color:#93c5fd; }
+  body.dark .funnel-sep { color:#2d3f5e; }
+  body.dark .funnel-winrate { border-color:#1e2d47; }
+
+  /* ── Modal: campo data incasso ───────────────────────────────────────────── */
+  .modal-date-incasso { display:none; margin-top:6px; }
+  .modal-date-incasso.visible { display:block; }
+  .modal-date-incasso label { font-size:10px; color:#94a3b8; font-weight:600; display:block; margin-bottom:4px; }
+  .modal-date-incasso input { width:100%; border:1.5px solid #e2e8f0; border-radius:8px; padding:8px 10px; font-size:12px; font-family:inherit; outline:none; color:#1a1a2e; background:#f8fafc; }
+  body.dark .modal-date-incasso input { background:#1e2d47; border-color:#2d3f5e; color:#dde4f0; }
 
   /* ── Password Gate ────────────────────────────────────────────────────── */
   #pw-gate { position:fixed; inset:0; z-index:99999; background:#0d1b2e; display:flex; align-items:center; justify-content:center; }
@@ -449,33 +1091,74 @@
 
 <div class="header">
   <div class="header-brand">
-    <div class="header-logo">Next<span>4</span> International</div>
+    <div class="header-logo-pill"><img src="logo_n4.png" alt="Next4 International"></div>
     <div class="header-divider"></div>
     <div class="header-tagline">Dashboard Bandi · Aggiornato al 11/06/2026</div>
   </div>
-  <div class="header-date" id="header-date"></div>
+  <div style="display:flex;align-items:center;gap:4px">
+    <div class="header-date" id="header-date"></div>
+    <button class="btn-darkmode" id="btn-dm" onclick="toggleDark()" title="Dark / Light mode">🌙</button>
+  </div>
 </div>
 
-<div class="stats">
-  <div class="stat-card s-aperto"     onclick="quickFilter('aperto')">    <div class="stat-dot"></div><div class="stat-num" id="c-aperto">0</div><div class="stat-label">Aperti</div></div>
-  <div class="stat-card s-inapertura" onclick="quickFilter('inapertura')"><div class="stat-dot"></div><div class="stat-num" id="c-inapertura">0</div><div class="stat-label">In apertura</div></div>
-  <div class="stat-card s-lavorazione"onclick="quickFilter('lavorazione')"><div class="stat-dot"></div><div class="stat-num" id="c-lavorazione">0</div><div class="stat-label">In lavorazione</div></div>
-  <div class="stat-card s-monitorare" onclick="quickFilter('monitorare')"> <div class="stat-dot"></div><div class="stat-num" id="c-monitorare">0</div><div class="stat-label">Da monitorare</div></div>
-  <div class="stat-card s-chiuso"     onclick="quickFilter('chiuso')">     <div class="stat-dot"></div><div class="stat-num" id="c-chiuso">0</div><div class="stat-label">Chiusi</div></div>
-  <div class="stat-card stat-total"   onclick="quickFilter('')">            <div class="stat-dot"></div><div class="stat-num" id="c-totale">0</div><div class="stat-label">Totale</div></div>
+<!-- ── HUB HOME ── -->
+<div id="view-hub" style="display:none;">
+  <p class="hub-welcome">Benvenuto, Marco</p>
+  <h2 class="hub-title">Scegli un'area di lavoro</h2>
+  <div class="hub-grid">
+    <div class="hub-card hub-card-finanza" onclick="enterSection('finanza')">
+      <div class="hub-card-icon">💼</div>
+      <div class="hub-card-label">Finanza Agevolata</div>
+      <div class="hub-card-desc">Esplora i bandi disponibili, consulta i clienti abbinabili e monitora le scadenze.</div>
+      <div class="hub-card-arrow">→</div>
+    </div>
+    <div class="hub-card hub-card-riservata" onclick="enterSection('riservata')">
+      <div class="hub-card-icon">🔒</div>
+      <div class="hub-card-label">Area Riservata</div>
+      <div class="hub-card-desc">Gestisci la pipeline delle pratiche in corso e organizza le attività da svolgere.</div>
+      <div class="hub-card-arrow">→</div>
+    </div>
+  </div>
+  <div id="hub-allerte">
+    <div class="allerte-box">
+      <div class="allerte-header">
+        <span class="allerte-title">⚠️ Situazione critica <span class="allerte-badge" id="allerte-badge">0</span></span>
+      </div>
+      <div class="allerte-list" id="allerte-list"></div>
+    </div>
+  </div>
 </div>
 
-<div id="urgenza-bar"  class="urgenza-bar"  style="display:none;"></div>
-<div id="apertura-bar" class="apertura-bar" style="display:none;"></div>
+<!-- ── SECTION NAV (breadcrumb) ── -->
+<div class="section-nav" id="section-nav" style="display:none;">
+  <button class="btn-home" onclick="goHome()">⌂ Home</button>
+  <span class="section-nav-sep">/</span>
+  <span class="section-nav-label" id="section-nav-label"></span>
+</div>
 
-<div class="tabs">
+<div class="stats" id="stats-bar" style="display:none;">
+  <div class="stat-card s-aperto"     onclick="quickFilter('aperto')">    <div class="stat-dot"></div><div class="stat-num" id="c-aperto">0</div><div class="stat-bar"><div class="stat-bar-fill" id="bar-c-aperto" style="width:0%"></div></div><div class="stat-label">Aperti</div></div>
+  <div class="stat-card s-inapertura" onclick="quickFilter('inapertura')"><div class="stat-dot"></div><div class="stat-num" id="c-inapertura">0</div><div class="stat-bar"><div class="stat-bar-fill" id="bar-c-inapertura" style="width:0%"></div></div><div class="stat-label">In apertura</div></div>
+  <div class="stat-card s-lavorazione"onclick="quickFilter('lavorazione')"><div class="stat-dot"></div><div class="stat-num" id="c-lavorazione">0</div><div class="stat-bar"><div class="stat-bar-fill" id="bar-c-lavorazione" style="width:0%"></div></div><div class="stat-label">In lavorazione</div></div>
+  <div class="stat-card s-monitorare" onclick="quickFilter('monitorare')"> <div class="stat-dot"></div><div class="stat-num" id="c-monitorare">0</div><div class="stat-bar"><div class="stat-bar-fill" id="bar-c-monitorare" style="width:0%"></div></div><div class="stat-label">Da monitorare</div></div>
+  <div class="stat-card s-chiuso"     onclick="quickFilter('chiuso')">     <div class="stat-dot"></div><div class="stat-num" id="c-chiuso">0</div><div class="stat-bar"><div class="stat-bar-fill" id="bar-c-chiuso" style="width:0%"></div></div><div class="stat-label">Chiusi</div></div>
+  <div class="stat-card stat-total"   onclick="quickFilter('')">            <div class="stat-dot"></div><div class="stat-num" id="c-totale">0</div><div class="stat-bar"><div class="stat-bar-fill" id="bar-c-totale" style="width:0%"></div></div><div class="stat-label">Totale</div></div>
+</div>
+
+<div id="urgenza-bar"  class="urgenza-bar"  style="display:none;" data-section="finanza"></div>
+<div id="apertura-bar" class="apertura-bar" style="display:none;" data-section="finanza"></div>
+
+<div class="tabs" id="tabs-finanza" style="display:none;">
   <button class="tab active" onclick="switchTab('bandi')">📋 Bandi</button>
   <button class="tab" onclick="switchTab('clienti')">🏢 Vista Clienti</button>
   <button class="tab" onclick="switchTab('scadenzario')">📅 Scadenzario</button>
-  <button class="tab" onclick="switchTab('pipeline')">💼 Pipeline</button>
+</div>
+<div class="tabs" id="tabs-riservata" style="display:none;">
+  <button class="tab active" onclick="switchTab('pipeline')">💼 Pipeline</button>
+  <button class="tab" onclick="switchTab('task')">✅ Task</button>
 </div>
 
-<div class="data-toolbar">
+<div class="data-toolbar" id="data-toolbar" style="display:none;">
   <div class="data-toolbar-group">
     <span class="data-toolbar-label">Aggiungi</span>
     <button class="btn-data-primary" onclick="openAddBandoModal()">+ Bando</button>
@@ -491,11 +1174,11 @@
   </div>
 </div>
 
-<div id="view-bandi">
+<div id="view-bandi" class="tab-view">
 
 <div class="filtri-wrap">
   <div class="filtri">
-    <div><label>Ricerca</label><input id="q" type="text" placeholder="Cerca bando, ente, descrizione..."></div>
+    <div class="search-wrap"><label>Ricerca</label><input id="q" type="text" placeholder="Cerca bando, ente, descrizione..."><span class="search-hint">/</span></div>
     <div><label>Stato</label><select id="f-stato"></select></div>
     <div><label>Regione</label><select id="f-regione"></select></div>
     <div><label>Tipologia</label><select id="f-tipo"></select></div>
@@ -519,6 +1202,18 @@
 </div><!-- /view-bandi -->
 
 <div id="view-clienti" style="display:none;">
+  <div class="clienti-toolbar">
+    <div class="clienti-search-wrap">
+      <input type="text" class="clienti-search" id="clienti-search" placeholder="Cerca cliente…">
+    </div>
+    <select class="clienti-sort" id="clienti-sort">
+      <option value="bandi">Bandi aperti ↓</option>
+      <option value="urgenza">Urgenza ↓</option>
+      <option value="nome">Nome A→Z</option>
+      <option value="deminimis">De minimis residuo ↓</option>
+    </select>
+    <span class="clienti-count" id="clienti-count"></span>
+  </div>
   <div class="clienti-grid" id="clienti-grid"></div>
 </div>
 
@@ -528,6 +1223,8 @@
 
 <div id="view-pipeline" style="display:none;">
   <div class="pipeline-wrap">
+    <div id="pipeline-cruscotto" style="display:none;"></div>
+    <div id="pipeline-funnel" style="display:none;"></div>
     <div class="pipeline-kpi" id="pipeline-kpi"></div>
     <div class="pipeline-toolbar">
       <select id="pf-stato" onchange="renderPipeline()">
@@ -564,6 +1261,58 @@
     </table>
     <div class="empty-pipeline" id="p-empty" style="display:none">
       Nessuna voce in pipeline.<br><span style="font-size:12px">Clicca <strong>+ Aggiungi voce</strong> per iniziare a tracciare i tuoi incarichi.</span>
+    </div>
+  </div>
+</div>
+
+<div id="view-task" style="display:none;">
+  <div class="task-wrap">
+    <div class="task-topbar">
+      <div style="font-size:15px;font-weight:800;color:#1a1a2e;">Attività</div>
+      <button class="btn-task-fab" onclick="openTaskModal()"><span class="fab-ico">＋</span> Nuova attività</button>
+    </div>
+    <div id="task-stats" style="margin-bottom:20px;"></div>
+    <div id="task-list"></div>
+  </div>
+</div>
+
+<!-- Modal nuova attività -->
+<div id="task-modal-overlay" class="task-modal-overlay" style="display:none;" onclick="if(event.target===this)closeTaskModal()">
+  <div class="task-modal">
+    <div class="task-modal-header">
+      <span class="task-modal-title" id="task-modal-title">Nuova attività</span>
+      <button class="task-modal-close" onclick="closeTaskModal()">×</button>
+    </div>
+    <input type="hidden" id="task-editing-id" value="">
+    <div class="task-modal-body">
+      <div class="task-modal-group">
+        <label class="task-modal-label">Cliente</label>
+        <select class="task-modal-select" id="task-cliente-select" onchange="onClienteSelectChange()">
+          <option value="">— Seleziona cliente —</option>
+          <option value="__altro__">✏️  Scrivi il nome manualmente...</option>
+        </select>
+        <input class="task-modal-input" id="task-cliente-custom" type="text" placeholder="Nome cliente..." style="display:none;">
+      </div>
+      <div class="task-modal-group">
+        <label class="task-modal-label">Strumento / Bando</label>
+        <select class="task-modal-select" id="task-strumento-select" onchange="onStrumentoSelectChange()">
+          <option value="">— Seleziona bando / strumento —</option>
+          <option value="__altro__">✏️  Scrivi il nome manualmente...</option>
+        </select>
+        <input class="task-modal-input" id="task-strumento-custom" type="text" placeholder="Nome bando o strumento..." style="display:none;">
+      </div>
+      <div class="task-modal-group">
+        <label class="task-modal-label">Note / Attività</label>
+        <textarea class="task-modal-textarea" id="task-note" placeholder="Descrivi l'attività da svolgere..."></textarea>
+      </div>
+      <div class="task-modal-group">
+        <label class="task-modal-label">Scadenza <span style="font-weight:400;text-transform:none;letter-spacing:0">(opzionale)</span></label>
+        <input class="task-modal-input" id="task-scadenza" type="date" style="margin-top:0;">
+      </div>
+    </div>
+    <div class="task-modal-footer">
+      <button class="btn-task-cancel" onclick="closeTaskModal()">Annulla</button>
+      <button class="btn-task-save" id="btn-task-save-label" onclick="saveTaskFromModal()">Salva attività</button>
     </div>
   </div>
 </div>
@@ -607,7 +1356,11 @@
       </div>
       <div class="modal-field">
         <label>Retainer pagato?</label>
-        <select id="m-ret-pagato"><option value="true">✓ Sì, pagato</option><option value="false">✗ Non ancora</option></select>
+        <select id="m-ret-pagato" onchange="onRetPagatoChange()"><option value="true">✓ Sì, pagato</option><option value="false">✗ Non ancora</option></select>
+        <div class="modal-date-incasso" id="m-ret-data-wrap">
+          <label>📅 Data incasso retainer</label>
+          <input type="date" id="m-ret-data-incasso">
+        </div>
       </div>
     </div>
     <div class="modal-row2">
@@ -617,7 +1370,11 @@
       </div>
       <div class="modal-field">
         <label>Success fee pagata?</label>
-        <select id="m-sf-pagato"><option value="false">✗ Non ancora</option><option value="true">✓ Sì, pagata</option></select>
+        <select id="m-sf-pagato" onchange="onSfPagatoChange()"><option value="false">✗ Non ancora</option><option value="true">✓ Sì, pagata</option></select>
+        <div class="modal-date-incasso" id="m-sf-data-wrap">
+          <label>📅 Data incasso success fee</label>
+          <input type="date" id="m-sf-data-incasso">
+        </div>
       </div>
     </div>
     <div class="modal-row2">
@@ -648,6 +1405,7 @@
 </div>
 
 <div id="ap-toast"></div>
+<button id="btn-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Torna su">↑</button>
 
 <!-- MODAL ACTION PLAN -->
 <div class="modal-overlay" id="modal-ap">
@@ -751,10 +1509,6 @@
       <label>Link ufficiale</label>
       <input type="url" id="nb-link" placeholder="https://...">
     </div>
-    <div class="modal-field">
-      <label>Clienti abbinabili</label>
-      <div id="nb-clienti-wrap" style="max-height:130px;overflow-y:auto;border:1.5px solid #e2e8f0;border-radius:8px;padding:8px 10px;display:flex;flex-direction:column;gap:3px"></div>
-    </div>
     <div class="modal-actions">
       <button class="btn-modal-cancel" onclick="document.getElementById('modal-new-bando').classList.remove('open')">Annulla</button>
       <button class="btn-modal-save" onclick="saveNewBando()">💾 Salva bando</button>
@@ -822,6 +1576,7 @@
 (function() {
   if (sessionStorage.getItem('n4auth') === '1') {
     document.getElementById('pw-gate').classList.add('hidden');
+    showHub();
   }
 })();
 
@@ -831,6 +1586,7 @@ function verificaPassword() {
     sessionStorage.setItem('n4auth', '1');
     document.getElementById('pw-gate').classList.add('hidden');
     document.getElementById('pw-err').textContent = '';
+    showHub();
   } else {
     input.classList.add('pw-error');
     document.getElementById('pw-err').textContent = 'Password errata. Riprova.';
@@ -838,6 +1594,54 @@ function verificaPassword() {
     input.focus();
     setTimeout(() => input.classList.remove('pw-error'), 400);
   }
+}
+
+function showHub() {
+  document.getElementById('view-hub').style.display = '';
+  document.getElementById('section-nav').style.display = 'none';
+  document.getElementById('stats-bar').style.display = 'none';
+  document.getElementById('data-toolbar').style.display = 'none';
+  document.getElementById('tabs-finanza').style.display = 'none';
+  document.getElementById('tabs-riservata').style.display = 'none';
+  ['view-bandi','view-clienti','view-scadenzario','view-pipeline','view-task'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
+  renderAllerte();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function goHome() {
+  showHub();
+}
+
+function enterSection(section) {
+  document.getElementById('view-hub').style.display = 'none';
+
+  const nav = document.getElementById('section-nav');
+  const navLabel = document.getElementById('section-nav-label');
+  nav.style.display = 'flex';
+
+  if (section === 'finanza') {
+    navLabel.textContent = '💼 Finanza Agevolata';
+    navLabel.className = 'section-nav-label';
+    document.getElementById('stats-bar').style.display = 'flex';
+    document.getElementById('data-toolbar').style.display = 'flex';
+    document.getElementById('tabs-finanza').style.display = 'flex';
+    document.getElementById('tabs-riservata').style.display = 'none';
+    // attiva bandi di default
+    switchTab('bandi');
+  } else {
+    navLabel.textContent = '🔒 Area Riservata';
+    navLabel.className = 'section-nav-label section-nav-label-riservata';
+    document.getElementById('stats-bar').style.display = 'none';
+    document.getElementById('data-toolbar').style.display = 'none';
+    document.getElementById('tabs-finanza').style.display = 'none';
+    document.getElementById('tabs-riservata').style.display = 'flex';
+    // attiva pipeline di default
+    switchTab('pipeline');
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // ─── DATI BANDI ─────────────────────────────────────────────────────────
@@ -858,15 +1662,15 @@ const BANDI = [
     tipo:["rs","innovazione"], contributo:"Fino a €250.000 fondo perduto",
     scadenza:"30/06/2026 (scadenza PROROGATA)", proc:"Graduatoria",
     stato:"aperto", urgente:true, altaRilevanza:true, aperturaImminente:false,
-    descrizione:"Startup innovative Lazio <36 mesi, TRL≥4. Trasformazione risultati di ricerca in impresa. Originariamente chiuso il 05/06/2026, PROROGATO al 30/06/2026.",
-    clienti:["INTUOS SRL","Messagenius","Drop Digital Health","Azu Tech","Assetia *","Yourease *"],
+    descrizione:"Startup innovative Lazio <36 mesi, TRL≥4. ⚠ RIMOSSI: INTUOS (84m), Messagenius (143m), Drop(41m >36m), Yourease(BO≠Lazio). Azu Tech (RM, 18/01/2024, 29m) ✅ ammissibile se iscritto startup innovativa.",
+    clienti:["Azu Tech","Assetia *"],
     link:"https://ttlazio.lazioinnova.it" },
 
   { nome:"Voucher Manager – Potenziamento Manageriale Lazio", ente:"Regione Lazio / PR FSE+ 2021-2027", regione:"Lazio",
     tipo:["impresa"], contributo:"Fino a €30.000 per azienda",
     scadenza:"30/06/2026 (finestre mensili)", proc:"Sportello (ordine cronologico)",
     stato:"aperto", urgente:true, altaRilevanza:true, aperturaImminente:false,
-    descrizione:"Voucher per assunzione manager/quadri o consulenza manageriale specializzata. €5M totali. Aperto a tutte le imprese laziali. Fino a 2 domande per azienda.",
+    descrizione:"Voucher per assunzione manager/quadri o consulenza manageriale specializzata. €5M totali. Aperto a tutte le imprese laziali. Fino a 2 domande per azienda. ✅ Sede Lazio confermata per: WDA, Govtech, Ecoter, Ecubit, Consedin, Speri, Kerr.",
     clienti:["INTUOS SRL","Messagenius","Drop Digital Health","Azu Venture","Azu Tech","Ecoter","Ecubit","WDA","Govtech","Consedin","Speri","Kerr","TLC Telecomunicazioni","Assetia *"],
     link:"https://www.lazioeuropa.it/bandi/rafforzamento-delle-capacita-manageriali-delle-imprese/" },
 
@@ -891,40 +1695,40 @@ const BANDI = [
     tipo:["startup","innovazione"], contributo:"Fino a €1.500.000",
     scadenza:"Fino a esaurimento fondi (31/12/2029)", proc:"Sportello",
     stato:"aperto", urgente:false, altaRilevanza:true, aperturaImminente:false,
-    descrizione:"Finanziamento agevolato tasso zero + fondo perduto (30% Centro-Sud) per startup innovative <60 mesi. Aperto dal 01/01/2024.",
-    clienti:["BrainoAI","INTUOS SRL","Messagenius","Drop Digital Health","Ekore SRL","Fideliomed","Velion SRL","Wink Suite SRL","Boss Technologies SRL","Destino Italia","Azu Tech","Yourease","OralTec","Heres *","Assetia *"],
+    descrizione:"Startup innovative <60 mesi. ⚠ RIMOSSI per età: INTUOS (2019), Boss Tech (2020), Velion (2020), Messagenius (2014). Dati chiave: BrainoAI(MI,2022), Drop(RM,10/01/2023,41m), Ekore(PD,2022,48m), Fideliomed(TO,04/02/2022,52m), WinkSuite(MI,28/03/2023,38m), DestinoItalia(PA,15/07/2025,11m), AzuTech(RM,18/01/2024,29m), Yourease(BO,01/10/2024,20m). ⚠ OralTec(FI,28/09/2023,32m): ATECO 46.38 (commercio) – verificare se soddisfa requisito alta tecnologia.",
+    clienti:["BrainoAI","Drop Digital Health","Ekore SRL","Fideliomed","Wink Suite SRL","Destino Italia","Azu Tech","Yourease","OralTec","Heres *","Assetia *"],
     link:"https://www.invitalia.it/incentivi-e-strumenti/smartstart-italia" },
 
   { nome:"ON – Oltre Nuove Imprese a Tasso Zero", ente:"Invitalia", regione:"Nazionale",
     tipo:["impresa"], contributo:"Prestito tasso zero + fondo perduto fino al 90%",
     scadenza:"Fino a esaurimento fondi", proc:"Sportello",
     stato:"aperto", urgente:false, altaRilevanza:false, aperturaImminente:false,
-    descrizione:"Micro/piccole imprese femminili (>50% quote donne) o giovanili (under 35). Wink Suite: 100% donna. INTUOS SRL: 58,5% donna.",
-    clienti:["Wink Suite SRL","INTUOS SRL"],
+    descrizione:"Micro/piccole imprese femminili (>50% quote donne) o giovanili (under 35), costituite da ≤5 anni. Wink Suite: 100% donna, costituita 28/03/2023. ⚠ RIMOSSA INTUOS (2019, >5 anni).",
+    clienti:["Wink Suite SRL"],
     link:"https://www.invitalia.it/incentivi-e-strumenti/ON-nuove-imprese-tasso-zero" },
 
   { nome:"Autoimpiego Centro-Nord", ente:"Invitalia", regione:"Centro-Nord",
     tipo:["lavoro","impresa"], contributo:"Voucher €30.000–€40.000",
     scadenza:"Fino a esaurimento fondi", proc:"Sportello",
     stato:"aperto", urgente:false, altaRilevanza:false, aperturaImminente:false,
-    descrizione:"Incentivi per avvio nuove attività autonome al Centro-Nord. Destinato prevalentemente a persone fisiche o nuove imprese.",
-    clienti:["BrainoAI","Boss Technologies SRL","Azu Tech","OralTec","Yourease"],
+    descrizione:"⚠ ATTENZIONE: bando riservato a persone fisiche 18-35 anni disoccupate/inattive che vogliono AVVIARE una nuova attività (non per SRL già esistenti). Da associare solo a founder specifici che soddisfano i requisiti personali, non all'azienda.",
+    clienti:[],
     link:"https://www.invitalia.it/incentivi-e-strumenti/autoimpiego-centro-nord" },
 
   { nome:"Resto al Sud 2.0", ente:"Invitalia / Agenzia per la Coesione", regione:"Sud Italia (8 regioni)",
     tipo:["impresa"], contributo:"€50.000 – €200.000",
     scadenza:"Dal 15/10/2025 – esaurimento fondi", proc:"Sportello",
     stato:"aperto", urgente:false, altaRilevanza:true, aperturaImminente:false,
-    descrizione:"Contributo fondo perduto + finanziamento per avvio/sviluppo imprese al Mezzogiorno. Titolari under 55. Digitalmens (NA), ProGen (CT), GATIM (CZ), Destino Italia (PA), Tod Systems (CZ).",
-    clienti:["Digitalmens","ProGen SRL","GATIM SRL","Destino Italia","Tod Systems"],
+    descrizione:"⚠ ATTENZIONE: bando riservato a persone fisiche 18-34 anni disoccupate/inattive che avviano nuove iniziative (non per SRL già esistenti). Da associare solo a founder under 34 inoccupati. GATIM 1995, ProGen 2010, Tod Systems 2015, Digitalmens 2020 – tutte imprese già operative.",
+    clienti:[],
     link:"https://www.invitalia.it/incentivi-e-strumenti/resto-al-sud" },
 
   { nome:"Pre-Seed 3.0 – Regione Lazio", ente:"Regione Lazio / Lazio Innova", regione:"Lazio",
     tipo:["startup","innovazione"], contributo:"Fino a €145.000 (fondo perduto 100%)",
     scadenza:"19/03/2026 – fondi esauriti ✗", proc:"Sportello",
     stato:"chiuso", urgente:false, altaRilevanza:false, aperturaImminente:false,
-    descrizione:"Startup innovative Lazio <36 mesi. Fondo perduto 100% su spese ammissibili. Apporto min €10.000. Copertura fino a 2× se investitore terzo (max €145.000). Monitorare Pre-Seed 4.0.",
-    clienti:["INTUOS SRL","Messagenius","Drop Digital Health","Azu Tech","Assetia *","Yourease *"],
+    descrizione:"Startup innovative Lazio <36 mesi. Fondo perduto 100% su spese ammissibili. Apporto min €10.000. Copertura fino a 2× se investitore terzo (max €145.000). Monitorare Pre-Seed 4.0. ⚠ RIMOSSI per età >36 mesi: INTUOS (2019), Messagenius (2014), Drop Digital Health (41 mesi).",
+    clienti:["Azu Tech","Assetia *"],
     link:"https://www.lazioinnova.it/bandi/pre-seed-3-0/" },
 
   { nome:"TecnoNidi Puglia", ente:"Regione Puglia", regione:"Puglia",
@@ -963,8 +1767,8 @@ const BANDI = [
     tipo:["cultura","impresa"], contributo:"€142 milioni (dotazione totale)",
     scadenza:"Dal 10/12/2025 al 31/12/2029", proc:"Sportello",
     stato:"aperto", urgente:false, altaRilevanza:false, aperturaImminente:false,
-    descrizione:"Imprese filiera culturale/creativa. Regioni: Basilicata, Calabria, Campania, Molise, Puglia, Sardegna, Sicilia.",
-    clienti:["Destino Italia","ProGen SRL"],
+    descrizione:"Imprese filiera culturale/creativa. Regioni: Basilicata, Calabria, Campania, Molise, Puglia, Sardegna, Sicilia. ⚠ Destino Italia: ATECO 62.10 (piattaforma HR per mobilità internazionale) – verificare se rientra nella filiera culturale/creativa prima di presentare domanda.",
+    clienti:["Destino Italia"],
     link:"https://www.invitalia.it/incentivi-e-strumenti/cultura-cresce" },
 
   // ── SIMEST FONDO 394 – 9 strumenti ──────────────────────────────────────
@@ -1077,7 +1881,7 @@ const BANDI = [
     tipo:["rs","innovazione"], contributo:"Da definire",
     scadenza:"Apre 25/06/2026 – scade 22/09/2026", proc:"Graduatoria",
     stato:"inapertura", urgente:false, altaRilevanza:false, aperturaImminente:true,
-    descrizione:"R&S collaborativa per gli ecosistemi innovativi lombardi. Apre tra 14 giorni. BrainoAI, Wink Suite, Spartan Tech a Milano. TLC con sede op. Milano. Fairtile (London|Milan) potenzialmente idonea.",
+    descrizione:"R&S collaborativa per gli ecosistemi innovativi lombardi. Apre tra 14 giorni. BrainoAI, Wink Suite, Spartan Tech a Milano. TLC: sede op. Milano ✅ confermata. Fairtile (London|Milan) potenzialmente idonea.",
     clienti:["BrainoAI","Wink Suite SRL","Casavo","Spartan Tech","TLC Telecomunicazioni","Fairtile *"],
     link:"https://www.openinnovation.regione.lombardia.it/it/bandi-e-sperimentazioni/collabora-innova/collabora-innova-edizione-2" },
 
@@ -1085,8 +1889,8 @@ const BANDI = [
     tipo:["startup","innovazione"], contributo:"€15,64 milioni (dotazione totale)",
     scadenza:"In attesa di pubblicazione", proc:"Graduatoria",
     stato:"inapertura", urgente:false, altaRilevanza:true, aperturaImminente:false,
-    descrizione:"Sostegno alle startup innovative ad alto contenuto tecnologico. In preinformazione MIMIT.",
-    clienti:["BrainoAI","INTUOS SRL","Messagenius","Drop Digital Health","Ekore SRL","Fideliomed","Velion SRL","Wink Suite SRL","Boss Technologies SRL","Destino Italia","Azu Tech","Yourease","OralTec","Heres *","Assetia *"],
+    descrizione:"Bando Regione Lombardia per startup innovative (<36 mesi, o <60 mesi se TRL≤6). Requisito: sede in Lombardia entro la prima erogazione. BrainoAI e Wink Suite già a Milano. ⚠ RIMOSSI per età: INTUOS (84m), Messagenius (143m), Boss Technologies (72m), Velion (72m).",
+    clienti:["BrainoAI","Wink Suite SRL","Drop Digital Health","Ekore SRL","Fideliomed","Destino Italia","Azu Tech","Yourease","OralTec","Heres *","Assetia *"],
     link:"https://www.regione.lombardia.it/attivita-produttive-imprese/start-up-e-avvio-di-impresa/sviluppo-tecnologico-delle-startup-innovative" },
 
   { nome:"Filiere Tecnologiche – Lazio", ente:"Regione Lazio", regione:"Lazio",
@@ -1134,8 +1938,8 @@ const BANDI = [
     tipo:["startup","innovazione"], contributo:"€300.000 – €1.500.000",
     scadenza:"Bandi periodici (verificare apertura)", proc:"Sportello / Graduatoria",
     stato:"monitorare", urgente:false, altaRilevanza:true, aperturaImminente:false,
-    descrizione:"Incentivi (equity, quasi-equity, prestiti) per startup innovative. Verificare apertura corrente su Invitalia. Azu Tech, Yourease, OralTec nuove startup da monitorare.",
-    clienti:["BrainoAI","INTUOS SRL","Messagenius","Drop Digital Health","Ekore SRL","Fideliomed","Azu Tech","Yourease","OralTec","Heres *","Assetia *"],
+    descrizione:"Incentivi (equity, quasi-equity, prestiti) per startup innovative. Verificare apertura corrente e limite età alla riapertura. ⚠ Alla prossima edizione verificare eligibilità INTUOS (2019, prob. >60 mesi) e Messagenius (2014, esclusa).",
+    clienti:["BrainoAI","Drop Digital Health","Ekore SRL","Fideliomed","Azu Tech","Yourease","OralTec","Heres *","Assetia *"],
     link:"https://www.invitalia.it/" },
 
   { nome:"Brevetti+, Disegni+, Marchi+ e EUIPO SME Fund", ente:"MIMIT / UIBM / EUIPO", regione:"Nazionale / Europeo",
@@ -1150,7 +1954,7 @@ const BANDI = [
     tipo:["rs"], contributo:"€500.000 – €2.000.000",
     scadenza:"Luglio–Agosto 2026 (da verificare apertura)", proc:"Graduatoria",
     stato:"monitorare", urgente:false, altaRilevanza:false, aperturaImminente:false,
-    descrizione:"Co-finanziamento ricerca collaborativa tra imprese e centri di ricerca in Lombardia. Spartan Tech e TLC (sede op. MI). Fairtile con ufficio Milano.",
+    descrizione:"Co-finanziamento ricerca collaborativa tra imprese e centri di ricerca in Lombardia. Spartan Tech e TLC (sede op. Milano ✅ confermata). Fairtile con ufficio Milano.",
     clienti:["BrainoAI","Casavo","Spartan Tech","TLC Telecomunicazioni","Fairtile *"],
     link:"https://www.bandi.regione.lombardia.it/servizi/servizio/bandi/dettaglio/ricerca-innovazione/infrastrutture-tecnologiche/manifestazione-interesse-irtt-RLF12024039403" },
 
@@ -1335,6 +2139,78 @@ const BANDI = [
     link:"https://www.lazioinnova.it/bandi/voucher-internazionalizzazione-pmi-2026/" }
 ];
 
+// ─── MAPPING BANDO → SCHEDA PDF ──────────────────────────────────────────
+// Percorsi relativi alla posizione di questo file (bandi/)
+const SCHEDE_MAP = {
+  "STEP Sicilia":                                    "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(1) STEP Sicilia _ 15-12-2025 - 13-02-2026 _ Sicilia /Consulting N4G_Scheda STEP SICILIA_05.12.2025.docx.pdf",
+  "Energia Solare per le Imprese – Lazio":           "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(2) Energia solare per le imprese – Lazio _ 03-02-2026 – 31-03-2026 _ Lazio/Consulting N4G.Scheda Energia solare per le imprese - 04.12.2025.docx.pdf",
+  "Accordi per l'Innovazione 2025":                  "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(3) ACCORDI PER L'INNOVAZIONE 2025 _ 14-01-2026 – 18-02-2026 _ Italia (nazionale)/Consulting N4G.Scheda Accordi per l_Innovazione - 06.11.2025.docx (1).pdf",
+  "MiC – Cultura Cresce":                            "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(4) AVVISO MIC – CULTURA CRESCE _ 10-12-2025 – 31-12-2029 _ Basilicata, Calabria, Campania, Molise, Puglia, Sardegna, Sicilia/Consulting N4G.Scheda MiC Cultura Cresce - 21.11.2025.docx.pdf",
+  "STEP Campania":                                   "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(6) AVVISO STEP CAMPANIA _ 04-02-2026 – 26-02-2026 _ Campania/Consulting N4G.STEP Campania_mod - 21.11.2025.docx.pdf",
+  "Investimenti Strategici PMI – Lazio":             "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(7) INVESTIMENTI STRATEGICI PMI _ 17-07-2025 – 05-03-2026 _ Lazio/Investimenti Strategici Lazio_Consulting Next4Group.pdf",
+  "MiniPIA Puglia":                                  "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(8) MiniPIA Puglia _ 29-02-2024 – fino a esaurimento fondi _ Puglia/MiniPIA Puglia_Consulting Next4Group.pdf",
+  "Smart&Start Italia":                              "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(9) Smart & Start Italia _ 01-01-2024 – 31-12-2029 _ Italia (nazionale)/Smart&Start Consulting Next4 Group.pdf",
+  "ON – Oltre Nuove Imprese a Tasso Zero":           "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(11) ON - Oltre Nuove imprese a tasso zero _ Fino a esaurimento fondi - rifinanziato _ Italia/Consulting N4G.ON - Oltre nuove imprese a tasso zero - 03.03.2026.docx.pdf",
+  "Autoimpiego Centro-Nord":                         "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(12) Autoimpiego centro-nord _ Fino a esaurimento fondi _ centro nord/Consulting N4G.Autoimpiego centro nord - 05.02.2026.docx.pdf",
+  "Brevetti+ 2025":                                  "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(13) Brevetti+ 2025 _ Chiuso _ Italia/Consulting N4G.Brevetti+ 2025 - 05.02.2026.docx.pdf",
+  "Bando Internazionalizzazione Imprese FVG 2026":   "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(14) BANDO INTERNAZIONALIZZAZIONE _ Friuli - Venezia Giulia _ 12-02-2026 – 12-05-2026/ConsultingN4G.BANDO INTERNAZIONALIZZAZIONE _ Friuli - Venezia Giulia _ 12_02_2026 – 12_05_2026.pdf",
+  "Fondo Repubblica Digitale – Prospettive+":        "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(15) BANDO Fondo Repubblica Digitale Prospettive+ _ Italia _ 20-02-2026 – 15-05-2026/Consulting N4G.BANDO Fondo Repubblica Digitale Prospettive+ _ Italia _ 20_02_2026 – 15_05_2026.pdf",
+  "Pre-Seed 3.0 – Regione Lazio":                   "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(16) BANDO Bando Pre-seed 3.0 Regione Lazio _ 19-03-2026 – fino ad esaurimento fondi/Consulting N4G.Pre-seed 3.0 Regione Lazio - 19_03_2026 - fino ad esaurimento fondi.docx-2.pdf",
+  "Programma Technology Transfer – Lazio (TT Lazio)":"finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(17) BANDO Programma Technology Transfer Lazio (TT Lazio) _ 02-03-2026 – 05-06-2026/Consulting N4G - Programma Technology Transfer Lazio - 02_03_2026 - 05_06_2026.docx.pdf",
+  "PNRR – Facility Parco Agrisolare":               "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(18) BANDO PNRR Facility Parco Agrisolare _ 10-03-2026 – 09-10-2026/Consulting N4G _ Avviso MASE Facility Parco Agrisolare _ 10_03_2026 - 09_10_2026.docx.pdf",
+  "Innovazione Strategica STEP – Toscana":           "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(20) Bando Innovazione Strategica STEP - Toscana _ 30-03-2026 - Esaurimento fondi _ Toscana/Consulting N4G - Innovazione Strategica Step Toscana.docx.pdf",
+  "Staff House – Riqualificazione Immobili":         "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(21) Bando Staff House – Riqualificazione degli immobili _ 02-04-2026 - 05-05-2026/Consulting N4G - Staff House Riquialificazione degli immobili.docx.pdf",
+  "Tech4Health":                                     "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(22) Bando Tech4Health _ 07.04.2026 - 31.05.2026/Consulting N4G - Tech4Health.pdf",
+  "Voucher Startup – Sardegna":                      "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(23) Voucher Startup – Incentivi per la competitività delle Startup Innovative in Sardegna _ 10-11-2025 - 30-04-2027 _ Sardegna/Consulting N4G - (23) Voucher Startup – Incentivi per la competitività delle Startup Innovative in Sardegna _ 10_11_2025 - 30_04_2027 _ Sardegna.pdf",
+  "Investimenti Sostenibili 4.0 MIMIT":              "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(24) Investimenti Sostenibili 4.0 MIMIT _ Sud Italia/Consulting N4G. Investimenti sostenibili 4.0 - 22.05.2026.docx.pdf",
+  "Bando SWICH – Terza Edizione 2026":               "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(25) Bando Swich - Terza Edizione 2026 _ Piemonte/Consulting N4G.Swich Piemonte - 21.05.2026.docx.pdf",
+  "STEP Piemonte":                                   "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(26) STEP Piemonte _ Piemonte/_Consulting N4G.STEP Piemonte - 21.05.2026.docx.pdf",
+  "Donne e Impresa Lazio 2026":                      "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(27) Donne e Impresa/Consulting N4G - Donne e Impresa Lazio 2026.docx.pdf",
+  "Resto al Sud 2.0":                                "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(28) Resto al Sud 2.0 _ Sud Italia _ 15-10-2025 - esaurimento fondi/Consulting N4G.Resto al Sud 2.0- 01.06.2026.docx.pdf",
+  "STEP Puglia":                                     "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(29) STEP Puglia _ Puglia - Esaurimento fondi/Consulting N4G.STEP Puglia - 01.06.2026.pdf",
+  "TecnoNidi Puglia":                                "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(30) TECNONIDI Puglia _ Puglia - esaurimento fondi/Consulting N4G_TecnonidicPuglia.docx.pdf",
+  "Calabria Startup – Consolidamento":               "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(31) START UP Calabria /Consulting N4G - Calabria Startup.docx.pdf",
+  "Collabora & Innova 2 – Lombardia":                "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(32) Collabora &Innova 2 _ Lombardia/Consulting_N4G_Collabora_Innova_2_Lombardia.docx.pdf",
+  "Filiere Tecnologiche – Lazio":                    "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(33) Filiere Tecnologiche _ Lazio _ in attesa di decreto/Consulting_N4G_Filiere_Tecnologiche_Lazio.docx.pdf",
+  "Sviluppo Tecnologico delle Startup Innovative":   "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(34) Sviluppo tecnologico delle startup innovative _ Lombardia/Consulting_N4G_Sviluppo_Tecnologico_Startup_Innovative_Lombardia.docx.pdf",
+  "STEP FRI – Lazio":                                "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(35) STEP FRI _ Lazio _ in attesa di decreto/Consulting_N4G_STEP_FRI_Lazio.docx.pdf",
+  "Filiere Riciclo e Recupero Rifiuti – Calabria":   "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(36) Filiere Riciclo Recupero Rifiuti Calabria _ Calabria _ 04-06-2026 - 06-07-2026/Consulting_N4G_Filiere_Riciclo_Recupero_Rifiuti_Calabria.docx.pdf",
+  // ─── SCHEDE NUOVE (HTML) ───────────────────────────────────────────────────
+  "SIMEST – Inserimento Mercati (IM)":               "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(37) SIMEST – Inserimento Mercati _ Sportello digitale continuo _ Nazionale/Consulting N4G - SIMEST Inserimento Mercati.pdf",
+  "SIMEST – Transizione Digitale/Ecologica (DE)":    "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(38) SIMEST – Transizione Digitale Ecologica _ Sportello digitale continuo _ Nazionale/Consulting N4G - SIMEST Transizione Digitale Ecologica.pdf",
+  "SIMEST – Fiere ed Events (FM)":                   "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(39) SIMEST – Fiere ed Events _ Sportello digitale continuo _ Nazionale/Consulting N4G - SIMEST Fiere Events.pdf",
+  "SIMEST – E-Commerce (EC)":                        "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(40) SIMEST – E-Commerce _ Sportello digitale continuo _ Nazionale/Consulting N4G - SIMEST E-Commerce.pdf",
+  "SIMEST – Certificazioni e Consulenze (SC)":       "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(41) SIMEST – Certificazioni e Consulenze _ Sportello digitale continuo _ Nazionale/Consulting N4G - SIMEST Certificazioni Consulenze.pdf",
+  "SIMEST – Temporary Export Manager (TM)":          "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(42) SIMEST – Temporary Export Manager _ Sportello digitale continuo _ Nazionale/Consulting N4G - SIMEST Temporary Export Manager.pdf",
+  "SIMEST – Potenziamento Mercati Africani":         "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(43) SIMEST – Potenziamento Mercati Africani _ Sportello digitale continuo _ Nazionale/Consulting N4G - SIMEST Mercati Africani.pdf",
+  "SIMEST – Competitività America Latina (LatAm)":   "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(44) SIMEST – Competitività America Latina LatAm _ Sportello digitale continuo _ Nazionale/Consulting N4G - SIMEST America Latina.pdf",
+  "SIMEST – Affiancamento Strategico Mercato Indiano": "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(45) SIMEST – Affiancamento Strategico Mercato Indiano _ Sportello digitale continuo _ Nazionale/Consulting N4G - SIMEST Mercato Indiano.pdf",
+  "Credito d'Imposta R&S, Innovazione e Design":     "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(46) Credito Imposta R&S Innovazione Design _ Continuo _ Nazionale/Consulting N4G - Credito Imposta RS Innovazione Design.pdf",
+  "EIC Accelerator 2026":                            "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(47) EIC Accelerator 2026 _ Luglio-Dicembre 2026 _ Europeo/Consulting N4G - EIC Accelerator 2026.pdf",
+  "Creazione e Consolidamento Startup Innovative":   "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(48) Creazione e Consolidamento Startup Innovative _ Bandi periodici _ Nazionale/Consulting N4G - Creazione Consolidamento Startup.pdf",
+  "Brevetti+, Disegni+, Marchi+ e EUIPO SME Fund":  "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(49) Brevetti Disegni Marchi EUIPO SME Fund _ Click day periodici _ Nazionale Europeo/Consulting N4G - Brevetti Disegni Marchi EUIPO.pdf",
+  "Trasferimento Tecnologico T2 – Lombardia":        "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(50) Trasferimento Tecnologico T2 Lombardia _ Luglio-Agosto 2026 _ Lombardia/Consulting N4G - Trasferimento Tecnologico T2 Lombardia.pdf",
+  "Nuova Sabatini – Beni Strumentali":               "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(51) Nuova Sabatini Beni Strumentali _ Sportello bancario continuo _ Nazionale/Consulting N4G - Nuova Sabatini.pdf",
+  "Competenze & Innovazione – Lombardia II Ed.":     "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(52) Competenze Innovazione Lombardia II Ed _ Sportello aperto _ Lombardia/Consulting N4G - Competenze Innovazione Lombardia.pdf",
+  "Consolidamento Patrimoniale Startup – Piemonte":  "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(53) Consolidamento Patrimoniale Startup Piemonte _ In arrivo _ Piemonte/Consulting N4G - Consolidamento Patrimoniale Startup Piemonte.pdf",
+  "Digitalizzazione ed Efficientamento PMI – Piemonte": "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(54) Digitalizzazione Efficientamento PMI Piemonte _ Luglio-Ottobre 2026 _ Piemonte/Consulting N4G - Digitalizzazione PMI Piemonte.pdf",
+  "Lombardia Venture STEP":                          "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(55) Lombardia Venture STEP _ A graduatoria _ Lombardia/Consulting N4G - Lombardia Venture STEP.pdf",
+  "Garanzia SACE – Finanziamenti Garantiti PMI e Mid-Cap": "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(56) Garanzia SACE Finanziamenti Garantiti PMI Mid-Cap _ Sportello permanente _ Nazionale/Consulting N4G - Garanzia SACE.pdf",
+  "Internazionalizzazione PMI – Avviso Calabria":    "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(57) Internazionalizzazione PMI Avviso Calabria _ Chiuso _ Calabria/Consulting N4G - Internazionalizzazione PMI Calabria.pdf",
+  "Fondo Patrimonializzazione PMI – Lazio":          "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(58) Fondo Patrimonializzazione PMI Lazio _ Chiuso _ Lazio/Consulting N4G - Fondo Patrimonializzazione PMI Lazio.pdf",
+  "Voucher Digitalizzazione PMI – Lazio II ed. 2025": "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(59) Voucher Digitalizzazione PMI Lazio II Ed 2025 _ Chiuso _ Lazio/Consulting N4G - Voucher Digitalizzazione PMI Lazio.pdf",
+  "Voucher Internazionalizzazione PMI 2026 – Lazio": "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(60) Voucher Internazionalizzazione PMI 2026 Lazio _ Chiuso _ Lazio/Consulting N4G - Voucher Internazionalizzazione PMI Lazio.pdf",
+  "Voucher Manager – Potenziamento Manageriale Lazio": "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(61) Voucher Manager Potenziamento Manageriale Lazio _ 30-06-2026 finestre mensili _ Lazio/Consulting N4G - Voucher Manager Lazio.pdf",
+  "Sviluppo Competenze Digitali/Green – Mezzogiorno": "finanza regioni /BANDI1/Schede e Slides/A. BANDI INSERITI SUL SITO/(62) Sviluppo Competenze Digitali Green Mezzogiorno _ 23-06-2026 _ Mezzogiorno/Consulting N4G - Sviluppo Competenze Digitali Green Mezzogiorno.pdf",
+};
+
+function openScheda(nome) {
+  const path = SCHEDE_MAP[nome];
+  if (!path) return;
+  const encoded = path.split('/').map(encodeURIComponent).join('/');
+  window.open(encoded, '_blank');
+}
+
 // ─── DE MINIMIS – CLIENTI ────────────────────────────────────────────────
 // Aggiornare manualmente dopo verifica su rna.gov.it (inserire P.IVA e cercare per beneficiario)
 // aiutiRicevuti: totale aiuti de minimis ricevuti negli ultimi 3 anni (€) — valore da RNA
@@ -1344,46 +2220,60 @@ const CLIENTI = {
   // piva, aiutiRicevuti, dataVerifica — dati de minimis
   // formaGiur, indirizzo, citta — precompilano il modal Action Plan (aggiungi quando disponibili)
   "Assetia":               { piva: "",             aiutiRicevuti: 0,         dataVerifica: "",           formaGiur: "",        indirizzo: "", citta: "" },
-  "Azu Tech":              { piva: "17458971003",  aiutiRicevuti: 216092.75, dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
+  "Azu Tech":              { piva: "17458971003",  aiutiRicevuti: 216092.75, dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "", annoFondazione: 2024 },
   "Azu Venture":           { piva: "02890350594",  aiutiRicevuti: 83819.63,  dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
-  "Boss Technologies SRL": { piva: "04961060268",  aiutiRicevuti: 21043.23,  dataVerifica: "15/06/2026", formaGiur: "S.R.L.",  indirizzo: "", citta: "" },
-  "BrainoAI":              { piva: "13049530960",  aiutiRicevuti: 50000,     dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
-  "Casavo":                { piva: "10053290960",  aiutiRicevuti: 46514.27,  dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
+  "Boss Technologies SRL": { piva: "04961060268",  aiutiRicevuti: 21043.23,  dataVerifica: "15/06/2026", formaGiur: "S.R.L.",  indirizzo: "", citta: "", annoFondazione: 2020 },
+  "BrainoAI":              { piva: "13049530960",  aiutiRicevuti: 50000,     dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "", annoFondazione: 2022 },
+  "Casavo":                { piva: "10053290960",  aiutiRicevuti: 46514.27,  dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "", annoFondazione: 2017 },
   "Citynews":              { piva: "10786801000",  aiutiRicevuti: 176437.38, dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
   "Consedin":              { piva: "01916241001",  aiutiRicevuti: 0,         dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
-  "Destino Italia":        { piva: "07332890826",  aiutiRicevuti: 0,         dataVerifica: "15/06/2026", formaGiur: "S.R.L.",  indirizzo: "Piazza Virgilio, 4", citta: "90141 – Palermo (PA)" },
-  "Digitalmens":           { piva: "05893970656",  aiutiRicevuti: 0,         dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
-  "Drop Digital Health":   { piva: "16989241001",  aiutiRicevuti: 283306.32, dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
+  "Destino Italia":        { piva: "07332890826",  aiutiRicevuti: 0,         dataVerifica: "15/06/2026", formaGiur: "S.R.L.",  indirizzo: "Piazza Virgilio, 4", citta: "90141 – Palermo (PA)", annoFondazione: 2025 },
+  "Digitalmens":           { piva: "05893970656",  aiutiRicevuti: 0,         dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "", annoFondazione: 2020 },
+  "Drop Digital Health":   { piva: "16989241001",  aiutiRicevuti: 283306.32, dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "", annoFondazione: 2023 },
   "Drycor":                { piva: "",             aiutiRicevuti: 0,         dataVerifica: "",           formaGiur: "",        indirizzo: "", citta: "" },
-  "EasyRFID":              { piva: "03358871204",  aiutiRicevuti: 161388.71, dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
+  "EasyRFID":              { piva: "03358871204",  aiutiRicevuti: 161388.71, dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "", annoFondazione: 2014 },
   "Ecoter":                { piva: "01048061004",  aiutiRicevuti: 0,         dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
   "Ecubit":                { piva: "13753031007",  aiutiRicevuti: 0,         dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
-  "Ekore SRL":             { piva: "05493690282",  aiutiRicevuti: 178588.25, dataVerifica: "15/06/2026", formaGiur: "S.R.L.",  indirizzo: "", citta: "" },
+  "Ekore SRL":             { piva: "05493690282",  aiutiRicevuti: 178588.25, dataVerifica: "15/06/2026", formaGiur: "S.R.L.",  indirizzo: "", citta: "", annoFondazione: 2022 },
   "Fairtile":              { piva: "",             aiutiRicevuti: 0,         dataVerifica: "",           formaGiur: "",        indirizzo: "", citta: "" },
-  "Fideliomed":            { piva: "12645970018",  aiutiRicevuti: 54377.20,  dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
+  "Fideliomed":            { piva: "12645970018",  aiutiRicevuti: 54377.20,  dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "", annoFondazione: 2022 },
   "Flex Packaging":        { piva: "02464370655",  aiutiRicevuti: 0,         dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
-  "GATIM SRL":             { piva: "02015210798",  aiutiRicevuti: 111736,    dataVerifica: "15/06/2026", formaGiur: "S.R.L.",  indirizzo: "", citta: "" },
+  "GATIM SRL":             { piva: "02015210798",  aiutiRicevuti: 111736,    dataVerifica: "15/06/2026", formaGiur: "S.R.L.",  indirizzo: "", citta: "", annoFondazione: 1995 },
   "GGG":                   { piva: "",             aiutiRicevuti: 0,         dataVerifica: "",           formaGiur: "",        indirizzo: "", citta: "" },
   "Govtech":               { piva: "16143281000",  aiutiRicevuti: 52167.72,  dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
   "Heres":                 { piva: "03619031200",  aiutiRicevuti: 3849,      dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
-  "INTUOS SRL":            { piva: "15541901003",  aiutiRicevuti: 79639.71,  dataVerifica: "15/06/2026", formaGiur: "S.R.L.",  indirizzo: "", citta: "" },
+  "INTUOS SRL":            { piva: "15541901003",  aiutiRicevuti: 79639.71,  dataVerifica: "15/06/2026", formaGiur: "S.R.L.",  indirizzo: "", citta: "", annoFondazione: 2019 },
   "Ilios":                 { piva: "",             aiutiRicevuti: 0,         dataVerifica: "",           formaGiur: "",        indirizzo: "", citta: "" },
   "Kerr":                  { piva: "12598001001",  aiutiRicevuti: 87893,     dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
   "Leasy":                 { piva: "",             aiutiRicevuti: 0,         dataVerifica: "",           formaGiur: "",        indirizzo: "", citta: "" },
   "Leonardo formazione":   { piva: "11074611002",  aiutiRicevuti: 9600,      dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
-  "Messagenius":           { piva: "12973601003",  aiutiRicevuti: 55520,     dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
+  "Messagenius":           { piva: "12973601003",  aiutiRicevuti: 55520,     dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "", annoFondazione: 2014 },
   "Next4Production":       { piva: "02953440597",  aiutiRicevuti: 2002,      dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
   "OralTec":               { piva: "07305330487",  aiutiRicevuti: 3000,      dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
-  "ProGen SRL":            { piva: "04753140872",  aiutiRicevuti: 64009,     dataVerifica: "15/06/2026", formaGiur: "S.R.L.",  indirizzo: "", citta: "" },
+  "ProGen SRL":            { piva: "04753140872",  aiutiRicevuti: 64009,     dataVerifica: "15/06/2026", formaGiur: "S.R.L.",  indirizzo: "", citta: "", annoFondazione: 2010 },
   "Spartan Tech":          { piva: "11044930961",  aiutiRicevuti: 0,         dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
   "Speri":                 { piva: "01980341000",  aiutiRicevuti: 0,         dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
-  "TLC Telecomunicazioni": { piva: "02268530595",  aiutiRicevuti: 8535,      dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
-  "Tod Systems":           { piva: "03665340794",  aiutiRicevuti: 30147,     dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
-  "Velion SRL":            { piva: "01421440320",  aiutiRicevuti: 51000,     dataVerifica: "15/06/2026", formaGiur: "S.R.L.",  indirizzo: "", citta: "" },
+  "TLC Telecomunicazioni": { piva: "02268530595",  aiutiRicevuti: 8535,      dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "", annoFondazione: 2005 },
+  "Tod Systems":           { piva: "03665340794",  aiutiRicevuti: 30147,     dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "", annoFondazione: 2015 },
+  "Velion SRL":            { piva: "01421440320",  aiutiRicevuti: 51000,     dataVerifica: "15/06/2026", formaGiur: "S.R.L.",  indirizzo: "", citta: "", annoFondazione: 2020 },
   "WDA":                   { piva: "15274611001",  aiutiRicevuti: 9940,      dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
-  "Wink Suite SRL":        { piva: "12885490966",  aiutiRicevuti: 156467,    dataVerifica: "15/06/2026", formaGiur: "S.R.L.",  indirizzo: "", citta: "" },
-  "Yourease":              { piva: "04239661202",  aiutiRicevuti: 153197,    dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "" },
+  "Wink Suite SRL":        { piva: "12885490966",  aiutiRicevuti: 156467,    dataVerifica: "15/06/2026", formaGiur: "S.R.L.",  indirizzo: "", citta: "", annoFondazione: 2023 },
+  "Yourease":              { piva: "04239661202",  aiutiRicevuti: 153197,    dataVerifica: "15/06/2026", formaGiur: "",        indirizzo: "", citta: "", annoFondazione: 2024 },
 };
+
+// ─── REQUISITI BANDO: COMPATIBILITÀ BILANCI ──────────────────────────────
+// Per SIMEST sono richiesti almeno 2 bilanci approvati.
+// Un'impresa fondata nell'anno X ha chiuso il primo esercizio a dic X,
+// bilancio approvato ~aprile X+1. Il secondo bilancio è approvabile ~aprile X+2.
+// Quindi: annoFondazione ≤ annoCorrente-2 → almeno 2 bilanci disponibili.
+function hasDueBilanci(nome) {
+  const c = CLIENTI[nome];
+  if (!c || c.annoFondazione == null) return null; // anno sconosciuto → non bloccare
+  return c.annoFondazione <= new Date().getFullYear() - 2;
+}
+function isBandoSIMEST(bando) {
+  return bando && bando.ente && bando.ente.includes('SIMEST');
+}
 
 // ─── DATI DINAMICI (localStorage) ────────────────────────────────────────
 // I bandi aggiuntivi e i clienti modificati vengono salvati in localStorage.
@@ -1402,13 +2292,32 @@ const BANDI_BASE_LEN = BANDI.length;   // lunghezza array prima di aggiungere ex
   try {
     const raw = localStorage.getItem('n4_clienti_data');
     if (raw) {
+      const defaults = {}; // snapshot degli annoFondazione hardcoded
+      Object.keys(CLIENTI).forEach(k => { if (CLIENTI[k].annoFondazione != null) defaults[k] = CLIENTI[k].annoFondazione; });
       const saved = JSON.parse(raw);
       Object.keys(CLIENTI).forEach(k => delete CLIENTI[k]);
       Object.assign(CLIENTI, saved);
+      // Ri-applica annoFondazione dai default (campo di sistema, non editabile dall'utente)
+      Object.keys(defaults).forEach(k => { if (CLIENTI[k]) CLIENTI[k].annoFondazione = defaults[k]; });
     } else {
       // Prima visita: persisti i clienti di default
       localStorage.setItem('n4_clienti_data', JSON.stringify(CLIENTI));
     }
+  } catch(e) {}
+
+  // Overrides stato bando da pipeline: se non ancora presenti, costruiscili adesso
+  // dalla pipeline esistente (migrazione one-shot per i bandi già inseriti)
+  try {
+    const pipeline = JSON.parse(localStorage.getItem('n4_pipeline') || '[]');
+    let overrides = JSON.parse(localStorage.getItem('n4_bandi_stato_overrides') || '{}');
+    const stati_attivi = ['proposto','firmato','lavorazione','presentato','istruttoria','concesso','incassato'];
+    pipeline.forEach(p => {
+      if (stati_attivi.includes(p.stato) && p.bando) overrides[p.bando] = 'lavorazione';
+    });
+    localStorage.setItem('n4_bandi_stato_overrides', JSON.stringify(overrides));
+    // Salva gli stati originali prima di sovrascriverli con la pipeline
+    BANDI.forEach(b => { if (!b._statoOrig) b._statoOrig = b.stato; });
+    BANDI.forEach(b => { if (overrides[b.nome]) b.stato = overrides[b.nome]; });
   } catch(e) {}
 })();
 
@@ -1477,8 +2386,284 @@ function fmtEurK(n) {
 }
 function fmtEurFull(n) { return '€' + (n||0).toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2}); }
 
+// ── helpers data incasso ──────────────────────────────────────────────────
+function incassoMeseAnno(dateStr) {
+  // dateStr formato YYYY-MM-DD
+  if (!dateStr) return null;
+  const d = new Date(dateStr);
+  if (isNaN(d)) return null;
+  return { y: d.getFullYear(), m: d.getMonth() };
+}
+
+function mesiLabel(y, m) {
+  return ['Gen','Feb','Mar','Apr','Mag','Giu','Lug','Ago','Set','Ott','Nov','Dic'][m] + ' ' + String(y).slice(2);
+}
+
+// ── Cruscotto finanziario ─────────────────────────────────────────────────
+function renderCruscotto(pl) {
+  const el = document.getElementById('pipeline-cruscotto');
+  const oggi = new Date();
+  const annoCorrente = oggi.getFullYear();
+  const meseCorrente = oggi.getMonth();
+
+  // ultimi 6 mesi + mese corrente = 7 colonne
+  const mesi = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(annoCorrente, meseCorrente - i, 1);
+    mesi.push({ y: d.getFullYear(), m: d.getMonth() });
+  }
+
+  const colonne = mesi.map(({ y, m }) => {
+    let ret = 0, fee = 0, sa = 0;
+    pl.forEach(p => {
+      const ir = incassoMeseAnno(p.dataIncassoRetainer);
+      if (ir && ir.y === y && ir.m === m && p.retainerPagato) ret += p.retainer || 0;
+      const ifee = incassoMeseAnno(p.dataIncassoFee);
+      if (ifee && ifee.y === y && ifee.m === m && p.successFeePagata)
+        fee += (p.contributoConc || 0) * (p.successFeePerc || 0) / 100;
+    });
+    return { y, m, ret, fee, sa, tot: ret + fee + sa };
+  });
+
+  const maxTot = Math.max(...colonne.map(c => c.tot), 1);
+  const ytd = pl.reduce((s, p) => {
+    const ir = incassoMeseAnno(p.dataIncassoRetainer);
+    if (ir && ir.y === annoCorrente && p.retainerPagato) s.ret += p.retainer || 0;
+    const ifee = incassoMeseAnno(p.dataIncassoFee);
+    if (ifee && ifee.y === annoCorrente && p.successFeePagata)
+      s.fee += (p.contributoConc || 0) * (p.successFeePerc || 0) / 100;
+    return s;
+  }, { ret: 0, fee: 0 });
+  const ytdTot = ytd.ret + ytd.fee;
+  const meseCor = colonne[colonne.length - 1];
+  const hasData = colonne.some(c => c.tot > 0);
+
+  el.style.display = '';
+  el.innerHTML = `
+    <div class="cru-header" onclick="toggleCruscotto()">
+      <span class="cru-title">📊 Cruscotto Finanziario ${annoCorrente}</span>
+      <span class="cru-toggle" id="cru-toggle-ico">▾</span>
+    </div>
+    <div class="cru-body" id="cru-body">
+      <div class="cru-summary">
+        <div class="cru-card">
+          <div class="cru-card-val">${fmtEurFull(ytdTot)}</div>
+          <div class="cru-card-lbl">Incassato YTD ${annoCorrente}</div>
+        </div>
+        <div class="cru-card">
+          <div class="cru-card-val green">${fmtEurFull(meseCor.tot)}</div>
+          <div class="cru-card-lbl">Mese corrente</div>
+        </div>
+        <div class="cru-card">
+          <div class="cru-card-val">${fmtEurFull(ytd.ret)}</div>
+          <div class="cru-card-lbl">Retainer YTD</div>
+        </div>
+        <div class="cru-card">
+          <div class="cru-card-val purple">${fmtEurFull(ytd.fee)}</div>
+          <div class="cru-card-lbl">Success fee YTD</div>
+        </div>
+      </div>
+      ${hasData ? `
+      <div class="cru-chart-wrap">
+        <div class="cru-chart">
+          ${colonne.map(c => {
+            const hMax = 80;
+            const hRet = c.tot > 0 ? Math.max(2, Math.round((c.ret / maxTot) * hMax)) : 0;
+            const hFee = c.tot > 0 ? Math.max(2, Math.round((c.fee / maxTot) * hMax)) : 0;
+            const isCurrentMonth = c.y === annoCorrente && c.m === meseCorrente;
+            return `
+            <div class="cru-bar-col">
+              ${c.tot > 0 ? `<div class="cru-bar-total">${fmtEurK(c.tot)}</div>` : '<div class="cru-bar-total" style="color:#e2e8f0">–</div>'}
+              <div class="cru-bar-stack">
+                ${hFee ? `<div class="cru-bar-seg fee" style="height:${hFee}px"></div>` : ''}
+                ${hRet ? `<div class="cru-bar-seg ret" style="height:${hRet}px;${!hFee?'border-radius:3px 3px 0 0;':'border-radius:0;'}"></div>` : ''}
+                ${!c.tot ? `<div style="height:4px;background:#f1f5f9;border-radius:3px;margin-top:auto;"></div>` : ''}
+              </div>
+              <div class="cru-bar-label" style="${isCurrentMonth?'font-weight:800;color:#1B3A6B;':''}">${mesiLabel(c.y, c.m)}</div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+      <div class="cru-legend">
+        <div class="cru-leg-item"><div class="cru-leg-dot" style="background:#2563eb"></div>Retainer</div>
+        <div class="cru-leg-item"><div class="cru-leg-dot" style="background:#16a34a"></div>Success fee</div>
+      </div>
+      ` : '<div style="text-align:center;padding:24px;color:#94a3b8;font-size:12px;">Nessun incasso registrato ancora.<br>Compila le date di incasso nelle pratiche per visualizzare il grafico.</div>'}
+    </div>`;
+}
+
+function toggleCruscotto() {
+  const body = document.getElementById('cru-body');
+  const ico  = document.getElementById('cru-toggle-ico');
+  if (!body) return;
+  const hidden = body.style.display === 'none';
+  body.style.display = hidden ? '' : 'none';
+  ico.textContent = hidden ? '▾' : '▸';
+}
+
+// ── Funnel di conversione ─────────────────────────────────────────────────
+function renderFunnel(pl) {
+  const el = document.getElementById('pipeline-funnel');
+  const attivi = pl.filter(p => p.stato !== 'perso');
+  const steps = [
+    { key: 'proposto',    label: 'Proposto' },
+    { key: 'firmato',     label: 'Firmato' },
+    { key: 'lavorazione', label: 'Lavorazione' },
+    { key: 'presentato',  label: 'Presentato' },
+    { key: 'istruttoria', label: 'Istruttoria' },
+    { key: 'concesso',    label: 'Concesso' },
+    { key: 'incassato',   label: 'Incassato' },
+  ];
+  const colors = ['#94a3b8','#2563eb','#0891b2','#0f766e','#d97706','#16a34a','#7c3aed'];
+  const counts = steps.map(s => pl.filter(p => p.stato === s.key).length);
+  const maxCount = Math.max(...counts, 1);
+  const persi = pl.filter(p => p.stato === 'perso').length;
+  const totProposti = pl.filter(p => p.stato !== 'proposto' || true).length;
+  const firmatiCount = counts[1];
+  const concessiCount = counts[5] + counts[6];
+  const winRate = firmatiCount > 0 ? Math.round((concessiCount / firmatiCount) * 100) : null;
+
+  el.style.display = '';
+  el.innerHTML = `
+    <div class="funnel-title">🎯 Tasso di conversione pipeline</div>
+    <div class="funnel-track">
+      ${steps.map((s, i) => {
+        const pct = i > 0 && counts[i-1] > 0 ? Math.round((counts[i] / counts[i-1]) * 100) : null;
+        const barW = Math.max(4, Math.round((counts[i] / maxCount) * 100));
+        return `
+        ${i > 0 ? '<span class="funnel-sep">›</span>' : ''}
+        <div class="funnel-step">
+          <div class="funnel-step-bar">
+            <div class="funnel-step-fill" style="width:${barW}%;background:${colors[i]};height:8px;border-radius:4px;"></div>
+          </div>
+          <div class="funnel-step-count" style="color:${colors[i]}">${counts[i]}</div>
+          <div class="funnel-step-label">${s.label}</div>
+          ${pct !== null && counts[i-1] > 0 ? `<div class="funnel-step-pct" style="color:${pct>=50?'#16a34a':'#dc2626'}">${pct}%</div>` : '<div class="funnel-step-pct"></div>'}
+        </div>`;
+      }).join('')}
+    </div>
+    <div class="funnel-winrate">
+      <div class="funnel-wr-item">
+        <span class="funnel-wr-val ${winRate !== null && winRate < 30 ? 'red' : ''}">${winRate !== null ? winRate + '%' : '–'}</span>
+        <span class="funnel-wr-lbl">Win rate (concesso/firmato)</span>
+      </div>
+      <div class="funnel-wr-item">
+        <span class="funnel-wr-val red">${persi}</span>
+        <span class="funnel-wr-lbl">Pratiche perse</span>
+      </div>
+      <div class="funnel-wr-item">
+        <span class="funnel-wr-val">${pl.length}</span>
+        <span class="funnel-wr-lbl">Totale pratiche</span>
+      </div>
+    </div>`;
+}
+
+// ── Centro Allerte ────────────────────────────────────────────────────────
+function renderAllerte() {
+  const listEl = document.getElementById('allerte-list');
+  const badgeEl = document.getElementById('allerte-badge');
+  if (!listEl) return;
+
+  const pl = getPipeline();
+  const oggi = new Date(); oggi.setHours(0,0,0,0);
+  const alerts = [];
+
+  // 1. Bandi in scadenza entro 14 giorni (BANDI include già i bandi extra caricati da initDatiDinamici)
+  BANDI.filter(b => b.stato === 'aperto').forEach(b => {
+    const d = parseScadenzaDate(b.scadenza);
+    if (!d) return;
+    const gg = Math.round((d - oggi) / 86400000);
+    if (gg >= 0 && gg <= 14) {
+      alerts.push({
+        cat: 'bandi',
+        ico: '📅',
+        label: b.nome,
+        sub: `Scade tra ${gg === 0 ? 'oggi' : gg + ' giorni'} — ${b.scadenza}`,
+        urgency: gg <= 3 ? 2 : 1,
+        action: () => { enterSection('finanza'); setTimeout(() => switchTab('scadenzario'), 100); },
+        actionLabel: 'Vai →',
+      });
+    }
+  });
+
+  // 2. Retainer non pagati (pratiche firmate o successive)
+  const statiAttivi = ['firmato','lavorazione','presentato','istruttoria','concesso','incassato'];
+  pl.filter(p => statiAttivi.includes(p.stato) && (p.retainer||0) > 0 && !p.retainerPagato).forEach(p => {
+    alerts.push({
+      cat: 'pagamenti',
+      ico: '💸',
+      label: `${p.cliente} — ${p.bando}`,
+      sub: `Retainer ${fmtEurFull(p.retainer)} non incassato`,
+      urgency: 1,
+      action: () => { enterSection('riservata'); setTimeout(() => editPipeline(p.id), 100); },
+      actionLabel: 'Modifica →',
+    });
+  });
+
+  // 3. Pratiche ferme da +45 giorni
+  const ms45 = 45 * 86400000;
+  pl.filter(p => ['firmato','lavorazione','presentato','istruttoria'].includes(p.stato)).forEach(p => {
+    const lastUpdate = p.updatedAt || null;
+    if (!lastUpdate) return;
+    const daysSince = Math.round((Date.now() - lastUpdate) / 86400000);
+    if (daysSince >= 45) {
+      alerts.push({
+        cat: 'stalli',
+        ico: '⏳',
+        label: `${p.cliente} — ${p.bando}`,
+        sub: `Nessun aggiornamento da ${daysSince} giorni (stato: ${p.stato})`,
+        urgency: daysSince >= 90 ? 2 : 1,
+        action: () => { enterSection('riservata'); setTimeout(() => editPipeline(p.id), 100); },
+        actionLabel: 'Aggiorna →',
+      });
+    }
+  });
+
+  badgeEl.textContent = alerts.length;
+  badgeEl.className = 'allerte-badge' + (alerts.length === 0 ? ' ok' : '');
+
+  if (alerts.length === 0) {
+    listEl.innerHTML = '<div class="allerte-ok">✅ Tutto in ordine — nessuna criticità rilevata</div>';
+    return;
+  }
+
+  alerts.sort((a,b) => b.urgency - a.urgency);
+
+  const catLabels = { bandi: '📅 Bandi in scadenza', pagamenti: '💸 Pagamenti da incassare', stalli: '⏳ Pratiche ferme' };
+  const catOrder = ['bandi','pagamenti','stalli'];
+  let html = '';
+  catOrder.forEach(cat => {
+    const items = alerts.filter(a => a.cat === cat);
+    if (!items.length) return;
+    html += `<div class="allerta-cat">${catLabels[cat]}</div>`;
+    items.forEach((a, idx) => {
+      html += `
+      <div class="allerta-item">
+        <div class="allerta-ico">${a.ico}</div>
+        <div class="allerta-body">
+          <div class="allerta-label">${a.label}</div>
+          <div class="allerta-sub">${a.sub}</div>
+        </div>
+        <button class="allerta-link" onclick="allertaAction(${alerts.indexOf(a)})">${a.actionLabel}</button>
+      </div>`;
+    });
+  });
+  listEl.innerHTML = html;
+
+  // Salva le action per uso da onclick
+  window._alerteActions = alerts.map(a => a.action);
+}
+
+function allertaAction(idx) {
+  if (window._alerteActions && window._alerteActions[idx]) window._alerteActions[idx]();
+}
+
 function renderPipeline() {
   const pl = getPipeline();
+
+  renderCruscotto(pl);
+  renderFunnel(pl);
+
   const fs = document.getElementById('pf-stato').value;
   const fc = document.getElementById('pf-cliente').value;
 
@@ -1613,8 +2798,9 @@ function updatePipelineStato(id, sel) {
   sel.style.color = sc.color;
   sel.style.borderColor = sc.bg;
   savePipeline(pl);
-  // Ri-render solo i KPI
+  syncBandoStatoFromPipeline(entry.bando);
   renderPipeline();
+  render();
 }
 
 function updatePipelineConc(id, val) {
@@ -1625,9 +2811,14 @@ function updatePipelineConc(id, val) {
 
 function deletePipeline(id) {
   if (!confirm('Eliminare questa voce dalla pipeline?')) return;
-  const pl = getPipeline().filter(p => p.id !== id);
-  savePipeline(pl);
+  const pl = getPipeline();
+  const entry = pl.find(p => p.id === id);
+  const bandoNome = entry ? entry.bando : null;
+  const newPl = pl.filter(p => p.id !== id);
+  savePipeline(newPl);
+  if (bandoNome) syncBandoStatoFromPipeline(bandoNome);
   renderPipeline();
+  render();
 }
 
 const SA_TIPI = [
@@ -1675,8 +2866,10 @@ function openModalPipeline(editId) {
       document.getElementById('m-data').value = p.dataContratto || '';
       document.getElementById('m-retainer').value = p.retainer || '';
       document.getElementById('m-ret-pagato').value = String(p.retainerPagato);
+      document.getElementById('m-ret-data-incasso').value = p.dataIncassoRetainer || '';
       document.getElementById('m-sf-perc').value = p.successFeePerc || '';
       document.getElementById('m-sf-pagato').value = String(p.successFeePagata || false);
+      document.getElementById('m-sf-data-incasso').value = p.dataIncassoFee || '';
       document.getElementById('m-contrib-max').value = p.contributoMax || '';
       document.getElementById('m-contrib-conc').value = p.contributoConc || '';
       document.getElementById('m-note').value = p.note || '';
@@ -1684,15 +2877,55 @@ function openModalPipeline(editId) {
     }
   } else {
     document.getElementById('m-edit-id').value = '';
-    ['m-data','m-retainer','m-sf-perc','m-contrib-max','m-contrib-conc','m-note'].forEach(id => document.getElementById(id).value = '');
+    ['m-data','m-retainer','m-sf-perc','m-contrib-max','m-contrib-conc','m-note','m-ret-data-incasso','m-sf-data-incasso'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('m-stato').value = 'proposto';
     document.getElementById('m-ret-pagato').value = 'false';
     document.getElementById('m-sf-pagato').value = 'false';
   }
+  onRetPagatoChange();
+  onSfPagatoChange();
   modal.classList.add('open');
 }
 function editPipeline(id) { openModalPipeline(id); }
 function closeModalPipeline() { document.getElementById('modal-pipeline').classList.remove('open'); }
+
+function onRetPagatoChange() {
+  const pagato = document.getElementById('m-ret-pagato').value === 'true';
+  document.getElementById('m-ret-data-wrap').classList.toggle('visible', pagato);
+}
+function onSfPagatoChange() {
+  const pagato = document.getElementById('m-sf-pagato').value === 'true';
+  document.getElementById('m-sf-data-wrap').classList.toggle('visible', pagato);
+}
+
+// Sincronizza stato bando ↔ pipeline: se esiste ≥1 voce attiva → "lavorazione"
+function syncBandoStatoFromPipeline(bandoNome) {
+  const pl = getPipeline();
+  const stati_attivi = ['proposto','firmato','lavorazione','presentato','istruttoria','concesso','incassato'];
+  const hasActive = pl.some(p => p.bando === bandoNome && stati_attivi.includes(p.stato));
+
+  // Leggi/scrivi overrides in localStorage
+  let overrides = {};
+  try { overrides = JSON.parse(localStorage.getItem('n4_bandi_stato_overrides') || '{}'); } catch(e) {}
+
+  if (hasActive) {
+    overrides[bandoNome] = 'lavorazione';
+  } else {
+    delete overrides[bandoNome];
+  }
+  localStorage.setItem('n4_bandi_stato_overrides', JSON.stringify(overrides));
+
+  // Applica all'array in memoria
+  applyBandiStatoOverrides();
+}
+
+function applyBandiStatoOverrides() {
+  let overrides = {};
+  try { overrides = JSON.parse(localStorage.getItem('n4_bandi_stato_overrides') || '{}'); } catch(e) {}
+  BANDI.forEach(b => {
+    if (overrides[b.nome]) b.stato = overrides[b.nome];
+  });
+}
 
 function saveModalPipeline() {
   const editId = document.getElementById('m-edit-id').value;
@@ -1711,13 +2944,16 @@ function saveModalPipeline() {
     stato: document.getElementById('m-stato').value,
     retainer: (v => v === '' ? 0 : parseFloat(v) || 0)(document.getElementById('m-retainer').value.trim()),
     retainerPagato: document.getElementById('m-ret-pagato').value === 'true',
+    dataIncassoRetainer: document.getElementById('m-ret-data-incasso').value || '',
     successFeePerc: (v => v === '' ? 0 : parseFloat(v) || 0)(document.getElementById('m-sf-perc').value.trim()),
     successFeePagata: document.getElementById('m-sf-pagato').value === 'true',
+    dataIncassoFee: document.getElementById('m-sf-data-incasso').value || '',
     contributoMax: parseFloat(document.getElementById('m-contrib-max').value) || 0,
     contributoConc: parseFloat(document.getElementById('m-contrib-conc').value) || 0,
     serviziAccessori,
     dataContratto: document.getElementById('m-data').value,
     note: document.getElementById('m-note').value,
+    updatedAt: Date.now(),
   };
   const pl = getPipeline();
   if (editId) {
@@ -1727,8 +2963,11 @@ function saveModalPipeline() {
     pl.push(entry);
   }
   savePipeline(pl);
+  syncBandoStatoFromPipeline(entry.bando);
   closeModalPipeline();
   renderPipeline();
+  render(); // aggiorna counter + card
+  renderAllerte();
 }
 
 function exportPipeline() {
@@ -1764,6 +3003,7 @@ const ORDINE = { aperto:0, inapertura:1, monitorare:2, lavorazione:3, chiuso:4 }
 
 // ─── INIT ────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+  initDark();
   const oggi = new Date();
   const fmt = d => d.toLocaleDateString('it-IT',{day:'2-digit',month:'long',year:'numeric'});
   document.getElementById('header-date').innerHTML = `Aggiornata: ${fmt(oggi)}<br>Fonti: next4consulting.it · Invitalia · SIMEST · EIC · europainnovazione.com`;
@@ -1806,12 +3046,72 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById(id).addEventListener(id==='q'?'input':'change', render)
   );
   render();
+
+  // Toolbar clienti: search + sort
+  const csearch = document.getElementById('clienti-search');
+  const csort   = document.getElementById('clienti-sort');
+  if (csearch) csearch.addEventListener('input', () => {
+    clientiSearchQuery = csearch.value;
+    renderClienti();
+  });
+  if (csort) csort.addEventListener('change', () => {
+    clientiSortMode = csort.value;
+    renderClienti();
+  });
 });
 
 function fillSelect(id, vals, labelFn) {
   const s = document.getElementById(id); s.innerHTML='';
   vals.forEach(v => { const o=document.createElement('option'); o.value=v; o.textContent=labelFn(v); s.appendChild(o); });
 }
+
+// ─── COUNT-UP ANIMATION ──────────────────────────────────────────────
+let _firstRender = true;
+
+function countUp(el, target, duration, delay) {
+  if (delay) { setTimeout(() => countUp(el, target, duration, 0), delay); return; }
+  const start = performance.now();
+  const from = parseInt(el.textContent) || 0;
+  // statPop solo al primo caricamento (non ad ogni cambio filtro)
+  if (_firstRender) {
+    const card = el.closest('.stat-card');
+    if (card) {
+      card.classList.remove('just-loaded');
+      void card.offsetWidth;
+      card.classList.add('just-loaded');
+    }
+  }
+  function step(now) {
+    const p = Math.min((now - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - p, 3);
+    el.textContent = Math.round(from + (target - from) * ease);
+    if (p < 1) requestAnimationFrame(step);
+    else el.textContent = target;
+  }
+  requestAnimationFrame(step);
+}
+
+// ─── DARK MODE ───────────────────────────────────────────────────────
+function toggleDark() {
+  const isDark = document.body.classList.toggle('dark');
+  document.getElementById('btn-dm').textContent = isDark ? '☀️' : '🌙';
+  localStorage.setItem('n4-dark', isDark ? '1' : '0');
+}
+function initDark() {
+  if (localStorage.getItem('n4-dark') === '1') {
+    document.body.classList.add('dark');
+    const btn = document.getElementById('btn-dm');
+    if (btn) btn.textContent = '☀️';
+  }
+}
+
+// ─── HIGHLIGHT SEARCH ────────────────────────────────────────────────
+function highlight(text, q) {
+  if (!q || !text) return text;
+  const escaped = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return text.replace(new RegExp(escaped, 'gi'), m => `<mark>${m}</mark>`);
+}
+
 function quickFilter(stato) { document.getElementById('f-stato').value=stato; render(); }
 function resetAll() {
   ['q','f-stato','f-regione','f-tipo','f-cliente','f-domanda'].forEach(id => document.getElementById(id).value='');
@@ -1858,11 +3158,20 @@ function render() {
     return true;
   });
 
-  // Contatori
-  ['aperto','inapertura','lavorazione','monitorare','chiuso'].forEach(s =>
-    document.getElementById('c-'+s).textContent = BANDI.filter(b=>b.stato===s).length
-  );
-  document.getElementById('c-totale').textContent = BANDI.length;
+  // Contatori + mini barre
+  const _tot4bar = BANDI.length || 1;
+  const _dur  = _firstRender ? 1100 : 400;
+  const _stag = _firstRender ? 90   : 0;
+  ['aperto','inapertura','lavorazione','monitorare','chiuso'].forEach((s, i) => {
+    const n = BANDI.filter(b=>b.stato===s).length;
+    countUp(document.getElementById('c-'+s), n, _dur, i * _stag);
+    const bar = document.getElementById('bar-c-'+s);
+    if (bar) bar.style.width = (n/_tot4bar*100)+'%';
+  });
+  countUp(document.getElementById('c-totale'), BANDI.length, _dur + 100, 5 * _stag);
+  const barTot = document.getElementById('bar-c-totale');
+  if (barTot) barTot.style.width = '100%';
+  _firstRender = false;
   document.getElementById('ris-info').textContent = filt.length===BANDI.length
     ? `Tutti i ${BANDI.length} bandi`
     : `${filt.length} di ${BANDI.length} bandi`;
@@ -1875,6 +3184,31 @@ function render() {
     return 0;
   });
 
+  const TIPO_ICO = {
+    rs:                     '🔬',
+    startup:                '💡',
+    step:                   '🔧',
+    digitale:               '💻',
+    internazionalizzazione: '🌍',
+    ambiente:               '♻️',
+    cultura:                '🎭',
+    lavoro:                 '👥',
+    impresa:                '🏗',
+    fiscale:                '🧾',
+    innovazione:            '🚀',
+  };
+  // Priorità: tipi più specifici vincono sui generici
+  const TIPO_PRIO = ['rs','startup','step','digitale','internazionalizzazione','ambiente','cultura','lavoro','impresa','fiscale','innovazione'];
+  const getBandoIco = b => {
+    if (b.ente?.includes('SIMEST'))                         return '🌐';
+    if (b.ente?.includes('EIC') || b.ente?.includes('Horizon Europe')) return '🇪🇺';
+    if (b.nome?.includes('Credito d\'Imposta'))             return '🧾';
+    if (b.nome?.toLowerCase().includes('agrisolare') || b.nome?.toLowerCase().includes('solare')) return '☀️';
+    const tipi = b.tipo || [];
+    const best = TIPO_PRIO.find(t => tipi.includes(t)) || tipi[0];
+    return TIPO_ICO[best] || '📄';
+  };
+
   const grid = document.getElementById('cards-grid');
   grid.innerHTML = '';
   document.getElementById('no-res').style.display = filt.length ? 'none' : 'block';
@@ -1886,12 +3220,24 @@ function render() {
     card.addEventListener('click', e => { if (!e.target.closest('a')) openPanel(b); });
 
     const doms = b.domande || [];
+
+    // Per bandi "in lavorazione": leggi direttamente dalla pipeline
+    const STATI_PRESENTATA  = ['presentato','istruttoria','concesso','incassato'];
+    const STATI_INCORSO     = ['proposto','firmato','lavorazione'];
+    const plVoci = b.stato === 'lavorazione'
+      ? getPipeline().filter(p => p.bando === b.nome && p.stato !== 'perso')
+      : [];
+    const plPresentati = plVoci.filter(p => STATI_PRESENTATA.includes(p.stato));
+    const plInCorso    = plVoci.filter(p => STATI_INCORSO.includes(p.stato));
+
     const chip = c => {
       const n = c.replace(' *','');
       if (doms.includes(n)) return `<span class="ct-dom" title="Domanda già presentata">✓ ${n}</span>`;
       const alert = dmChipAlert(n);
       if (alert === 'danger') return `<span class="ct-dm-danger" title="De minimis quasi esaurito (>90%)">⚠ ${n}</span>`;
       if (alert === 'warn')   return `<span class="ct-dm-warn"   title="De minimis elevato (>75%)">⚠ ${n}</span>`;
+      if (isBandoSIMEST(b) && hasDueBilanci(n) === false)
+        return `<span class="ct-incompat" title="Non idoneo SIMEST: meno di 2 bilanci approvati (fondata ${CLIENTI[n]?.annoFondazione})">✗ ${n}</span>`;
       if (c.endsWith(' *')) return `<span class="ct-potential">${c}</span>`;
       return `<span class="ct">${c}</span>`;
     };
@@ -1905,7 +3251,9 @@ function render() {
     const hasDom = doms.length > 0;
 
     card.innerHTML = `
+      <div class="card-band"></div>
       <div class="card-top">
+        <div class="card-ico">${getBandoIco(b)}</div>
         <div class="card-toprow">
           <span class="badge ${sc.cls}">${sc.label}</span>
           <div class="card-flags">
@@ -1916,8 +3264,8 @@ function render() {
           </div>
           <span class="card-regione">${b.regione}</span>
         </div>
-        <div class="card-title">${b.nome}</div>
-        <div class="card-ente">${b.ente}</div>
+        <div class="card-title">${highlight(b.nome, q)}</div>
+        <div class="card-ente">${highlight(b.ente, q)}</div>
       </div>
       <div class="card-meta">
         <div class="card-meta-item">
@@ -1934,11 +3282,18 @@ function render() {
       </div>
       <div class="card-footer">
         <div class="card-clienti">
-          ${visibili.map(c => chip(c)).join('')}
-          ${extra>0?`<span class="ct-extra">+${extra}</span>`:''}
-          ${b.clienti.length===0?'<span class="ct-none">Nessun cliente abbinato</span>':''}
+          ${b.stato === 'lavorazione'
+            ? plVoci.length === 0
+                ? '<span class="ct-none">Nessuna voce in pipeline</span>'
+                : plPresentati.map(p => `<span class="ct-dom" title="Domanda presentata">✓ ${p.cliente}</span>`).join('')
+                  + plInCorso.map(p => `<span class="ct" title="In lavorazione">${p.cliente}</span>`).join('')
+            : visibili.map(c => chip(c)).join('')
+              + (extra>0 ? `<span class="ct-extra">+${extra}</span>` : '')
+              + (b.clienti.length===0 ? '<span class="ct-none">Nessun cliente abbinato</span>' : '')
+          }
         </div>
         <div style="display:flex;gap:6px;flex-shrink:0">
+          ${SCHEDE_MAP[b.nome] ? `<button class="btn-scheda" onclick="openScheda('${b.nome.replace(/'/g,"\\'")}');event.stopPropagation()">📄 Scheda</button>` : ''}
           <button class="btn-copy" onclick="copyLink(this,'${b.link}');event.stopPropagation()">🔗 Copia</button>
           <a href="${b.link}" target="_blank" class="btn-link" onclick="event.stopPropagation()">→ Apri</a>
         </div>
@@ -1946,22 +3301,50 @@ function render() {
     `;
     grid.appendChild(card);
   });
+
+  // Scroll reveal con stagger per batch
+  let batchIdx = 0;
+  const cardObserver = new IntersectionObserver((entries) => {
+    entries.filter(e => e.isIntersecting).forEach((e, i) => {
+      const el = e.target;
+      setTimeout(() => el.classList.add('card-visible'), i * 60);
+      cardObserver.unobserve(el);
+    });
+  }, { threshold: 0.08 });
+  grid.querySelectorAll('.card').forEach(c => cardObserver.observe(c));
 }
 
 // ─── TAB SWITCHING ───────────────────────────────────────────────────────
 function switchTab(tab) {
   closePanel();
-  document.querySelectorAll('.tab').forEach((t,i) => {
-    const tabs = ['bandi','clienti','scadenzario','pipeline'];
-    t.classList.toggle('active', tabs[i] === tab);
+
+  // aggiorna active nel gruppo tabs corretto
+  const finanzaTabs = ['bandi','clienti','scadenzario'];
+  const riservTabs  = ['pipeline','task'];
+  const groupId = finanzaTabs.includes(tab) ? 'tabs-finanza' : 'tabs-riservata';
+  const groupTabs = finanzaTabs.includes(tab) ? finanzaTabs : riservTabs;
+  document.querySelectorAll('#' + groupId + ' .tab').forEach((t, i) => {
+    t.classList.toggle('active', groupTabs[i] === tab);
   });
-  document.getElementById('view-bandi').style.display       = tab === 'bandi'       ? '' : 'none';
-  document.getElementById('view-clienti').style.display     = tab === 'clienti'     ? '' : 'none';
-  document.getElementById('view-scadenzario').style.display = tab === 'scadenzario' ? '' : 'none';
-  document.getElementById('view-pipeline').style.display    = tab === 'pipeline'    ? '' : 'none';
+
+  // mostra/nascondi views
+  ['bandi','clienti','scadenzario','pipeline','task'].forEach(v => {
+    const el = document.getElementById('view-' + v);
+    if (!el) return;
+    if (v === tab) {
+      el.style.display = '';
+      el.classList.remove('tab-view');
+      void el.offsetWidth;
+      el.classList.add('tab-view');
+    } else {
+      el.style.display = 'none';
+    }
+  });
+
   if (tab === 'clienti')     renderClienti();
   if (tab === 'scadenzario') renderScadenzario();
   if (tab === 'pipeline')    renderPipeline();
+  if (tab === 'task')        renderTask();
 }
 
 // ─── SIDE PANEL ──────────────────────────────────────────────────────────
@@ -1969,6 +3352,7 @@ function openPanel(b) {
   const sc = STATO_CFG[b.stato] || {label:b.stato, cls:''};
   const pRow = (lbl, val) => `<div class="panel-row"><span class="panel-lbl">${lbl}</span><span class="panel-val">${val}</span></div>`;
   document.getElementById('panel-content').innerHTML = `
+    <div class="panel-hero panel-hero-${b.stato}"></div>
     <div class="panel-nome">${b.nome}</div>
     <div class="panel-ente">${b.ente}</div>
     <span class="badge ${sc.cls}">${sc.label}</span>
@@ -1983,14 +3367,34 @@ function openPanel(b) {
     <div class="panel-sec">Tipologie</div>
     <div>${b.tipo.map(t => { const c = TIPO_CFG[t]||{label:t,cls:''}; return `<span class="tag ${c.cls}">${c.label}</span>`; }).join('')}</div>
     ${b.descrizione ? `<div class="panel-sec">Descrizione</div><div style="font-size:11.5px;color:#444;line-height:1.6">${b.descrizione}</div>` : ''}
-    <div class="panel-sec">Clienti abbinabili (${b.clienti.length})</div>
-    <div>${b.clienti.length ? [...b.clienti].sort((a,z)=>{const aD=(b.domande||[]).includes(a.replace(' *','')),zD=(b.domande||[]).includes(z.replace(' *',''));return aD===zD?0:aD?-1:1;}).map(c => {
-      const n=c.replace(' *','');
-      if((b.domande||[]).includes(n)) return `<span class="ct-dom" title="Domanda già presentata">✓ ${n}</span>`;
-      if(c.endsWith(' *')) return `<span class="ct-potential">${c}</span>`;
-      return `<span class="ct">${c}</span>`;
-    }).join('') : '<span style="color:#aaa;font-size:11px">Nessuno</span>'}</div>
+    ${b.stato === 'lavorazione'
+      ? (()=>{
+          const STATI_PR = ['presentato','istruttoria','concesso','incassato'];
+          const STATI_IC = ['proposto','firmato','lavorazione'];
+          const voci     = getPipeline().filter(p => p.bando === b.nome && p.stato !== 'perso');
+          const pres     = voci.filter(p => STATI_PR.includes(p.stato));
+          const incorso  = voci.filter(p => STATI_IC.includes(p.stato));
+          const presHtml = pres.length
+            ? pres.map(p => '<span class="ct-dom">✓ ' + p.cliente + '</span>').join(' ')
+            : '<span style="color:#aaa;font-size:11px">Nessuna ancora</span>';
+          const icHtml   = incorso.length
+            ? incorso.map(p => '<span class="ct">' + p.cliente + '</span>').join(' ')
+            : '<span style="color:#aaa;font-size:11px">Nessuna</span>';
+          return '<div class="panel-sec">Domande presentate (' + pres.length + ')</div><div>' + presHtml + '</div>'
+               + '<div class="panel-sec">In lavorazione (' + incorso.length + ')</div><div>' + icHtml + '</div>';
+        })()
+      : `<div class="panel-sec">Clienti abbinabili (${b.clienti.length})</div>
+         <div>${b.clienti.length ? [...b.clienti].sort((a,z)=>{const aD=(b.domande||[]).includes(a.replace(' *','')),zD=(b.domande||[]).includes(z.replace(' *',''));return aD===zD?0:aD?-1:1;}).map(c => {
+           const n=c.replace(' *','');
+           if((b.domande||[]).includes(n)) return '<span class="ct-dom" title="Domanda già presentata">✓ ' + n + '</span>';
+           if(isBandoSIMEST(b) && hasDueBilanci(n) === false)
+             return '<span class="ct-incompat" title="Non idoneo SIMEST: meno di 2 bilanci approvati (fondata ' + (CLIENTI[n]?.annoFondazione||'?') + ')">✗ ' + n + '</span>';
+           if(c.endsWith(' *')) return '<span class="ct-potential">' + c + '</span>';
+           return '<span class="ct">' + c + '</span>';
+         }).join('') : '<span style="color:#aaa;font-size:11px">Nessuno</span>'}</div>`
+    }
     <div class="panel-actions">
+      ${SCHEDE_MAP[b.nome] ? `<button class="btn-scheda" onclick="openScheda('${b.nome.replace(/'/g,"\\'")}')">📄 Scheda N4G</button>` : ''}
       <a href="${b.link}" target="_blank" class="btn-link">→ Pagina ufficiale</a>
       <button class="btn-copy" onclick="copyLink(this,'${b.link}')">🔗 Copia link</button>
     </div>
@@ -2002,7 +3406,7 @@ function closePanel() {
   document.getElementById('side-panel').classList.remove('open');
   document.getElementById('panel-overlay').classList.remove('open');
 }
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { closePanel(); closeModalPipeline(); } });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closePanel(); closeModalPipeline(); closeTaskModal(); } });
 document.getElementById('modal-pipeline').addEventListener('click', e => { if (e.target === e.currentTarget) closeModalPipeline(); });
 
 // ─── DE MINIMIS SECTION ──────────────────────────────────────────────────
@@ -2382,7 +3786,30 @@ function showToast(msg, type='ok', duration=5000) {
 }
 
 // ─── VISTA CLIENTI ───────────────────────────────────────────────────────
+let clientiSearchQuery = '';
+let clientiSortMode = 'bandi';
+
+const AVATAR_COLORS = ['#3b82f6','#8b5cf6','#ec4899','#f59e0b','#10b981','#06b6d4','#f97316','#6366f1','#14b8a6','#84cc16','#e11d48','#0284c7'];
+function clientAvatarColor(name) {
+  let h = 0;
+  for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
+  return AVATAR_COLORS[h % AVATAR_COLORS.length];
+}
+function clientInitials(name) {
+  const w = name.trim().split(/[\s\-_]+/).filter(Boolean);
+  if (w.length >= 2) return (w[0][0] + w[1][0]).toUpperCase();
+  return name.substring(0, 2).toUpperCase();
+}
+function clientDominantColor(entries) {
+  if (entries.some(e => e.b?.urgente && e.b?.stato !== 'chiuso')) return '#dc2626';
+  if (entries.some(e => e.b?.stato === 'lavorazione')) return '#2563eb';
+  if (entries.some(e => e.b?.stato === 'aperto')) return '#16a34a';
+  if (entries.some(e => e.b?.stato === 'inapertura')) return '#0f766e';
+  return '#94a3b8';
+}
+
 function renderClienti() {
+  const _pipelineCache = getPipeline().filter(p => p.stato !== 'perso');
   const map = {};
   BANDI.forEach(b => {
     b.clienti.forEach(c => {
@@ -2391,61 +3818,127 @@ function renderClienti() {
       map[name].push({b, star: c.endsWith(' *')});
     });
   });
-  // Aggiungi clienti presenti in CLIENTI ma senza bandi
-  Object.keys(CLIENTI).forEach(name => {
-    if (!map[name]) map[name] = [];
-  });
-  const sorted = Object.entries(map).sort((a,b) => {
-    const aA = a[1].filter(x => x.b && x.b.stato==='aperto').length;
-    const bA = b[1].filter(x => x.b && x.b.stato==='aperto').length;
+  Object.keys(CLIENTI).forEach(name => { if (!map[name]) map[name] = []; });
+
+  // Ordina base: bandi aperti ↓ poi nome
+  let sorted = Object.entries(map).sort((a,b) => {
+    const aA = a[1].filter(x => x.b?.stato==='aperto').length;
+    const bA = b[1].filter(x => x.b?.stato==='aperto').length;
     if (bA !== aA) return bA - aA;
     return a[0].localeCompare(b[0]);
   });
+
+  // Applica sort personalizzato
+  if (clientiSortMode === 'nome') {
+    sorted.sort(([a],[b]) => a.localeCompare(b));
+  } else if (clientiSortMode === 'urgenza') {
+    sorted.sort(([,aE],[,bE]) => {
+      const aU = aE.some(x => x.b?.urgente && x.b?.stato !== 'chiuso') ? 1 : 0;
+      const bU = bE.some(x => x.b?.urgente && x.b?.stato !== 'chiuso') ? 1 : 0;
+      return bU - aU || bE.filter(x=>x.b?.stato==='aperto').length - aE.filter(x=>x.b?.stato==='aperto').length;
+    });
+  } else if (clientiSortMode === 'deminimis') {
+    sorted.sort(([a],[b]) => {
+      const aR = DEMINIMIS_MAX - (CLIENTI[a]?.aiutiRicevuti || 0);
+      const bR = DEMINIMIS_MAX - (CLIENTI[b]?.aiutiRicevuti || 0);
+      return bR - aR;
+    });
+  }
+
+  // Filtra per ricerca
+  const q = clientiSearchQuery.toLowerCase().trim();
+  if (q) sorted = sorted.filter(([name]) => name.toLowerCase().includes(q));
+
+  // Aggiorna contatore
+  const countEl = document.getElementById('clienti-count');
+  if (countEl) countEl.textContent = `${sorted.length} client${sorted.length===1?'e':'i'}`;
+
   document.getElementById('clienti-grid').innerHTML = sorted.map(([name, entries]) => {
-    const aperti   = entries.filter(x => x.b && x.b.stato==='aperto');
+    const aperti   = entries.filter(x => x.b?.stato==='aperto');
     const urgenti  = aperti.filter(x => x.b.urgente);
-    const inAp     = entries.filter(x => x.b && x.b.stato==='inapertura');
+    const inAp     = entries.filter(x => x.b?.stato==='inapertura');
+    const lav      = entries.filter(x => x.b?.stato==='lavorazione');
     const attivi   = entries.filter(x => x.b && x.b.stato !== 'chiuso' && x.b.stato !== 'monitorare');
-    const safeId = name.replace(/[^a-zA-Z0-9]/g,'_');
+    const isEmpty  = entries.length === 0;
+
+    const safeId   = name.replace(/[^a-zA-Z0-9]/g,'_');
     const safeName = name.replace(/'/g,"\\'").replace(/\\/g,'\\\\');
-    const selSet = selectedBandiPerCliente[name] || new Set();
+    const selSet   = selectedBandiPerCliente[name] || new Set();
     const selCount = selSet.size;
+
+    // Avatar e colori
+    const avatarColor   = clientAvatarColor(name);
+    const initials      = clientInitials(name);
+    const dominantColor = clientDominantColor(attivi);
+
+    // Portfolio bar
+    const tot = entries.length;
+    const pct = n => tot > 0 ? (n / tot * 100).toFixed(1) + '%' : '0%';
+    const portfolioBar = `<div class="client-portfolio-bar">
+      ${aperti.length  ? `<div class="cpb-seg cpb-aperto"     style="width:${pct(aperti.length)}"></div>` : ''}
+      ${inAp.length    ? `<div class="cpb-seg cpb-inapertura" style="width:${pct(inAp.length)}"></div>` : ''}
+      ${lav.length     ? `<div class="cpb-seg cpb-lavorazione"style="width:${pct(lav.length)}"></div>` : ''}
+    </div>`;
+
+    // Righe bandi
     const rows = attivi
       .sort((a,b) => ORDINE[a.b.stato]-ORDINE[b.b.stato] || (b.b.urgente?1:0)-(a.b.urgente?1:0))
       .map(({b, star}) => {
-        const sc = STATO_CFG[b.stato]||{label:b.stato,cls:''};
         const idx = BANDI.indexOf(b);
-        const selectable = b.stato === 'aperto' || b.stato === 'inapertura';
+        const haDomanda = (b.domande || []).includes(name);
+        const pipEntry = _pipelineCache.find(p => p.cliente === name && p.bando === b.nome);
+        // Stato effettivo per questo cliente: pipeline se il cliente è coinvolto, altrimenti stato originale
+        const statoEffettivo = pipEntry ? b.stato : (b._statoOrig || b.stato);
+        const sc = STATO_CFG[statoEffettivo]||{label:statoEffettivo,cls:''};
+        const nonSelectable = haDomanda || !!pipEntry;
+        const selectable = !nonSelectable && (statoEffettivo === 'aperto' || statoEffettivo === 'inapertura');
         const checked = selectable && selSet.has(idx) ? 'checked' : '';
-        const chk = selectable
-          ? `<input type="checkbox" class="bando-chk" ${checked} onclick="event.stopPropagation();toggleBandoSel('${safeName}',${idx})" title="Seleziona per Action Plan">`
-          : `<span style="display:inline-block;width:14px;flex-shrink:0"></span>`;
-        return `<div class="client-bando-row" onclick="openPanel(BANDI[${idx}])">
+        const chk = nonSelectable
+          ? `<span style="display:inline-block;width:14px;flex-shrink:0;color:#16a34a;font-size:11px;font-weight:700" title="${pipEntry?'Già in pipeline':'Domanda già presentata'}">✓</span>`
+          : selectable
+            ? `<input type="checkbox" class="bando-chk" ${checked} onclick="event.stopPropagation();toggleBandoSel('${safeName}',${idx})" title="Seleziona per Action Plan">`
+            : `<span style="display:inline-block;width:14px;flex-shrink:0"></span>`;
+        const simestIncompat = isBandoSIMEST(b) && hasDueBilanci(name) === false;
+        return `<div class="client-bando-row${simestIncompat?' incompat-row':''}" onclick="openPanel(BANDI[${idx}])" ${simestIncompat?`title="Non idoneo: servono almeno 2 bilanci approvati (fondata ${CLIENTI[name]?.annoFondazione})"`:''}>
           ${chk}
           <span class="badge ${sc.cls}" style="font-size:9px;padding:2px 6px;white-space:nowrap">${sc.label}</span>
           ${b.urgente ? '<span class="flg flg-urgente" style="font-size:8px">URG</span>' : ''}
-          <span class="client-bando-nome" title="${b.nome}">${b.nome}${star?' *':''}</span>
+          ${simestIncompat ? '<span style="font-size:9px;color:#9ca3af;font-weight:600">✗ bilanci</span>' : ''}
+          <span class="client-bando-nome" title="${b.nome}" style="${simestIncompat?'text-decoration:line-through;color:#9ca3af':''}">${b.nome}${star?' *':''}</span>
           <span class="client-bando-contributo">${b.contributo.length > 22 ? b.contributo.substring(0,22)+'…' : b.contributo}</span>
         </div>`;
       }).join('');
+
     const dm = dmSection(name);
     const inClienti = CLIENTI.hasOwnProperty(name);
-    return `<div class="client-card">
+    const emptyContent = isEmpty
+      ? '<div class="client-empty-note">Nessun bando abbinato</div>'
+      : rows || '<div style="padding:10px 14px;font-size:11px;color:#aaa">Nessun bando attivo</div>';
+
+    return `<div class="client-card${isEmpty?' client-card-empty':''}">
+      <div class="client-card-top-band" style="background:${dominantColor}"></div>
       <div class="client-card-header" onclick="this.querySelector('.client-chevron').classList.toggle('open');this.parentElement.querySelector('.client-bandi').classList.toggle('open')">
-        <span class="client-name">${name}</span>
-        <span class="client-stats">
-          ${aperti.length ? `<span class="cs cs-a">${aperti.length} aperti</span>` : ''}
-          ${urgenti.length ? `<span class="cs cs-u">${urgenti.length} urgenti</span>` : ''}
-          ${inAp.length ? `<span class="cs cs-i">${inAp.length} in apertura</span>` : ''}
-        </span>
-        <button class="btn-edit-sm" onclick="event.stopPropagation();openEditClienteModal('${safeName}')" title="Modifica cliente">✏️</button>
-        ${inClienti ? `<button class="btn-danger-sm" onclick="event.stopPropagation();deleteCliente('${safeName}')" title="Elimina cliente">🗑</button>` : ''}
-        <button class="btn-print-cliente" onclick="event.stopPropagation();printCliente('${safeName}')">🖨 Stampa</button>
-        <button class="btn-ap${selCount>0?' ap-active':''}" id="btn-ap-${safeId}" ${selCount===0?'disabled':''} onclick="event.stopPropagation();openApModal('${safeName}')">${selCount>0?'📄 Action Plan ('+selCount+')':'📄 Action Plan'}</button>
-        <span class="client-chevron">▾</span>
+        <div class="client-avatar" style="background:${avatarColor}">${initials}</div>
+        <div class="client-info">
+          <span class="client-name">${name}</span>
+          <span class="client-stats">
+            ${aperti.length ? `<span class="cs cs-a">${aperti.length} aperti</span>` : ''}
+            ${urgenti.length ? `<span class="cs cs-u">${urgenti.length} urgenti</span>` : ''}
+            ${inAp.length ? `<span class="cs cs-i">${inAp.length} in apertura</span>` : ''}
+            ${isEmpty ? '<span class="cs" style="background:#f1f5f9;color:#94a3b8">no bandi</span>' : ''}
+          </span>
+        </div>
+        <div class="client-actions">
+          <button class="btn-edit-sm" onclick="event.stopPropagation();openEditClienteModal('${safeName}')" title="Modifica cliente">✏️</button>
+          ${inClienti ? `<button class="btn-danger-sm" onclick="event.stopPropagation();deleteCliente('${safeName}')" title="Elimina cliente">🗑</button>` : ''}
+          <button class="btn-print-cliente" onclick="event.stopPropagation();printCliente('${safeName}')">🖨 Stampa</button>
+          <button class="btn-ap${selCount>0?' ap-active':''}" id="btn-ap-${safeId}" ${selCount===0?'disabled':''} onclick="event.stopPropagation();openApModal('${safeName}')">${selCount>0?'📄 Action Plan ('+selCount+')':'📄 Action Plan'}</button>
+          <span class="client-chevron">▾</span>
+        </div>
       </div>
+      ${portfolioBar}
       ${dm}
-      <div class="client-bandi">${rows || '<div style="padding:10px 14px;font-size:11px;color:#aaa">Nessun bando attivo</div>'}</div>
+      <div class="client-bandi">${emptyContent}</div>
     </div>`;
   }).join('');
 }
@@ -2511,6 +4004,8 @@ function renderScadenzario() {
                 const alert = dmChipAlert(n);
                 if (alert === 'danger') return `<span class="ct-dm-danger" title="De minimis quasi esaurito">⚠ ${n}</span>`;
                 if (alert === 'warn')   return `<span class="ct-dm-warn"   title="De minimis elevato">⚠ ${n}</span>`;
+                if (isBandoSIMEST(b) && hasDueBilanci(n) === false)
+                  return `<span class="ct-incompat" title="Non idoneo SIMEST: meno di 2 bilanci approvati (fondata ${CLIENTI[n]?.annoFondazione})">✗ ${n}</span>`;
                 return c.endsWith(' *') ? `<span class="ct-potential">${c}</span>` : `<span class="ct">${c}</span>`;
               }).join('')}
               ${b.clienti.length > 6 ? `<span style="font-size:10px;color:#aaa"> +${b.clienti.length-6}</span>` : ''}
@@ -2607,13 +4102,65 @@ function openAddBandoModal() {
     `<label class="nb-tipo-label"><input type="checkbox" name="nb-tipo" value="${k}"> ${v.label}</label>`
   ).join('');
 
-  document.getElementById('nb-clienti-wrap').innerHTML = Object.keys(CLIENTI).sort().map(n =>
-    `<label style="display:flex;align-items:center;gap:6px;font-size:11px;cursor:pointer;padding:2px 0">
-      <input type="checkbox" name="nb-cliente" value="${n}"> ${n}
-    </label>`
-  ).join('');
-
   document.getElementById('modal-new-bando').classList.add('open');
+}
+
+
+// ─── AUTO MATCH CLIENTI ──────────────────────────────────────────────────────
+// Abbina automaticamente le aziende al bando in base alla regione.
+// Le aziende già nella regione → nome; le altre → nome + " *" (sede da aprire).
+// Bandi nazionali → tutte le aziende con P.IVA nota.
+function autoMatchClienti(regione) {
+  const r = (regione || '').toLowerCase();
+
+  // Regioni italiane → province/città associate
+  const GEO = {
+    lazio:      ['roma','viterbo','frosinone','latina','rieti','(rm)','(vt)','(fr)','(lt)','(ri)'],
+    lombardia:  ['milano','bergamo','brescia','como','cremona','lecco','lodi','mantova','monza','pavia','sondrio','varese','(mi)','(bg)','(bs)','(co)','(cr)','(lc)','(lo)','(mn)','(mb)','(pv)','(so)','(va)'],
+    toscana:    ['firenze','arezzo','grosseto','livorno','lucca','massa','pisa','pistoia','prato','siena','(fi)','(ar)','(gr)','(li)','(lu)','(ms)','(pi)','(pt)','(po)','(si)'],
+    campania:   ['napoli','avellino','benevento','caserta','salerno','(na)','(av)','(bn)','(ce)','(sa)'],
+    sicilia:    ['palermo','agrigento','caltanissetta','catania','enna','messina','ragusa','siracusa','trapani','(pa)','(ag)','(cl)','(ct)','(en)','(me)','(rg)','(sr)','(tp)'],
+    veneto:     ['venezia','belluno','padova','rovigo','treviso','verona','vicenza','(ve)','(bl)','(pd)','(ro)','(tv)','(vr)','(vi)'],
+    piemonte:   ['torino','alessandria','asti','biella','cuneo','novara','verbania','vercelli','(to)','(al)','(at)','(bi)','(cn)','(no)','(vb)','(vc)'],
+    'emilia':   ['bologna','ferrara','forlì','modena','parma','piacenza','ravenna','reggio emilia','rimini','(bo)','(fe)','(fc)','(mo)','(pr)','(pc)','(ra)','(re)','(rn)'],
+    puglia:     ['bari','brindisi','foggia','lecce','taranto','(ba)','(bt)','(br)','(fg)','(le)','(ta)'],
+    calabria:   ['catanzaro','cosenza','crotone','reggio calabria','vibo valentia','(cz)','(cs)','(kr)','(rc)','(vv)'],
+    sardegna:   ['cagliari','nuoro','oristano','sassari','(ca)','(nu)','(or)','(ss)','(su)'],
+    abruzzo:    ["l'aquila",'chieti','pescara','teramo','(aq)','(ch)','(pe)','(te)'],
+    basilicata: ['potenza','matera','(pz)','(mt)'],
+    molise:     ['campobasso','isernia','(cb)','(is)'],
+    umbria:     ['perugia','terni','(pg)','(tr)'],
+    marche:     ['ancona','ascoli','fermo','macerata','pesaro','(an)','(ap)','(fm)','(mc)','(pu)'],
+    liguria:    ['genova','imperia','la spezia','savona','(ge)','(im)','(sp)','(sv)'],
+    friuli:     ['trieste','gorizia','pordenone','udine','(ts)','(go)','(pn)','(ud)'],
+    trentino:   ['trento','bolzano','(tn)','(bz)'],
+    // Mezzogiorno = macro-area
+    mezzogiorno:['campania','puglia','basilicata','calabria','sicilia','sardegna','abruzzo','molise',
+                 'napoli','bari','palermo','catanzaro','potenza','cosenza','catania','cagliari','pescara','campobasso',
+                 '(na)','(ba)','(pa)','(cz)','(pz)','(cs)','(ct)','(ca)','(pe)','(cb)',
+                 '(av)','(bn)','(ce)','(sa)','(bt)','(br)','(fg)','(le)','(ta)','(kr)','(rc)','(vv)',
+                 '(nu)','(or)','(ss)','(su)','(aq)','(ch)','(te)','(mt)','(ag)','(cl)','(en)','(me)','(rg)','(sr)','(tp)'],
+  };
+
+  // Cerca la regione nel testo
+  let keywords = [];
+  for (const [key, cities] of Object.entries(GEO)) {
+    if (r.includes(key)) { keywords = cities; break; }
+  }
+  const isNazionale = !keywords.length || ['nazionale','tutte','italia','tutto il territorio'].some(k => r.includes(k));
+
+  const out = [];
+  for (const [nome, dati] of Object.entries(CLIENTI)) {
+    if (!dati.piva) continue; // salta aziende senza P.IVA (dati incompleti)
+    if (isNazionale) {
+      out.push(nome);
+    } else {
+      const cittaLC = (dati.citta || '').toLowerCase();
+      const inRegione = keywords.some(k => cittaLC.includes(k));
+      out.push(inRegione ? nome : nome + ' *');
+    }
+  }
+  return out.sort();
 }
 
 function saveNewBando() {
@@ -2625,7 +4172,6 @@ function saveNewBando() {
     return;
   }
   const tipo = [...document.querySelectorAll('input[name="nb-tipo"]:checked')].map(c => c.value);
-  const clientiSel = [...document.querySelectorAll('input[name="nb-cliente"]:checked')].map(c => c.value);
   const bando = {
     nome, ente, regione,
     tipo: tipo.length ? tipo : ['impresa'],
@@ -2637,7 +4183,7 @@ function saveNewBando() {
     altaRilevanza:    document.getElementById('nb-alta').checked,
     aperturaImminente:document.getElementById('nb-imminente').checked,
     descrizione: document.getElementById('nb-desc').value.trim(),
-    clienti:     clientiSel,
+    clienti:     autoMatchClienti(document.getElementById('nb-regione').value.trim()),
     link:        document.getElementById('nb-link').value.trim(),
     _extra: true
   };
@@ -2647,7 +4193,9 @@ function saveNewBando() {
   render();
   renderClienti();
   document.getElementById('modal-new-bando').classList.remove('open');
-  showToast(`✅ Bando "${nome}" aggiunto`, 'ok');
+  const nMatch = bando.clienti.filter(c=>!c.endsWith(' *')).length;
+  const nPot   = bando.clienti.filter(c=>c.endsWith(' *')).length;
+  showToast(`✅ Bando "${nome}" aggiunto · Match auto: ${nMatch} confermati, ${nPot} potenziali`, 'ok');
 }
 
 // ─── CRUD CLIENTI ─────────────────────────────────────────────────────────
@@ -2793,6 +4341,338 @@ function _handleImport(e) {
   };
   reader.readAsText(file);
 }
+
+// ─── TASK ─────────────────────────────────────────────────────────────────
+function getTasks() { return JSON.parse(localStorage.getItem('n4_tasks') || '[]'); }
+function saveTasks(t) { localStorage.setItem('n4_tasks', JSON.stringify(t)); }
+
+function openTaskModal(taskData) {
+  document.getElementById('task-editing-id').value = taskData ? taskData.id : '';
+  document.getElementById('task-modal-title').textContent = taskData ? 'Modifica attività' : 'Nuova attività';
+  document.getElementById('btn-task-save-label').textContent = taskData ? 'Salva modifiche' : 'Salva attività';
+
+  // popola select con i clienti
+  const sel = document.getElementById('task-cliente-select');
+  const clientiKeys = Object.keys(CLIENTI).sort();
+  // mantieni solo prima option (placeholder) e ultima (__altro__)
+  while (sel.options.length > 1) sel.remove(1);
+  clientiKeys.forEach(nome => {
+    const opt = document.createElement('option');
+    opt.value = nome;
+    opt.textContent = nome;
+    sel.add(opt);
+  });
+  const altroOpt = document.createElement('option');
+  altroOpt.value = '__altro__';
+  altroOpt.textContent = '✏️  Scrivi il nome manualmente...';
+  sel.add(altroOpt);
+
+  // popola select strumenti (BANDI + extra localStorage)
+  const selStr = document.getElementById('task-strumento-select');
+  while (selStr.options.length > 1) selStr.remove(1);
+  const bandiExtra = JSON.parse(localStorage.getItem('n4_bandi_extra') || '[]');
+  const tuttiBandi = [...BANDI, ...bandiExtra];
+  tuttiBandi.forEach(b => {
+    const opt = document.createElement('option');
+    opt.value = b.nome;
+    opt.textContent = b.nome;
+    selStr.add(opt);
+  });
+  const altroStrOpt = document.createElement('option');
+  altroStrOpt.value = '__altro__';
+  altroStrOpt.textContent = '✏️  Scrivi il nome manualmente...';
+  selStr.add(altroStrOpt);
+
+  // precompila o resetta i campi
+  const clienteCustom = document.getElementById('task-cliente-custom');
+  const strumentoCustom = document.getElementById('task-strumento-custom');
+  clienteCustom.style.display = 'none';
+  clienteCustom.value = '';
+  strumentoCustom.style.display = 'none';
+  strumentoCustom.value = '';
+
+  if (taskData) {
+    // controlla se il cliente è nel select, altrimenti usa campo custom
+    const clienteOpt = [...sel.options].find(o => o.value === taskData.cliente);
+    if (clienteOpt) {
+      sel.value = taskData.cliente;
+    } else if (taskData.cliente) {
+      sel.value = '__altro__';
+      clienteCustom.style.display = 'block';
+      clienteCustom.value = taskData.cliente;
+    } else {
+      sel.value = '';
+    }
+    // stessa logica per strumento
+    const strumentoOpt = [...selStr.options].find(o => o.value === taskData.strumento);
+    if (strumentoOpt) {
+      selStr.value = taskData.strumento;
+    } else if (taskData.strumento) {
+      selStr.value = '__altro__';
+      strumentoCustom.style.display = 'block';
+      strumentoCustom.value = taskData.strumento;
+    } else {
+      selStr.value = '';
+    }
+    document.getElementById('task-note').value = taskData.note || taskData.testo || '';
+    document.getElementById('task-scadenza').value = taskData.scadenza || '';
+  } else {
+    sel.value = '';
+    selStr.value = '';
+    document.getElementById('task-note').value = '';
+    document.getElementById('task-scadenza').value = '';
+  }
+
+  const overlay = document.getElementById('task-modal-overlay');
+  overlay.style.display = 'flex';
+  setTimeout(() => document.getElementById('task-note').focus(), 120);
+}
+
+function closeTaskModal() {
+  document.getElementById('task-modal-overlay').style.display = 'none';
+}
+
+function onClienteSelectChange() {
+  const sel = document.getElementById('task-cliente-select');
+  const custom = document.getElementById('task-cliente-custom');
+  if (sel.value === '__altro__') {
+    custom.style.display = 'block';
+    custom.focus();
+  } else {
+    custom.style.display = 'none';
+    custom.value = '';
+  }
+}
+
+function onStrumentoSelectChange() {
+  const sel = document.getElementById('task-strumento-select');
+  const custom = document.getElementById('task-strumento-custom');
+  if (sel.value === '__altro__') {
+    custom.style.display = 'block';
+    custom.focus();
+  } else {
+    custom.style.display = 'none';
+    custom.value = '';
+  }
+}
+
+function saveTaskFromModal() {
+  const sel = document.getElementById('task-cliente-select');
+  const custom = document.getElementById('task-cliente-custom');
+  const note = (document.getElementById('task-note').value || '').trim();
+
+  let cliente = sel.value === '__altro__'
+    ? (custom.value || '').trim()
+    : sel.value;
+
+  const selStr = document.getElementById('task-strumento-select');
+  const customStr = document.getElementById('task-strumento-custom');
+  let strumento = selStr.value === '__altro__'
+    ? (customStr.value || '').trim()
+    : selStr.value;
+
+  if (!note) {
+    document.getElementById('task-note').focus();
+    document.getElementById('task-note').style.borderColor = '#dc2626';
+    setTimeout(() => document.getElementById('task-note').style.borderColor = '', 1200);
+    return;
+  }
+
+  const scadenza = document.getElementById('task-scadenza').value; // YYYY-MM-DD o ''
+  const editingId = document.getElementById('task-editing-id').value;
+  const tasks = getTasks();
+
+  if (editingId) {
+    const idx = tasks.findIndex(t => String(t.id) === String(editingId));
+    if (idx !== -1) {
+      tasks[idx] = { ...tasks[idx], cliente: cliente || '', strumento: strumento || '', note, scadenza: scadenza || '' };
+    }
+  } else {
+    tasks.push({
+      id: Date.now(),
+      cliente: cliente || '',
+      strumento: strumento || '',
+      note,
+      scadenza: scadenza || '',
+      fatto: false,
+      created: new Date().toLocaleDateString('it-IT')
+    });
+  }
+  saveTasks(tasks);
+  closeTaskModal();
+  renderTask();
+}
+
+function toggleTask(id) {
+  const tasks = getTasks();
+  const t = tasks.find(t => t.id === id);
+  if (t) { t.fatto = !t.fatto; saveTasks(tasks); renderTask(); }
+}
+
+function deleteTask(id) {
+  saveTasks(getTasks().filter(t => t.id !== id));
+  renderTask();
+}
+
+function editTask(id) {
+  const t = getTasks().find(t => t.id === id);
+  if (t) openTaskModal(t);
+}
+
+function toggleMonitor(id) {
+  const tasks = getTasks();
+  const t = tasks.find(t => t.id === id);
+  if (t) { t.monitorare = !t.monitorare; saveTasks(tasks); renderTask(); }
+}
+
+function taskScadBadge(scadenza) {
+  if (!scadenza) return '';
+  const oggi = new Date(); oggi.setHours(0,0,0,0);
+  const data = new Date(scadenza); data.setHours(0,0,0,0);
+  const giorni = Math.round((data - oggi) / 86400000);
+  let cls, label;
+  if (giorni < 0)      { cls = 'task-scad-over';   label = `⚠ Scaduta il ${data.toLocaleDateString('it-IT')}`; }
+  else if (giorni === 0){ cls = 'task-scad-urgent'; label = '⏰ Scade oggi'; }
+  else if (giorni <= 3) { cls = 'task-scad-urgent'; label = `⏰ Tra ${giorni} giorn${giorni===1?'o':'i'}`; }
+  else if (giorni <= 7) { cls = 'task-scad-soon';   label = `📅 Tra ${giorni} giorni`; }
+  else                  { cls = 'task-scad-ok';     label = `📅 ${data.toLocaleDateString('it-IT')}`; }
+  return `<span class="task-scad ${cls}">${label}</span>`;
+}
+
+function sortByScadenza(tasks) {
+  return [...tasks].sort((a, b) => {
+    if (a.monitorare && !b.monitorare) return -1;
+    if (!a.monitorare && b.monitorare) return 1;
+    const aHas = !!a.scadenza, bHas = !!b.scadenza;
+    if (!aHas && !bHas) return 0;
+    if (!aHas) return 1;
+    if (!bHas) return -1;
+    return new Date(a.scadenza) - new Date(b.scadenza);
+  });
+}
+
+function getTaskPriority(t) {
+  if (!t.scadenza) return 'normal';
+  const oggi = new Date(); oggi.setHours(0,0,0,0);
+  const data = new Date(t.scadenza); data.setHours(0,0,0,0);
+  const giorni = Math.round((data - oggi) / 86400000);
+  if (giorni < 0)  return 'over';
+  if (giorni <= 3) return 'urgent';
+  if (giorni <= 7) return 'soon';
+  return 'normal';
+}
+
+function renderTask() {
+  const tasks = getTasks();
+  const todo  = sortByScadenza(tasks.filter(t => !t.fatto));
+  const done  = tasks.filter(t => t.fatto);
+  const total = tasks.length;
+
+  const monitored = todo.filter(t => t.monitorare);
+  const rest      = todo.filter(t => !t.monitorare);
+  const grOver    = rest.filter(t => getTaskPriority(t) === 'over');
+  const grUrgent  = rest.filter(t => getTaskPriority(t) === 'urgent');
+  const grSoon    = rest.filter(t => getTaskPriority(t) === 'soon');
+  const grNormal  = rest.filter(t => getTaskPriority(t) === 'normal');
+
+  const nAlert  = grOver.length + grUrgent.length;
+  const nSoon   = grSoon.length;
+  const nNormal = grNormal.length + monitored.length;
+
+  document.getElementById('task-stats').innerHTML = total === 0 ? '' : `
+    <div class="task-kpi-row">
+      ${nAlert  ? `<div class="task-kpi task-kpi-over"><div class="task-kpi-num">${nAlert}</div><div class="task-kpi-label">Urgenti / scadute</div></div>` : ''}
+      ${nSoon   ? `<div class="task-kpi task-kpi-soon"><div class="task-kpi-num">${nSoon}</div><div class="task-kpi-label">In scadenza</div></div>` : ''}
+      ${nNormal ? `<div class="task-kpi task-kpi-normal"><div class="task-kpi-num">${nNormal}</div><div class="task-kpi-label">Da fare</div></div>` : ''}
+      ${done.length ? `<div class="task-kpi task-kpi-done"><div class="task-kpi-num">${done.length}</div><div class="task-kpi-label">Completate</div></div>` : ''}
+    </div>`;
+
+  const taskRow = t => {
+    const noteTxt = t.note || t.testo || '';
+    const clienteBadge = t.cliente
+      ? `<span class="task-cliente-badge">🏢 ${t.cliente}</span>` : '';
+    const strumentoBadge = t.strumento
+      ? `<span class="task-strumento-badge">📋 ${t.strumento}</span>` : '';
+    const scadBadge = taskScadBadge(t.scadenza);
+    const hasBadges = clienteBadge || strumentoBadge || scadBadge;
+    const monClass  = t.monitorare ? ' monitored' : '';
+    const pinClass  = t.monitorare ? ' active' : '';
+    const prio      = getTaskPriority(t);
+    const prioClass = (t.fatto || t.monitorare) ? '' : ` prio-${prio}`;
+    return `
+    <div class="task-item${t.fatto ? ' done' : ''}${monClass}${prioClass}" id="task-${t.id}">
+      <div class="task-check${t.fatto ? ' checked' : ''}" onclick="toggleTask(${t.id})"></div>
+      <div class="task-body">
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:${hasBadges?'6px':'0'}">
+          ${clienteBadge}${strumentoBadge}${scadBadge}
+        </div>
+        <div class="task-note">${noteTxt}</div>
+        <div class="task-meta">
+          <span class="task-date">Aggiunto ${t.created || ''}</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0">
+        <button class="task-pin-btn${pinClass}" onclick="toggleMonitor(${t.id})" title="${t.monitorare ? 'Rimuovi da monitorare' : 'Segna da monitorare'}">
+          ${t.monitorare ? '👁 Monitorato' : '👁 Monitora'}
+        </button>
+        <div style="display:flex;gap:6px;align-items:center">
+          <button class="task-edit" onclick="editTask(${t.id})" title="Modifica">✏️</button>
+          <button class="task-del" onclick="deleteTask(${t.id})" title="Elimina">×</button>
+        </div>
+      </div>
+    </div>`;
+  };
+
+  const sectionHead = (cls, label) =>
+    `<div class="task-section ${cls}"><span class="task-section-lbl">${label}</span></div>`;
+
+  let html = '';
+  if (total === 0) {
+    html = '<div class="task-empty">Nessuna attività ancora.<br><span style="font-size:12px">Premi "+ Nuova attività" per iniziare.</span></div>';
+  } else {
+    if (grOver.length)    { html += sectionHead('ts-urgenti',  '🔴 Scadute');       html += grOver.map(taskRow).join(''); }
+    if (grUrgent.length)  { html += sectionHead('ts-urgenti',  '🟠 Urgenti');        html += grUrgent.map(taskRow).join(''); }
+    if (grSoon.length)    { html += sectionHead('ts-scadenza', '🟡 In scadenza');    html += grSoon.map(taskRow).join(''); }
+    if (grNormal.length)  { html += sectionHead('ts-normali',  '🔵 Da fare');        html += grNormal.map(taskRow).join(''); }
+    if (monitored.length) { html += sectionHead('ts-monitored','👁 Da monitorare'); html += monitored.map(taskRow).join(''); }
+    if (done.length)      { html += sectionHead('ts-done',     '✅ Completate');     html += done.map(taskRow).join(''); }
+  }
+  document.getElementById('task-list').innerHTML = html;
+}
+
+// ─── RIPPLE SULLE CARD ────────────────────────────────────────────────────
+document.addEventListener('click', e => {
+  const card = e.target.closest('.card');
+  if (!card) return;
+  const r = document.createElement('span');
+  const rect = card.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height) * 1.4;
+  r.className = 'ripple';
+  r.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX-rect.left-size/2}px;top:${e.clientY-rect.top-size/2}px`;
+  card.appendChild(r);
+  r.addEventListener('animationend', () => r.remove());
+});
+
+// ─── SCROLL TO TOP ────────────────────────────────────────────────────────
+const btnTop = document.getElementById('btn-top');
+window.addEventListener('scroll', () => {
+  btnTop.classList.toggle('visible', window.scrollY > 320);
+}, { passive: true });
+
+// ─── SHORTCUT "/" PER APRIRE RICERCA ─────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key !== '/') return;
+  const tag = document.activeElement.tagName.toLowerCase();
+  if (tag === 'input' || tag === 'textarea' || tag === 'select') return;
+  e.preventDefault();
+  const q = document.getElementById('q');
+  if (!q) return;
+  // assicura che il tab bandi sia attivo
+  const viewBandi = document.getElementById('view-bandi');
+  if (viewBandi && viewBandi.style.display === 'none') switchTab('bandi');
+  q.focus();
+  q.select();
+});
 </script>
 </body>
 </html>
