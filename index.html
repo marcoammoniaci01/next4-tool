@@ -992,6 +992,17 @@
   .k-card-importo { font-size:10px; font-weight:800; color:#1a1a2e; }
   .k-card-data { font-size:9px; color:#cbd5e1; }
   .k-card-perso .k-card-bando { text-decoration:line-through; color:#94a3b8; }
+  .k-card-sep { height:1px; background:#f1f5f9; margin:8px 0 6px; }
+  .k-card-row { display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:4px; }
+  .k-card-rlbl { font-size:9px; color:#94a3b8; font-weight:600; white-space:nowrap; }
+  .k-card-rval { font-size:10px; font-weight:700; color:#1a1a2e; text-align:right; }
+  .k-tag { font-size:8px; font-weight:700; padding:1px 5px; border-radius:4px; white-space:nowrap; }
+  .k-tag-ok   { background:#dcfce7; color:#15803d; }
+  .k-tag-warn { background:#fef3c7; color:#92400e; }
+  .k-tag-blue { background:#eff6ff; color:#1d4ed8; }
+  .k-tag-gold { background:#fefce8; color:#b45309; }
+  body.dark .k-card-sep { background:#1e2d47; }
+  body.dark .k-card-rval { color:#dde4f0; }
 
   /* dark kanban */
   body.dark .kanban-kpi { background:#162035; }
@@ -2867,11 +2878,28 @@ function renderPipeline() {
       const ico     = bObj ? getBandoIco(bObj) : '📄';
       const avColor = clientAvatarColor(p.cliente);
       const avInit  = clientInitials(p.cliente);
-      const contributo = p.contributoMax ? fmtEurFull(p.contributoMax) : null;
-      const retainer   = p.retainer ? fmtEurFull(p.retainer) : null;
-      const retTag     = p.retainer
-        ? `<span style="font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px;background:${p.retainerPagato?'#dcfce7':'#fef3c7'};color:${p.retainerPagato?'#15803d':'#92400e'}">${p.retainerPagato?'✓':'⏳'} ${fmtEurFull(p.retainer)}</span>`
+      const sfAtt   = (p.contributoMax||0) * (p.successFeePerc||0) / 100;
+      const sfConc  = (p.contributoConc||0) * (p.successFeePerc||0) / 100;
+      const statoAvanzato = ['presentato','istruttoria','concesso','incassato'].includes(p.stato);
+      const statoConc     = ['concesso','incassato'].includes(p.stato);
+      const sa = p.serviziAccessori || [];
+      const totSA = sa.reduce((s,x) => s + (x.importo||0), 0);
+
+      const row = (lbl, val, extra='') => val
+        ? `<div class="k-card-row"><span class="k-card-rlbl">${lbl}</span><span class="k-card-rval">${val} ${extra}</span></div>`
         : '';
+      const tag = (cls, txt) => `<span class="k-tag ${cls}">${txt}</span>`;
+
+      const rows = [
+        row('Contributo max', p.contributoMax ? fmtEurFull(p.contributoMax) : ''),
+        p.retainer ? `<div class="k-card-row"><span class="k-card-rlbl">Retainer</span><span class="k-card-rval">${fmtEurFull(p.retainer)} ${tag(p.retainerPagato?'k-tag-ok':'k-tag-warn', p.retainerPagato?'✓ pagato':'⏳ non pagato')}</span></div>` : '',
+        totSA ? `<div class="k-card-row"><span class="k-card-rlbl">Servizi acc.</span><span class="k-card-rval">${fmtEurFull(totSA)} ${sa.some(x=>!x.pagato)?tag('k-tag-warn','⏳'):tag('k-tag-ok','✓')}</span></div>` : '',
+        statoAvanzato && sfAtt ? `<div class="k-card-row"><span class="k-card-rlbl">Fee attesa</span><span class="k-card-rval">${tag('k-tag-blue', fmtEurFull(sfAtt))} ${p.successFeePagata?tag('k-tag-ok','✓ pagata'):''}</span></div>` : '',
+        statoConc && p.contributoConc ? row('Concesso', fmtEurFull(p.contributoConc)) : '',
+        statoConc && sfConc ? `<div class="k-card-row"><span class="k-card-rlbl">Fee concessa</span><span class="k-card-rval">${tag('k-tag-gold', fmtEurFull(sfConc))}</span></div>` : '',
+        p.note ? `<div style="font-size:9px;color:#94a3b8;font-style:italic;margin-top:2px;line-height:1.4">${p.note}</div>` : '',
+      ].filter(Boolean).join('');
+
       return `<div class="k-card" draggable="true" data-kid="${p.id}">
         <div class="k-card-top">
           <div class="k-card-ico">${ico}</div>
@@ -2881,16 +2909,13 @@ function renderPipeline() {
           <div class="k-card-avatar" style="background:${avColor}">${avInit}</div>
           <div class="k-card-nome">${p.cliente}</div>
         </div>
-        ${contributo || retTag ? `<div style="display:flex;align-items:center;gap:6px;margin-top:6px;flex-wrap:wrap;">
-          ${contributo ? `<span style="font-size:10px;font-weight:800;color:#1a1a2e">↑ ${contributo}</span>` : ''}
-          ${retTag}
-        </div>` : ''}
-        <div class="k-card-footer">
-          <div style="display:flex;gap:4px;">
-            <button onclick="editPipeline('${p.id}')" style="background:none;border:none;cursor:pointer;font-size:13px;padding:2px;line-height:1" title="Modifica">✏️</button>
-            <button onclick="deletePipeline('${p.id}')" style="background:none;border:none;cursor:pointer;font-size:13px;padding:2px;line-height:1" title="Elimina">🗑️</button>
-          </div>
+        ${rows ? `<div class="k-card-sep"></div>${rows}` : ''}
+        <div class="k-card-footer" style="margin-top:8px;">
           <div class="k-card-data">${p.dataContratto||''}</div>
+          <div style="display:flex;gap:2px;">
+            <button onclick="editPipeline('${p.id}')" style="background:none;border:none;cursor:pointer;font-size:12px;padding:2px;line-height:1" title="Modifica">✏️</button>
+            <button onclick="deletePipeline('${p.id}')" style="background:none;border:none;cursor:pointer;font-size:12px;padding:2px;line-height:1" title="Elimina">🗑️</button>
+          </div>
         </div>
       </div>`;
     }).join('');
