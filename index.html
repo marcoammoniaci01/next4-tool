@@ -1236,20 +1236,90 @@
   body.dark .modal-date-incasso input { background:#1e2d47; border-color:#2d3f5e; color:#dde4f0; }
 
   /* ── Password Gate ────────────────────────────────────────────────────── */
-  #pw-gate { position:fixed; inset:0; z-index:99999; background:#0d1b2e; display:flex; align-items:center; justify-content:center; }
+  /* ── LOGIN GATE — Split Panel ── */
+  #pw-gate { position:fixed; inset:0; z-index:99999; display:flex; overflow:hidden; }
   #pw-gate.hidden { display:none; }
-  .pw-box { background:#fff; border-radius:16px; padding:40px 44px; width:360px; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.45); }
-  .pw-logo { font-size:22pt; font-weight:700; color:#113e76; letter-spacing:-0.5px; margin-bottom:4px; }
-  .pw-logo span { color:#00b8d4; }
-  .pw-sub { font-size:10pt; color:#64748b; margin-bottom:28px; letter-spacing:0.2px; }
-  .pw-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.6px; color:#64748b; text-align:left; display:block; margin-bottom:6px; }
-  .pw-input { width:100%; border:1.5px solid #e2e8f0; border-radius:8px; padding:11px 14px; font-size:13px; font-family:inherit; outline:none; color:#1a1a1a; transition:border-color 0.15s; box-sizing:border-box; }
-  .pw-input:focus { border-color:#113e76; }
-  .pw-input.pw-error { border-color:#ef4444; animation:pw-shake 0.35s; }
-  @keyframes pw-shake { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-7px)} 40%,80%{transform:translateX(7px)} }
-  .pw-btn { width:100%; margin-top:14px; background:#113e76; color:#fff; border:none; border-radius:8px; padding:12px; font-size:13px; font-weight:700; font-family:inherit; cursor:pointer; transition:background 0.15s; }
-  .pw-btn:hover { background:#1a52a0; }
-  .pw-err { font-size:11px; color:#ef4444; margin-top:10px; min-height:15px; }
+
+  /* sinistra branding */
+  .pw-side-brand {
+    width:42%; background:linear-gradient(150deg,#1B3A6B 0%,#0d2248 60%,#081525 100%);
+    display:flex; flex-direction:column; justify-content:space-between;
+    padding:48px 44px; position:relative; overflow:hidden; flex-shrink:0;
+  }
+  .pw-side-brand::before {
+    content:''; position:absolute; inset:0;
+    background-image:radial-gradient(rgba(255,255,255,0.07) 1px,transparent 1px);
+    background-size:28px 28px; pointer-events:none;
+  }
+  .pw-side-brand::after {
+    content:''; position:absolute; bottom:-80px; left:-80px;
+    width:320px; height:320px; border-radius:50%;
+    background:rgba(0,229,209,0.1); filter:blur(80px); pointer-events:none;
+  }
+  .pw-brand-top { position:relative; z-index:1; }
+  .pw-brand-logo { height:44px; object-fit:contain; filter:brightness(0) invert(1); opacity:.95; }
+  .pw-brand-mid { position:relative; z-index:1; }
+  .pw-brand-h {
+    font-family:'Plus Jakarta Sans','Inter',sans-serif;
+    font-size:clamp(22px,2.2vw,32px); font-weight:900;
+    color:white; line-height:1.15; letter-spacing:-.8px; margin-bottom:14px;
+  }
+  .pw-brand-h em { color:#00E5D1; font-style:normal; }
+  .pw-brand-desc { font-size:13px; color:rgba(255,255,255,.4); line-height:1.7; margin-bottom:28px; }
+  .pw-brand-bullets { display:flex; flex-direction:column; gap:11px; }
+  .pw-brand-bullet { display:flex; align-items:center; gap:11px; font-size:12.5px; color:rgba(255,255,255,.55); font-weight:500; }
+  .pw-bullet-icon {
+    width:30px; height:30px; border-radius:9px; flex-shrink:0;
+    background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.12);
+    display:flex; align-items:center; justify-content:center; font-size:14px;
+  }
+  .pw-brand-bot { position:relative; z-index:1; font-size:11px; color:rgba(255,255,255,.2); }
+
+  /* destra form */
+  .pw-side-form {
+    flex:1; background:white;
+    display:flex; align-items:center; justify-content:center;
+    padding:48px; animation:pwSlideIn .45s cubic-bezier(.25,.8,.25,1) both;
+  }
+  @keyframes pwSlideIn { from{opacity:0;transform:translateX(24px)} to{opacity:1;transform:translateX(0)} }
+  .pw-form-inner { width:100%; max-width:360px; }
+  .pw-form-eyebrow { font-size:11px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:#94a3b8; margin-bottom:8px; }
+  .pw-form-title {
+    font-family:'Plus Jakarta Sans','Inter',sans-serif;
+    font-size:26px; font-weight:900; color:#0f172a;
+    letter-spacing:-.8px; margin-bottom:6px;
+  }
+  .pw-form-sub { font-size:13px; color:#94a3b8; margin-bottom:36px; }
+  .pw-field { margin-bottom:18px; }
+  .pw-field label { display:block; font-size:11px; font-weight:700; color:#475569; text-transform:uppercase; letter-spacing:1px; margin-bottom:7px; }
+  .pw-field-wrap { position:relative; }
+  .pw-input {
+    width:100%; border:1.5px solid #e2e8f0; border-radius:12px;
+    padding:13px 44px 13px 16px; font-size:14px;
+    font-family:inherit; color:#0f172a; outline:none;
+    transition:border-color .2s,box-shadow .2s; background:white; box-sizing:border-box;
+  }
+  .pw-input::placeholder { color:#cbd5e1; }
+  .pw-input:focus { border-color:#1B3A6B; box-shadow:0 0 0 4px rgba(27,58,107,.07); }
+  .pw-input.pw-error { border-color:#ef4444 !important; animation:pw-shake .35s; }
+  @keyframes pw-shake { 0%,100%{transform:translateX(0)} 25%,75%{transform:translateX(-6px)} 50%{transform:translateX(6px)} }
+  .pw-eye-btn {
+    position:absolute; right:14px; top:50%; transform:translateY(-50%);
+    background:none; border:none; cursor:pointer;
+    font-size:14px; color:#cbd5e1; transition:color .15s; padding:4px;
+  }
+  .pw-eye-btn:hover { color:#64748b; }
+  .pw-btn {
+    width:100%; padding:14px; background:#1B3A6B; color:white;
+    border:none; border-radius:12px; font-size:14px; font-weight:800;
+    font-family:inherit; cursor:pointer; letter-spacing:.3px;
+    transition:all .2s;
+  }
+  .pw-btn:hover { background:#16305a; transform:translateY(-1px); box-shadow:0 8px 24px rgba(27,58,107,.25); }
+  .pw-err { font-size:12px; color:#ef4444; margin-top:12px; min-height:16px; text-align:center; }
+  .pw-form-footer { margin-top:28px; text-align:center; font-size:11px; color:#cbd5e1; }
+
+  @media(max-width:700px){ .pw-side-brand { display:none; } .pw-side-form { padding:32px 24px; } }
 
   /* ── RICERCA BANDI ── */
   #view-ricerca { padding: 28px 32px 60px; }
@@ -1404,14 +1474,41 @@
 <body>
 
 <div id="pw-gate">
-  <div class="pw-box">
-    <div class="pw-logo">Next<span>4</span> International</div>
-    <div class="pw-sub">Dashboard Bandi · Accesso riservato</div>
-    <label class="pw-label" for="pw-input">Password</label>
-    <input type="password" id="pw-input" class="pw-input" placeholder="Inserisci la password"
-           onkeydown="if(event.key==='Enter')verificaPassword()" autofocus>
-    <button class="pw-btn" onclick="verificaPassword()">Accedi →</button>
-    <div class="pw-err" id="pw-err"></div>
+  <!-- sinistra: branding -->
+  <div class="pw-side-brand">
+    <div class="pw-brand-top">
+      <img class="pw-brand-logo" src="logo_n4.png" alt="Next4 International">
+    </div>
+    <div class="pw-brand-mid">
+      <h2 class="pw-brand-h">Il tuo centro<br>di comando per la<br><em>finanza agevolata.</em></h2>
+      <p class="pw-brand-desc">Accedi alla piattaforma per gestire bandi, clienti e pratiche in un unico posto.</p>
+      <div class="pw-brand-bullets">
+        <div class="pw-brand-bullet"><div class="pw-bullet-icon">💼</div>Bandi nazionali e regionali</div>
+        <div class="pw-brand-bullet"><div class="pw-bullet-icon">📊</div>Pipeline pratiche in tempo reale</div>
+        <div class="pw-brand-bullet"><div class="pw-bullet-icon">🤝</div>Clienti e interazioni centralizzate</div>
+      </div>
+    </div>
+    <div class="pw-brand-bot">© 2026 Next4 International · Accesso riservato</div>
+  </div>
+
+  <!-- destra: form -->
+  <div class="pw-side-form">
+    <div class="pw-form-inner">
+      <div class="pw-form-eyebrow">Area riservata</div>
+      <div class="pw-form-title">Bentornato 👋</div>
+      <div class="pw-form-sub">Inserisci la password per accedere alla dashboard.</div>
+      <div class="pw-field">
+        <label for="pw-input">Password</label>
+        <div class="pw-field-wrap">
+          <input type="password" id="pw-input" class="pw-input" placeholder="••••••••••"
+                 onkeydown="if(event.key==='Enter')verificaPassword()" autofocus>
+          <button class="pw-eye-btn" onclick="togglePwVis(this)" tabindex="-1" type="button">👁</button>
+        </div>
+      </div>
+      <button class="pw-btn" onclick="verificaPassword()">Accedi alla dashboard →</button>
+      <div class="pw-err" id="pw-err"></div>
+      <div class="pw-form-footer">Problemi di accesso? Contatta il team Next4</div>
+    </div>
   </div>
 </div>
 
@@ -2073,9 +2170,14 @@ function verificaPassword() {
   const input = document.getElementById('pw-input');
   if (input.value === 'next4international') {
     sessionStorage.setItem('n4auth', '1');
-    document.getElementById('pw-gate').classList.add('hidden');
     document.getElementById('pw-err').textContent = '';
-    showHub();
+    const form = document.querySelector('.pw-side-form');
+    form.style.transition = 'opacity 0.3s, transform 0.3s';
+    form.style.opacity = '0'; form.style.transform = 'translateX(16px)';
+    setTimeout(() => {
+      document.getElementById('pw-gate').classList.add('hidden');
+      showHub();
+    }, 280);
   } else {
     input.classList.add('pw-error');
     document.getElementById('pw-err').textContent = 'Password errata. Riprova.';
@@ -2083,6 +2185,12 @@ function verificaPassword() {
     input.focus();
     setTimeout(() => input.classList.remove('pw-error'), 400);
   }
+}
+
+function togglePwVis(btn) {
+  const input = document.getElementById('pw-input');
+  input.type = input.type === 'password' ? 'text' : 'password';
+  btn.textContent = input.type === 'password' ? '👁' : '🙈';
 }
 
 function showHub() {
