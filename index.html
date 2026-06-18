@@ -1155,6 +1155,86 @@
   .pw-btn { width:100%; margin-top:14px; background:#113e76; color:#fff; border:none; border-radius:8px; padding:12px; font-size:13px; font-weight:700; font-family:inherit; cursor:pointer; transition:background 0.15s; }
   .pw-btn:hover { background:#1a52a0; }
   .pw-err { font-size:11px; color:#ef4444; margin-top:10px; min-height:15px; }
+
+  /* ── RICERCA BANDI ── */
+  #view-ricerca { padding: 28px 32px 60px; }
+  .rq-wrap { max-width: 640px; margin: 0 auto; }
+  .rq-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; }
+  .rq-title { font-size:20px; font-weight:800; color:#1B3A6B; }
+  .rq-restart { font-size:12px; color:#94a3b8; cursor:pointer; background:none; border:none; font-family:inherit; padding:0; }
+  .rq-restart:hover { color:#64748b; }
+  .rq-progress-track { height:3px; background:#e2e8f0; border-radius:2px; margin-bottom:24px; overflow:hidden; }
+  .rq-progress-fill { height:100%; background:linear-gradient(90deg,#1B3A6B,#00E5D1); border-radius:2px; transition:width 0.4s ease; }
+  .rq-chips { display:flex; flex-wrap:wrap; gap:7px; margin-bottom:20px; min-height:4px; }
+  .rq-chip { display:inline-flex; align-items:center; gap:5px; background:#eff6ff; border:1.5px solid #bfdbfe; border-radius:20px; padding:3px 10px 3px 9px; font-size:11px; cursor:pointer; transition:background 0.12s; }
+  .rq-chip:hover { background:#dbeafe; }
+  .rq-chip-lbl { color:#64748b; }
+  .rq-chip-val { color:#1B3A6B; font-weight:700; max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .rq-chip-edit { color:#bfdbfe; font-size:9px; }
+  @keyframes rqIn { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+  .rq-step { background:#fff; border:1.5px solid #e2e8f0; border-radius:14px; padding:28px 30px 22px; box-shadow:0 4px 24px rgba(27,58,107,0.07); animation:rqIn 0.28s ease; }
+  .rq-step-num { font-size:10px; font-weight:700; color:#cbd5e1; text-transform:uppercase; letter-spacing:.07em; margin-bottom:8px; }
+  .rq-step-q { font-size:20px; font-weight:800; color:#1e293b; margin-bottom:5px; line-height:1.3; }
+  .rq-step-sub { font-size:13px; color:#94a3b8; margin-bottom:20px; }
+  .rq-btn-grp { display:flex; flex-wrap:wrap; gap:10px; }
+  .rq-opt { display:flex; flex-direction:column; align-items:flex-start; background:#f8fafc; border:2px solid #e2e8f0; border-radius:10px; padding:10px 16px; cursor:pointer; transition:all 0.13s; font-family:inherit; text-align:left; }
+  .rq-opt:hover { border-color:#93c5fd; background:#f0f7ff; }
+  .rq-opt.sel { border-color:#1B3A6B; background:#eff6ff; }
+  .rq-opt-lbl { font-size:14px; font-weight:700; color:#1e293b; }
+  .rq-opt-sub { font-size:11px; color:#94a3b8; margin-top:2px; }
+  .rq-opt.sel .rq-opt-lbl { color:#1B3A6B; }
+  .rq-input { width:100%; padding:12px 16px; border:2px solid #e2e8f0; border-radius:10px; font-size:16px; font-family:inherit; outline:none; transition:border-color 0.15s; box-sizing:border-box; background:#fff; color:#1e293b; }
+  .rq-input:focus { border-color:#1B3A6B; }
+  .rq-input.err { border-color:#ef4444; }
+  .rq-nav { display:flex; align-items:center; gap:12px; margin-top:22px; flex-wrap:wrap; }
+  .rq-btn-next { background:#1B3A6B; color:#fff; border:none; border-radius:8px; padding:10px 22px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; transition:background 0.13s; }
+  .rq-btn-next:hover { background:#2952a3; }
+  .rq-btn-back { background:none; border:none; color:#94a3b8; font-size:13px; cursor:pointer; font-family:inherit; padding:0; }
+  .rq-btn-back:hover { color:#64748b; }
+  .rq-btn-skip { background:none; border:none; color:#94a3b8; font-size:13px; cursor:pointer; font-family:inherit; padding:0; margin-left:auto; }
+  .rq-btn-skip:hover { color:#64748b; }
+  /* risultati */
+  .rq-ris-wrap { margin-top:36px; }
+  .rq-ris-hdr { font-size:17px; font-weight:800; color:#1B3A6B; margin-bottom:6px; }
+  .rq-ris-sub { font-size:13px; color:#64748b; margin-bottom:20px; }
+  .rq-sec-lbl { font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.07em; margin:20px 0 8px; }
+  .rq-card { background:#fff; border:1.5px solid #e2e8f0; border-radius:12px; padding:14px 18px; margin-bottom:9px; cursor:pointer; transition:all 0.14s; display:flex; align-items:flex-start; gap:12px; }
+  .rq-card:hover { border-color:#1B3A6B; box-shadow:0 4px 16px rgba(27,58,107,0.09); transform:translateY(-1px); }
+  .rq-card.fuori { border-left:3px solid #f59e0b; }
+  .rq-card-body { flex:1; min-width:0; }
+  .rq-card-nome { font-size:14px; font-weight:700; color:#1e293b; margin-bottom:3px; }
+  .rq-card-meta { font-size:12px; color:#64748b; }
+  .rq-card-badges { display:flex; flex-wrap:wrap; gap:5px; flex-shrink:0; }
+  .rq-badge { font-size:10px; font-weight:700; border-radius:10px; padding:2px 8px; white-space:nowrap; }
+  .rq-badge-in   { background:#dcfce7; color:#16a34a; }
+  .rq-badge-naz  { background:#eff6ff; color:#1B3A6B; }
+  .rq-badge-fuori { background:#fef3c7; color:#d97706; }
+  .rq-badge-urg  { background:#fee2e2; color:#dc2626; }
+  .rq-badge-alt  { background:#f0fdf4; color:#15803d; border:1px solid #bbf7d0; }
+  .rq-toggle-esclusi { background:none; border:1.5px solid #e2e8f0; border-radius:8px; padding:8px 18px; font-size:13px; color:#94a3b8; cursor:pointer; font-family:inherit; margin-top:4px; }
+  .rq-toggle-esclusi:hover { background:#f8fafc; color:#64748b; }
+  .rq-no-res { text-align:center; padding:48px 24px; color:#94a3b8; font-size:14px; }
+  .rq-done-bar { background:#f0f9ff; border:1.5px solid #bfdbfe; border-radius:10px; padding:12px 18px; display:flex; align-items:center; justify-content:space-between; margin-bottom:4px; animation:rqIn 0.28s ease; }
+  .rq-done-txt { font-size:13px; color:#1B3A6B; font-weight:600; }
+  /* dark */
+  body.dark .rq-step { background:#162035; border-color:#2d3f5e; box-shadow:0 4px 24px rgba(0,0,0,.3); }
+  body.dark .rq-step-q { color:#e2e8f0; }
+  body.dark .rq-opt { background:#1e293b; border-color:#334155; }
+  body.dark .rq-opt:hover { border-color:#4a7fcb; background:#1a3460; }
+  body.dark .rq-opt.sel { border-color:#4a7fcb; background:#1a3460; }
+  body.dark .rq-opt-lbl { color:#e2e8f0; }
+  body.dark .rq-opt.sel .rq-opt-lbl { color:#93c5fd; }
+  body.dark .rq-input { background:#1e293b; border-color:#334155; color:#e2e8f0; }
+  body.dark .rq-input:focus { border-color:#4a7fcb; }
+  body.dark .rq-chip { background:#1a3460; border-color:#2d4f7c; }
+  body.dark .rq-chip-val { color:#93c5fd; }
+  body.dark .rq-card { background:#162035; border-color:#2d3f5e; }
+  body.dark .rq-card:hover { border-color:#4a7fcb; }
+  body.dark .rq-card-nome { color:#e2e8f0; }
+  body.dark .rq-done-bar { background:#1a3460; border-color:#2d4f7c; }
+  body.dark .rq-progress-track { background:#2d3f5e; }
+  body.dark .rq-title { color:#93c5fd; }
+  body.dark .rq-ris-hdr { color:#93c5fd; }
 </style>
 </head>
 <body>
@@ -1234,6 +1314,7 @@
   <button class="tab active" onclick="switchTab('bandi')">📋 Bandi</button>
   <button class="tab" onclick="switchTab('clienti')">🏢 Vista Clienti</button>
   <button class="tab" onclick="switchTab('scadenzario')">📅 Scadenzario</button>
+  <button class="tab" onclick="switchTab('ricerca')">🔍 Ricerca</button>
 </div>
 <div class="tabs" id="tabs-riservata" style="display:none;">
   <button class="tab active" onclick="switchTab('pipeline')">💼 Pipeline</button>
@@ -1301,6 +1382,19 @@
 
 <div id="view-scadenzario" style="display:none;">
   <div class="scad-wrap" id="scad-wrap"></div>
+</div>
+
+<div id="view-ricerca" style="display:none;">
+  <div class="rq-wrap">
+    <div class="rq-header">
+      <div class="rq-title">🔍 Ricerca bandi</div>
+      <button class="rq-restart" onclick="_rqInit()">Ricomincia da capo ↺</button>
+    </div>
+    <div class="rq-progress-track"><div class="rq-progress-fill" id="rq-progress-fill" style="width:0%"></div></div>
+    <div class="rq-chips" id="rq-chips"></div>
+    <div id="rq-step-wrap"></div>
+    <div class="rq-ris-wrap" id="rq-risultati" style="display:none;"></div>
+  </div>
 </div>
 
 <div id="view-pipeline" style="display:none;">
@@ -1764,7 +1858,7 @@ function showHub() {
   document.getElementById('data-toolbar').style.display = 'none';
   document.getElementById('tabs-finanza').style.display = 'none';
   document.getElementById('tabs-riservata').style.display = 'none';
-  ['view-bandi','view-clienti','view-scadenzario','view-pipeline','view-task'].forEach(id => {
+  ['view-bandi','view-clienti','view-scadenzario','view-ricerca','view-pipeline','view-task'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.style.display = 'none';
   });
@@ -3675,7 +3769,7 @@ function switchTab(tab) {
   closePanel();
 
   // aggiorna active nel gruppo tabs corretto
-  const finanzaTabs = ['bandi','clienti','scadenzario'];
+  const finanzaTabs = ['bandi','clienti','scadenzario','ricerca'];
   const riservTabs  = ['pipeline','task'];
   const groupId = finanzaTabs.includes(tab) ? 'tabs-finanza' : 'tabs-riservata';
   const groupTabs = finanzaTabs.includes(tab) ? finanzaTabs : riservTabs;
@@ -3684,7 +3778,7 @@ function switchTab(tab) {
   });
 
   // mostra/nascondi views
-  ['bandi','clienti','scadenzario','pipeline','task'].forEach(v => {
+  ['bandi','clienti','scadenzario','ricerca','pipeline','task'].forEach(v => {
     const el = document.getElementById('view-' + v);
     if (!el) return;
     if (v === tab) {
@@ -3701,6 +3795,7 @@ function switchTab(tab) {
   if (tab === 'scadenzario') renderScadenzario();
   if (tab === 'pipeline')    renderPipeline();
   if (tab === 'task')        renderTask();
+  if (tab === 'ricerca')     _rqInit();
 }
 
 // ─── SIDE PANEL ──────────────────────────────────────────────────────────
@@ -5292,6 +5387,280 @@ document.addEventListener('keydown', e => {
   q.focus();
   q.select();
 });
+
+// ─── RICERCA BANDI – QUESTIONARIO ────────────────────────────────────────────
+
+const RQ_STEPS = [
+  { id:'regione',     q:"In quale regione ha sede l'impresa?",           sub:'Regione della sede legale',                 type:'text',     field:'regione',      placeholder:'es. Lazio, Calabria, Lombardia…', required:true },
+  { id:'sedi',        q:"Ha sedi operative in altre regioni?",            sub:'Separate da virgola — lascia vuoto se no',  type:'text',     field:'sedi',         placeholder:'es. Calabria, Sicilia',           required:false, optional:true },
+  { id:'dimensione',  q:"Qual è la dimensione dell'impresa?",             sub:null,                                        type:'buttons',  field:'dimensione',   required:true, autoAdvance:true,
+    opts:[{v:'micro',label:'Micro',sub:'< 10 dip. · ≤ €2M'},{v:'piccola',label:'Piccola',sub:'< 50 dip. · ≤ €10M'},{v:'media',label:'Media',sub:'< 250 dip. · ≤ €50M'},{v:'grande',label:'Grande',sub:'≥ 250 dip.'}] },
+  { id:'anno',        q:"In che anno è stata fondata?",                   sub:'Serve per verificare i vincoli di età',     type:'number',   field:'anno',         placeholder:'es. 2019',                        required:false, optional:true },
+  { id:'ateco',       q:"Qual è il codice ATECO principale?",             sub:'Es. 62.10.00 = Software, 28.42 = Macchine', type:'text',     field:'ateco',        placeholder:'es. 62.10.00',                    required:false, optional:true },
+  { id:'status',      q:"L'impresa ha status speciali?",                  sub:'Seleziona tutti quelli applicabili',        type:'checkbox', field:'status',       required:false, optional:true,
+    opts:[{v:'startup',label:'Startup Innovativa',sub:'Iscritta sezione speciale RI'},{v:'pmi',label:'PMI Innovativa',sub:'Iscritta sezione speciale RI'},{v:'femminile',label:'Impresa Femminile',sub:'> 50% quote / soci donne'},{v:'giovanile',label:'Impresa Giovanile',sub:'> 50% under 36'}] },
+  { id:'investimento', q:"In quale ambito vuole investire?",              sub:'Seleziona tutto ciò che è pertinente',      type:'checkbox', field:'investimento',  required:false, optional:true,
+    opts:[{v:'innovazione',label:'Innovazione / R&D',sub:null},{v:'digitale',label:'Digitalizzazione',sub:null},{v:'internazionalizzazione',label:'Internazionalizzazione',sub:null},{v:'macchinari',label:'Macchinari / 4.0',sub:null},{v:'brevetti',label:'Brevetti / IP',sub:null},{v:'formazione',label:'Formazione',sub:null},{v:'ambiente',label:'Sostenibilità',sub:null},{v:'startup',label:'Avvio / Seed',sub:null}] },
+  { id:'contributo',  q:"Che tipo di contributo stai cercando?",          sub:'Seleziona quelli di interesse',             type:'checkbox', field:'contributo',   required:false, optional:true,
+    opts:[{v:'fondo_perduto',label:'Fondo perduto',sub:null},{v:'finanziamento',label:'Finanziamento agevolato',sub:'Tasso 0% o ridotto'},{v:'garanzia',label:'Garanzia',sub:'Fondo garanzia MCC'},{v:'equity',label:'Equity / Venture',sub:'Nel capitale'},{v:'voucher',label:'Voucher',sub:'Buoni spesa'}] },
+  { id:'addetti',     q:"Quanti dipendenti ha l'impresa?",                sub:'Opzionale — affina i bandi con soglie FTE', type:'number',   field:'addetti',      placeholder:'es. 8',                           required:false, optional:true },
+  { id:'fatturato',   q:"Qual è il fatturato dell'ultimo esercizio?",     sub:'In euro — opzionale',                       type:'number',   field:'fatturato',    placeholder:'es. 500000',                      required:false, optional:true },
+];
+
+let _rqState = { step:0, answers:{} };
+
+function _rqInit() {
+  _rqState = { step:0, answers:{} };
+  document.getElementById('rq-progress-fill').style.width = '0%';
+  document.getElementById('rq-chips').innerHTML = '';
+  document.getElementById('rq-risultati').style.display = 'none';
+  _rqRender();
+}
+
+function _rqRender() {
+  const s = RQ_STEPS[_rqState.step];
+  if (!s) { _rqShowResults(); return; }
+
+  document.getElementById('rq-progress-fill').style.width =
+    ((_rqState.step / RQ_STEPS.length) * 100) + '%';
+
+  // chips delle risposte già date
+  document.getElementById('rq-chips').innerHTML = RQ_STEPS.slice(0, _rqState.step)
+    .filter(x => {
+      const v = _rqState.answers[x.id];
+      return v !== null && v !== undefined && v !== '' && !(Array.isArray(v) && v.length === 0);
+    })
+    .map(x => {
+      const v = _rqState.answers[x.id];
+      const disp = Array.isArray(v) ? v.join(', ') : String(v);
+      const lbl  = x.q.split(' ').slice(0,3).join(' ') + '…';
+      return `<div class="rq-chip" onclick="_rqGoTo('${x.id}')">
+        <span class="rq-chip-lbl">${lbl}</span>
+        <span class="rq-chip-val">${disp}</span>
+        <span class="rq-chip-edit">✎</span></div>`;
+    }).join('');
+
+  // input HTML
+  let inputHtml = '';
+  const cur = _rqState.answers[s.id];
+  if (s.type === 'text' || s.type === 'number') {
+    inputHtml = `<input id="rq-inp" type="${s.type === 'number' ? 'number' : 'text'}"
+      class="rq-input" placeholder="${s.placeholder||''}" value="${cur != null ? cur : ''}"
+      onkeydown="if(event.key==='Enter')_rqNext()">`;
+  } else if (s.type === 'buttons') {
+    inputHtml = `<div class="rq-btn-grp">${(s.opts||[]).map(o =>
+      `<button class="rq-opt${cur===o.v?' sel':''}" onclick="_rqPickBtn('${o.v}',${s.autoAdvance?'true':'false'})">
+        <span class="rq-opt-lbl">${o.label}</span>
+        ${o.sub?`<span class="rq-opt-sub">${o.sub}</span>`:''}
+      </button>`).join('')}</div>`;
+  } else if (s.type === 'checkbox') {
+    const sel = cur || [];
+    inputHtml = `<div class="rq-btn-grp">${(s.opts||[]).map(o =>
+      `<button class="rq-opt${sel.includes(o.v)?' sel':''}" onclick="_rqToggle('${o.v}')">
+        <span class="rq-opt-lbl">${o.label}</span>
+        ${o.sub?`<span class="rq-opt-sub">${o.sub}</span>`:''}
+      </button>`).join('')}</div>`;
+  }
+
+  const isLast = _rqState.step === RQ_STEPS.length - 1;
+  const navHtml = `<div class="rq-nav">
+    ${_rqState.step > 0 ? `<button class="rq-btn-back" onclick="_rqBack()">← Indietro</button>` : ''}
+    ${s.type !== 'buttons' || !s.autoAdvance
+      ? `<button class="rq-btn-next" onclick="_rqNext()">${isLast ? '🔍 Cerca bandi' : 'Continua →'}</button>`
+      : ''}
+    ${s.optional ? `<button class="rq-btn-skip" onclick="_rqSkip()">Salta</button>` : ''}
+  </div>`;
+
+  document.getElementById('rq-step-wrap').innerHTML =
+    `<div class="rq-step">
+      <div class="rq-step-num">Domanda ${_rqState.step+1} di ${RQ_STEPS.length}</div>
+      <div class="rq-step-q">${s.q}</div>
+      ${s.sub ? `<div class="rq-step-sub">${s.sub}</div>` : ''}
+      ${inputHtml}
+      ${navHtml}
+    </div>`;
+
+  const inp = document.getElementById('rq-inp');
+  if (inp) setTimeout(() => inp.focus(), 80);
+}
+
+function _rqPickBtn(v, autoAdv) {
+  _rqState.answers[RQ_STEPS[_rqState.step].id] = v;
+  if (autoAdv) setTimeout(_rqNext, 180);
+  else _rqRender();
+}
+
+function _rqToggle(v) {
+  const id = RQ_STEPS[_rqState.step].id;
+  if (!_rqState.answers[id]) _rqState.answers[id] = [];
+  const arr = _rqState.answers[id];
+  const i = arr.indexOf(v);
+  if (i >= 0) arr.splice(i,1); else arr.push(v);
+  _rqRender();
+}
+
+function _rqNext() {
+  const s = RQ_STEPS[_rqState.step];
+  if (s.type === 'text' || s.type === 'number') {
+    const inp = document.getElementById('rq-inp');
+    const val = inp ? inp.value.trim() : '';
+    if (s.required && !val) {
+      if (inp) { inp.classList.add('err'); setTimeout(()=>inp.classList.remove('err'),1400); }
+      return;
+    }
+    _rqState.answers[s.id] = s.type === 'number' ? (parseFloat(val)||null) : (val||null);
+  }
+  if (_rqState.step < RQ_STEPS.length - 1) { _rqState.step++; _rqRender(); }
+  else _rqShowResults();
+}
+
+function _rqSkip() {
+  const s = RQ_STEPS[_rqState.step];
+  _rqState.answers[s.id] = s.type === 'checkbox' ? [] : null;
+  if (_rqState.step < RQ_STEPS.length - 1) { _rqState.step++; _rqRender(); }
+  else _rqShowResults();
+}
+
+function _rqBack() {
+  if (_rqState.step > 0) { _rqState.step--; _rqRender(); }
+}
+
+function _rqGoTo(id) {
+  const idx = RQ_STEPS.findIndex(s => s.id === id);
+  if (idx >= 0) {
+    _rqState.step = idx;
+    document.getElementById('rq-risultati').style.display = 'none';
+    _rqRender();
+  }
+}
+
+// controlla se la regione del bando è compatibile con le regioni dell'utente
+function _rqGeoOk(bandoReg, userRegioni) {
+  const br = (bandoReg||'').toLowerCase();
+  if (!br || ['nazionale','tutte','tutto il territorio','italia'].some(k=>br.includes(k))) return 'nazionale';
+  const MEZZ = ['campania','puglia','basilicata','calabria','sicilia','sardegna','abruzzo','molise','campobasso','(na)','(ba)','(pa)','(cz)','(pz)','(cs)','(ct)','(ca)','(pe)','(rc)','(kr)'];
+  for (const r of userRegioni.filter(Boolean)) {
+    const rl = r.toLowerCase().trim();
+    if (!rl) continue;
+    if (br.includes(rl) || rl.split(' ').some(w=>w.length>3&&br.includes(w))) return 'in';
+    if (br.includes('mezzogiorno') && MEZZ.some(m=>rl.includes(m.replace('(','').replace(')','')))) return 'in';
+  }
+  return 'fuori';
+}
+
+function _rqShowResults() {
+  const ans = _rqState.answers;
+  document.getElementById('rq-progress-fill').style.width = '100%';
+
+  // chips finali
+  document.getElementById('rq-chips').innerHTML = RQ_STEPS
+    .filter(x => { const v=ans[x.id]; return v!==null&&v!==undefined&&v!==''&&!(Array.isArray(v)&&v.length===0); })
+    .map(x => {
+      const v=ans[x.id]; const disp=Array.isArray(v)?v.join(', '):String(v);
+      return `<div class="rq-chip" onclick="_rqGoTo('${x.id}')">
+        <span class="rq-chip-lbl">${x.q.split(' ').slice(0,3).join(' ')}…</span>
+        <span class="rq-chip-val">${disp}</span>
+        <span class="rq-chip-edit">✎</span></div>`;
+    }).join('');
+
+  // barra "modifica" al posto dello step
+  document.getElementById('rq-step-wrap').innerHTML =
+    `<div class="rq-done-bar">
+      <span class="rq-done-txt">✅ Questionario completato</span>
+      <button class="rq-btn-back" onclick="_rqInit()">🔄 Nuova ricerca</button>
+    </div>`;
+
+  // profilo temporaneo
+  const sedi = (ans.sedi||'').split(',').map(s=>s.trim()).filter(Boolean);
+  const userRegioni = [ans.regione||'', ...sedi];
+  const status = ans.status||[];
+  const profile = {
+    citta: ans.regione||'',
+    regioniOperative: sedi,
+    annoFondazione: ans.anno||null,
+    dimensione: ans.dimensione||'',
+    ateco: ans.ateco||'',
+    startupInnovativa: status.includes('startup'),
+    pmiInnovativa: status.includes('pmi'),
+    impresaFemminile: status.includes('femminile'),
+    impresaGiovanile: status.includes('giovanile'),
+    addetti: ans.addetti||null,
+    fatturatoUltimo: ans.fatturato||null,
+    piva: 'RICERCA',
+  };
+  const TMP = '__RQ__';
+  CLIENTI[TMP] = profile;
+
+  const investimento = ans.investimento||[];
+  const contributo   = ans.contributo||[];
+
+  const risultati = BANDI
+    .filter(b => b.stato !== 'chiuso')
+    .map(b => {
+      const m   = matchClienteBando(TMP, b);
+      const geo = _rqGeoOk(b.regione, userRegioni);
+      // soft: tipo investimento
+      const tipoOk = !investimento.length || investimento.some(t=>(b.tipo||[]).includes(t));
+      return { b, ok:m.ok, reasons:m.reasons, geo, tipoOk };
+    });
+
+  delete CLIENTI[TMP];
+
+  const idonei    = risultati.filter(r=>r.ok).sort((a,b)=>({in:0,nazionale:1,fuori:2}[a.geo]||2)-({in:0,nazionale:1,fuori:2}[b.geo]||2));
+  const nonIdonei = risultati.filter(r=>!r.ok);
+
+  const card = (r) => {
+    const b=r.b;
+    const geoBadge = r.geo==='in'       ? `<span class="rq-badge rq-badge-in">In regione</span>` :
+                     r.geo==='nazionale' ? `<span class="rq-badge rq-badge-naz">Nazionale</span>` :
+                                           `<span class="rq-badge rq-badge-fuori">Fuori regione</span>`;
+    const urgBadge  = b.urgente       ? `<span class="rq-badge rq-badge-urg">Scade presto</span>` : '';
+    const altBadge  = b.altaRilevanza ? `<span class="rq-badge rq-badge-alt">Alta rilevanza</span>` : '';
+    const tipoWarn  = !r.tipoOk       ? `<span class="rq-badge" style="background:#fef3c7;color:#92400e">Settore parziale</span>` : '';
+    const idx = BANDI.indexOf(b);
+    return `<div class="rq-card${r.geo==='fuori'?' fuori':''}" onclick="openPanel(BANDI[${idx}])">
+      <div class="rq-card-body">
+        <div class="rq-card-nome">${b.nome}</div>
+        <div class="rq-card-meta">${b.ente} · ${b.regione} · ${b.contributo}</div>
+      </div>
+      <div class="rq-card-badges">${geoBadge}${urgBadge}${altBadge}${tipoWarn}</div>
+    </div>`;
+  };
+
+  const nonIdoneiHtml = nonIdonei.map(r => {
+    const b=r.b; const idx=BANDI.indexOf(b);
+    return `<div class="rq-card" style="opacity:.6" onclick="openPanel(BANDI[${idx}])">
+      <div class="rq-card-body">
+        <div class="rq-card-nome">${b.nome}</div>
+        <div class="rq-card-meta" style="color:#ef4444">${r.reasons.join(' · ')}</div>
+      </div>
+      <div class="rq-card-badges"><span class="rq-badge" style="background:#fee2e2;color:#dc2626">Non idoneo</span></div>
+    </div>`;
+  }).join('');
+
+  const ris = document.getElementById('rq-risultati');
+  ris.style.display = '';
+  ris.innerHTML = `
+    <div class="rq-ris-hdr">${idonei.length} bandi compatibili trovati</div>
+    <div class="rq-ris-sub">${idonei.filter(r=>r.geo==='in').length} nella tua regione · ${idonei.filter(r=>r.geo==='nazionale').length} nazionali · ${idonei.filter(r=>r.geo==='fuori').length} fuori regione</div>
+    ${idonei.filter(r=>r.geo==='in').length ? `<div class="rq-sec-lbl">Nella tua regione</div>${idonei.filter(r=>r.geo==='in').map(card).join('')}` : ''}
+    ${idonei.filter(r=>r.geo==='nazionale').length ? `<div class="rq-sec-lbl">Nazionali</div>${idonei.filter(r=>r.geo==='nazionale').map(card).join('')}` : ''}
+    ${idonei.filter(r=>r.geo==='fuori').length ? `<div class="rq-sec-lbl">Fuori regione (sede da aprire)</div>${idonei.filter(r=>r.geo==='fuori').map(card).join('')}` : ''}
+    ${!idonei.length ? `<div class="rq-no-res">Nessun bando compatibile con i criteri inseriti.<br>Prova a modificare alcune risposte cliccando i chip in alto.</div>` : ''}
+    ${nonIdonei.length ? `<button class="rq-toggle-esclusi" id="rq-btn-esclusi" onclick="_rqToggleEsclusi()">Mostra ${nonIdonei.length} bandi non idonei ↓</button>
+      <div id="rq-esclusi-wrap" style="display:none">${nonIdoneiHtml}</div>` : ''}
+  `;
+
+  ris.scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+function _rqToggleEsclusi() {
+  const wrap = document.getElementById('rq-esclusi-wrap');
+  const btn  = document.getElementById('rq-btn-esclusi');
+  const open = wrap.style.display === 'none';
+  wrap.style.display = open ? '' : 'none';
+  if (btn) btn.textContent = open ? 'Nascondi bandi non idonei ↑' : btn.textContent.replace('Nascondi','Mostra').replace('↑','↓');
+}
 </script>
 </body>
 </html>
