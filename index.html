@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard Bandi – Next4 International</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Inter', 'Segoe UI', Arial, sans-serif; background: radial-gradient(ellipse 90% 45% at 50% 0%, #dce8fc 0%, #f0f4f9 58%); min-height: 100vh; color: #1a1a2e; font-size: 14px; }
@@ -805,48 +805,131 @@
   body.dark .nb-req-row input { background:#0f172a; border-color:#334155; color:#e2e8f0; }
 
   /* ── HUB HOME ── */
-  #view-hub { min-height: calc(100vh - 58px); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 32px; }
-  .hub-welcome { font-size: 13px; color: #94a3b8; margin-bottom: 8px; font-weight: 500; }
-  .hub-title { font-size: 26px; font-weight: 800; color: #1B3A6B; margin-bottom: 40px; }
-  .hub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; width: 100%; max-width: 680px; }
-  .hub-card {
-    background: white; border-radius: 20px; padding: 36px 32px;
-    box-shadow: 0 4px 24px rgba(27,58,107,0.10);
-    border: 2px solid transparent;
-    cursor: pointer; transition: all 0.22s cubic-bezier(.25,.8,.25,1);
-    display: flex; flex-direction: column; align-items: flex-start; gap: 12px;
-    position: relative; overflow: hidden;
+  /* ── HUB HOME — Light Launchpad ── */
+  #view-hub {
+    min-height: calc(100vh - 58px);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 40px 32px 60px; position: relative;
   }
-  .hub-card::before {
-    content: ''; position: absolute; inset: 0;
-    opacity: 0; transition: opacity 0.22s;
+  #view-hub::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 0;
+    background-image: radial-gradient(rgba(27,58,107,0.065) 1px, transparent 1px);
+    background-size: 24px 24px;
   }
-  .hub-card-finanza::before { background: linear-gradient(135deg, rgba(27,58,107,0.04) 0%, rgba(0,229,209,0.06) 100%); }
-  .hub-card-riservata::before { background: linear-gradient(135deg, rgba(124,58,237,0.04) 0%, rgba(220,38,38,0.04) 100%); }
-  .hub-card:hover { transform: translateY(-5px); box-shadow: 0 16px 48px rgba(27,58,107,0.15); }
-  .hub-card:hover::before { opacity: 1; }
-  .hub-card-finanza:hover { border-color: #1B3A6B; }
-  .hub-card-riservata:hover { border-color: #7c3aed; }
-  .hub-card-icon { font-size: 36px; line-height: 1; }
-  .hub-card-label { font-size: 18px; font-weight: 800; color: #1B3A6B; }
-  .hub-card-riservata .hub-card-label { color: #7c3aed; }
-  .hub-card-desc { font-size: 12px; color: #94a3b8; line-height: 1.6; }
-  .hub-card-arrow { position: absolute; bottom: 20px; right: 22px; font-size: 20px; color: #e2e8f0; transition: all 0.2s; }
-  .hub-card:hover .hub-card-arrow { color: #1B3A6B; transform: translateX(4px); }
-  .hub-card-riservata:hover .hub-card-arrow { color: #7c3aed; }
-  @keyframes hubCardIn { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
-  .hub-card { animation: hubCardIn 0.4s cubic-bezier(.25,.8,.25,1) both; }
-  .hub-card:nth-child(2) { animation-delay: 0.08s; }
+  .hub-inner {
+    position: relative; z-index: 1;
+    display: flex; flex-direction: column; align-items: center;
+    width: 100%; max-width: 840px;
+  }
+  .hub-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: white; border: 1px solid rgba(27,58,107,0.13);
+    border-radius: 20px; padding: 6px 16px;
+    font-size: 11.5px; font-weight: 700; color: #1B3A6B;
+    box-shadow: 0 2px 12px rgba(27,58,107,0.07);
+    margin-bottom: 26px;
+    animation: hubFadeUp 0.45s both;
+  }
+  .hub-badge-dot {
+    width: 6px; height: 6px; border-radius: 50%; background: #00C9B8; flex-shrink: 0;
+    animation: hubBlink 2s ease-in-out infinite;
+  }
+  @keyframes hubBlink { 0%,100%{opacity:1} 50%{opacity:0.25} }
+  .hub-h1 {
+    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    font-size: clamp(30px, 4vw, 50px); font-weight: 900;
+    line-height: 1.1; letter-spacing: -1.5px; color: #0f172a;
+    text-align: center; margin-bottom: 14px;
+    animation: hubFadeUp 0.45s 0.07s both;
+  }
+  .hub-h1 em { color: #1B3A6B; font-style: normal; }
+  .hub-sub {
+    font-size: 16px; color: #64748b; text-align: center;
+    max-width: 460px; line-height: 1.65; margin-bottom: 44px;
+    animation: hubFadeUp 0.45s 0.13s both;
+  }
+  @keyframes hubFadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+  .hub-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; width: 100%; animation: hubFadeUp 0.45s 0.19s both; }
+  .hub-card { border-radius: 28px; overflow: hidden; cursor: pointer; transition: all 0.32s cubic-bezier(.25,.8,.25,1); box-shadow: 0 4px 20px rgba(27,58,107,0.08); }
+  .hub-card:hover { transform: translateY(-10px); }
+  .hub-card-finanza:hover   { box-shadow: 0 24px 60px rgba(27,58,107,0.22); }
+  .hub-card-riservata:hover { box-shadow: 0 24px 60px rgba(0,50,46,0.22); }
+  .hub-card-head { padding: 28px 26px 44px; position: relative; overflow: hidden; }
+  .hub-card-finanza  .hub-card-head { background: linear-gradient(140deg, #1B3A6B 0%, #0d2248 100%); }
+  .hub-card-riservata .hub-card-head { background: linear-gradient(140deg, #00312d 0%, #001a18 100%); }
+  .hub-card-head::after {
+    content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 50px;
+    background: white; clip-path: ellipse(75% 100% at 50% 100%);
+  }
+  .hub-card-icon-box {
+    width: 54px; height: 54px; border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; margin-bottom: 16px; transition: transform 0.3s;
+  }
+  .hub-card-finanza  .hub-card-icon-box { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.16); }
+  .hub-card-riservata .hub-card-icon-box { background: rgba(0,229,209,0.12); border: 1px solid rgba(0,229,209,0.25); }
+  .hub-card:hover .hub-card-icon-box { transform: scale(1.1) rotate(-4deg); }
+  .hub-card-area-tag { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: rgba(0,229,209,0.6); margin-bottom: 4px; }
+  .hub-card-label { font-size: 19px; font-weight: 900; color: white; margin-bottom: 6px; }
+  .hub-card-desc { font-size: 12.5px; color: rgba(255,255,255,0.45); line-height: 1.6; }
+  .hub-card-body { background: white; padding: 18px 26px 24px; }
+  .hub-card-features { display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px; }
+  .hub-feat { display: flex; align-items: center; gap: 9px; font-size: 12.5px; color: #475569; }
+  .hub-feat::before {
+    content: '✓'; width: 20px; height: 20px; border-radius: 6px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 800;
+  }
+  .hub-card-finanza  .hub-feat::before { background: #eff6ff; color: #1B3A6B; }
+  .hub-card-riservata .hub-feat::before { background: #f0fdf9; color: #00A896; }
+  .hub-card-stats { display: flex; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
+  .hub-stat-pill { display: flex; flex-direction: column; background: #f8faff; border: 1px solid #e8eef8; border-radius: 10px; padding: 8px 14px; }
+  .hub-stat-num { font-size: 18px; font-weight: 900; color: #1B3A6B; line-height: 1.1; }
+  .hub-stat-num.warn { color: #ea580c; }
+  .hub-card-riservata .hub-stat-num { color: #00312d; }
+  .hub-stat-lbl { font-size: 10.5px; color: #94a3b8; font-weight: 500; margin-top: 1px; }
+  .hub-card-cta { display: flex; align-items: center; justify-content: space-between; padding-top: 16px; border-top: 1px solid #f1f5f9; }
+  .hub-cta-label { font-size: 12.5px; font-weight: 800; }
+  .hub-card-finanza  .hub-cta-label { color: #1B3A6B; }
+  .hub-card-riservata .hub-cta-label { color: #00312d; }
+  .hub-cta-btn {
+    width: 36px; height: 36px; border-radius: 11px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; transition: all 0.22s; user-select: none;
+  }
+  .hub-cta-btn-fin  { background: #1B3A6B; color: white; }
+  .hub-cta-btn-rsvd { background: #00C9B8; color: white; }
+  .hub-card:hover .hub-cta-btn { transform: rotate(-45deg) scale(1.1); }
+  .hub-trust {
+    display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+    justify-content: center; margin-top: 32px;
+    animation: hubFadeUp 0.45s 0.28s both;
+  }
+  .hub-trust-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #94a3b8; font-weight: 500; }
+  .hub-trust-sep { width: 1px; height: 14px; background: #e2e8f0; }
 
   /* dark hub */
-  body.dark #view-hub .hub-title { color: #93c5fd; }
-  body.dark .hub-card { background: #162035; box-shadow: 0 4px 24px rgba(0,0,0,0.35); }
-  body.dark .hub-card-finanza:hover { border-color: #4a7fcb; }
-  body.dark .hub-card-riservata:hover { border-color: #a78bfa; }
-  body.dark .hub-card-label { color: #93c5fd; }
-  body.dark .hub-card-riservata .hub-card-label { color: #a78bfa; }
-  body.dark .hub-card-desc { color: #4a6080; }
-  body.dark .hub-card-arrow { color: #2d3f5e; }
+  body.dark #view-hub::before { background-image: radial-gradient(rgba(0,229,209,0.04) 1px, transparent 1px); }
+  body.dark .hub-badge { background: #162035; border-color: #2d3f5e; color: #93c5fd; }
+  body.dark .hub-h1 { color: #e2e8f0; }
+  body.dark .hub-h1 em { color: #93c5fd; }
+  body.dark .hub-sub { color: #4a6080; }
+  body.dark .hub-card-body { background: #162035; }
+  body.dark .hub-card-head::after { background: #162035; }
+  body.dark .hub-feat { color: #6b8aaa; }
+  body.dark .hub-card-finanza  .hub-feat::before { background: #0d1f40; color: #93c5fd; }
+  body.dark .hub-card-riservata .hub-feat::before { background: #051a18; color: #00C9B8; }
+  body.dark .hub-stat-pill { background: #0f1928; border-color: #1e2d47; }
+  body.dark .hub-stat-num { color: #93c5fd; }
+  body.dark .hub-stat-num.warn { color: #fb923c; }
+  body.dark .hub-card-riservata .hub-stat-num { color: #00C9B8; }
+  body.dark .hub-stat-lbl { color: #3d5572; }
+  body.dark .hub-card-cta { border-top-color: #1e2d47; }
+  body.dark .hub-card-finanza .hub-cta-label  { color: #93c5fd; }
+  body.dark .hub-card-riservata .hub-cta-label { color: #00C9B8; }
+  body.dark .hub-trust-item { color: #3d5572; }
+  body.dark .hub-trust-sep  { background: #1e2d47; }
 
   /* ── SECTION NAV (breadcrumb) ── */
   .section-nav { display: flex; align-items: center; gap: 10px; padding: 12px 32px 0; }
@@ -1063,7 +1146,7 @@
   body.dark .task-modal-select, body.dark .task-modal-input, body.dark .task-modal-textarea { background: #1e2d47; border-color: #2d3f5e; color: #dde4f0; }
 
   /* ── Centro Allerte (hub) ──────────────────────────────────────────────── */
-  #hub-allerte { width:100%; max-width:680px; margin-top:28px; }
+  #hub-allerte { width:100%; max-width:840px; margin-top:24px; animation: hubFadeUp 0.45s 0.35s both; }
   .allerte-box { background:#fff; border-radius:16px; box-shadow:0 2px 12px rgba(0,0,0,0.07); overflow:hidden; }
   .allerte-header { display:flex; align-items:center; justify-content:space-between; padding:14px 20px; border-bottom:1.5px solid #f1f5f9; }
   .allerte-title { font-size:13px; font-weight:800; color:#1a1a2e; display:flex; align-items:center; gap:8px; }
@@ -1344,30 +1427,72 @@
   </div>
 </div>
 
-<!-- ── HUB HOME ── -->
+<!-- ── HUB HOME — Light Launchpad ── -->
 <div id="view-hub" style="display:none;">
-  <p class="hub-welcome">Benvenuto, Marco</p>
-  <h2 class="hub-title">Scegli un'area di lavoro</h2>
-  <div class="hub-grid">
-    <div class="hub-card hub-card-finanza" onclick="enterSection('finanza')">
-      <div class="hub-card-icon">💼</div>
-      <div class="hub-card-label">Finanza Agevolata</div>
-      <div class="hub-card-desc">Esplora i bandi disponibili, consulta i clienti abbinabili e monitora le scadenze.</div>
-      <div class="hub-card-arrow">→</div>
-    </div>
-    <div class="hub-card hub-card-riservata" onclick="enterSection('riservata')">
-      <div class="hub-card-icon">🔒</div>
-      <div class="hub-card-label">Area Riservata</div>
-      <div class="hub-card-desc">Gestisci la pipeline delle pratiche in corso e organizza le attività da svolgere.</div>
-      <div class="hub-card-arrow">→</div>
-    </div>
-  </div>
-  <div id="hub-allerte">
-    <div class="allerte-box">
-      <div class="allerte-header">
-        <span class="allerte-title">⚠️ Situazione critica <span class="allerte-badge" id="allerte-badge">0</span></span>
+  <div class="hub-inner">
+    <div class="hub-badge"><span class="hub-badge-dot"></span>Dashboard operativa · Next4 International</div>
+    <h2 class="hub-h1">Scegli l'area<br>su cui <em>lavorare</em> oggi.</h2>
+    <p class="hub-sub">Gestisci bandi, clienti e pratiche da un unico posto, sempre aggiornato.</p>
+
+    <div class="hub-grid">
+      <div class="hub-card hub-card-finanza" onclick="enterSection('finanza')">
+        <div class="hub-card-head">
+          <div class="hub-card-icon-box">💼</div>
+          <div class="hub-card-area-tag">Opportunità</div>
+          <div class="hub-card-label">Finanza Agevolata</div>
+          <div class="hub-card-desc">Esplora bandi, abbina i clienti e monitora le scadenze.</div>
+        </div>
+        <div class="hub-card-body">
+          <div class="hub-card-features">
+            <div class="hub-feat">Bandi nazionali e regionali</div>
+            <div class="hub-feat">Scadenze sempre aggiornate</div>
+            <div class="hub-feat">Match automatico clienti</div>
+          </div>
+          <div class="hub-card-stats" id="hub-stats-finanza"></div>
+          <div class="hub-card-cta">
+            <span class="hub-cta-label">Apri sezione →</span>
+            <div class="hub-cta-btn hub-cta-btn-fin">↗</div>
+          </div>
+        </div>
       </div>
-      <div class="allerte-list" id="allerte-list"></div>
+
+      <div class="hub-card hub-card-riservata" onclick="enterSection('riservata')">
+        <div class="hub-card-head">
+          <div class="hub-card-icon-box">🔒</div>
+          <div class="hub-card-area-tag">Il tuo spazio</div>
+          <div class="hub-card-label">Area Riservata</div>
+          <div class="hub-card-desc">Gestisci pipeline, clienti, task e interazioni operative.</div>
+        </div>
+        <div class="hub-card-body">
+          <div class="hub-card-features">
+            <div class="hub-feat">Pipeline pratiche in corso</div>
+            <div class="hub-feat">Task e scadenze operative</div>
+            <div class="hub-feat">Log interazioni clienti</div>
+          </div>
+          <div class="hub-card-stats" id="hub-stats-riservata"></div>
+          <div class="hub-card-cta">
+            <span class="hub-cta-label">Apri sezione →</span>
+            <div class="hub-cta-btn hub-cta-btn-rsvd">↗</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hub-trust">
+      <div class="hub-trust-item">🏢 Startup e PMI</div>
+      <div class="hub-trust-sep"></div>
+      <div class="hub-trust-item">📋 Bandi sempre aggiornati</div>
+      <div class="hub-trust-sep"></div>
+      <div class="hub-trust-item">🤝 Supporto consulenziale</div>
+    </div>
+
+    <div id="hub-allerte">
+      <div class="allerte-box">
+        <div class="allerte-header">
+          <span class="allerte-title">⚠️ Situazione critica <span class="allerte-badge" id="allerte-badge">0</span></span>
+        </div>
+        <div class="allerte-list" id="allerte-list"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -1972,7 +2097,24 @@ function showHub() {
     if (el) el.style.display = 'none';
   });
   renderAllerte();
+  renderHubStats();
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderHubStats() {
+  const bandAttivi  = BANDI.filter(b => b.stato !== 'chiuso').length;
+  const bandUrgenti = BANDI.filter(b => b.urgente).length;
+  const elFin = document.getElementById('hub-stats-finanza');
+  if (elFin) elFin.innerHTML =
+    `<div class="hub-stat-pill"><span class="hub-stat-num">${bandAttivi}</span><span class="hub-stat-lbl">Bandi attivi</span></div>` +
+    (bandUrgenti > 0 ? `<div class="hub-stat-pill"><span class="hub-stat-num warn">${bandUrgenti}</span><span class="hub-stat-lbl">In scadenza</span></div>` : '');
+
+  const nClienti = CLIENTI.length;
+  const nTask    = getTasks().filter(t => !t.fatto).length;
+  const elRsvd = document.getElementById('hub-stats-riservata');
+  if (elRsvd) elRsvd.innerHTML =
+    `<div class="hub-stat-pill"><span class="hub-stat-num">${nClienti}</span><span class="hub-stat-lbl">Clienti</span></div>` +
+    (nTask > 0 ? `<div class="hub-stat-pill"><span class="hub-stat-num warn">${nTask}</span><span class="hub-stat-lbl">Task aperti</span></div>` : '');
 }
 
 function goHome() {
