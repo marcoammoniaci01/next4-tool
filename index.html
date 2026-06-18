@@ -1235,6 +1235,75 @@
   body.dark .rq-progress-track { background:#2d3f5e; }
   body.dark .rq-title { color:#93c5fd; }
   body.dark .rq-ris-hdr { color:#93c5fd; }
+
+  /* ─── INTERAZIONI PANEL ──────────────────────────────────────────────────── */
+  .int-panel-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.22); z-index:699; }
+  .int-panel-overlay.open { display:block; }
+  .int-panel { position:fixed; top:0; right:0; width:420px; max-width:100vw; height:100vh; background:white; box-shadow:-8px 0 32px rgba(27,58,107,0.12); z-index:700; transform:translateX(100%); transition:transform 0.28s cubic-bezier(.25,.8,.25,1); display:flex; flex-direction:column; overflow:hidden; }
+  .int-panel.open { transform:translateX(0); }
+  .int-panel-head { display:flex; align-items:center; justify-content:space-between; padding:18px 20px 14px; border-bottom:1px solid #f1f5f9; flex-shrink:0; }
+  .int-panel-title { font-size:15px; font-weight:800; color:#1a1a2e; }
+  .int-panel-subtitle { font-size:11px; color:#94a3b8; margin-top:1px; }
+  .int-panel-close { background:none; border:none; font-size:22px; cursor:pointer; color:#cbd5e1; padding:0; line-height:1; }
+  .int-panel-close:hover { color:#1a1a2e; }
+  .int-panel-body { flex:1; overflow-y:auto; padding:16px 20px 20px; }
+  .int-form-wrap { background:#f8faff; border:1.5px solid #e2e8f0; border-radius:14px; padding:16px; margin-bottom:20px; }
+  .int-form-title { font-size:12px; font-weight:700; color:#1B3A6B; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:12px; }
+  .int-type-row { display:flex; gap:6px; margin-bottom:12px; flex-wrap:wrap; }
+  .int-type-btn { background:white; border:1.5px solid #e2e8f0; border-radius:8px; padding:6px 10px; font-size:12px; font-weight:600; cursor:pointer; font-family:inherit; transition:all 0.15s; color:#64748b; }
+  .int-type-btn.sel { border-color:#1B3A6B; background:#eef2ff; color:#1B3A6B; }
+  .int-form-row { margin-bottom:10px; }
+  .int-form-label { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; color:#94a3b8; display:block; margin-bottom:4px; }
+  .int-form-input { width:100%; border:1.5px solid #e2e8f0; border-radius:9px; padding:8px 11px; font-size:13px; font-family:inherit; background:white; color:#1a1a2e; outline:none; box-sizing:border-box; transition:border-color 0.15s; }
+  .int-form-input:focus { border-color:#1B3A6B; }
+  .int-form-textarea { width:100%; border:1.5px solid #e2e8f0; border-radius:9px; padding:8px 11px; font-size:13px; font-family:inherit; background:white; color:#1a1a2e; outline:none; resize:vertical; min-height:72px; box-sizing:border-box; transition:border-color 0.15s; }
+  .int-form-textarea:focus { border-color:#1B3A6B; }
+  .int-form-footer { display:flex; gap:8px; justify-content:flex-end; margin-top:14px; }
+  .int-btn-save { background:#1B3A6B; color:white; border:none; border-radius:9px; padding:8px 18px; font-size:13px; font-weight:700; cursor:pointer; font-family:inherit; }
+  .int-btn-save:hover { background:#162d55; }
+  .int-btn-cancel { background:white; color:#64748b; border:1.5px solid #e2e8f0; border-radius:9px; padding:8px 14px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit; }
+  .int-btn-cancel:hover { background:#f8faff; }
+  .int-btn-new { background:#1B3A6B; color:white; border:none; border-radius:9px; padding:7px 14px; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; flex-shrink:0; }
+  .int-btn-new:hover { background:#162d55; }
+  .int-empty { text-align:center; padding:32px 0; color:#94a3b8; font-size:13px; line-height:1.8; }
+  .int-item { border:1px solid #f1f5f9; border-radius:12px; padding:12px 14px; margin-bottom:10px; transition:box-shadow 0.15s; }
+  .int-item:hover { box-shadow:0 2px 12px rgba(27,58,107,0.08); }
+  .int-item-meta { display:flex; align-items:center; gap:6px; margin-bottom:6px; flex-wrap:wrap; }
+  .int-tipo-badge { font-size:11px; font-weight:700; padding:2px 8px; border-radius:6px; background:#eef2ff; color:#1B3A6B; }
+  .int-data { font-size:11px; color:#94a3b8; font-weight:600; }
+  .int-bando-tag { font-size:10px; background:#f0fdf4; color:#16a34a; border:1px solid #bbf7d0; border-radius:6px; padding:2px 7px; font-weight:600; max-width:130px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .int-item-testo { font-size:13px; color:#334155; line-height:1.5; margin-bottom:6px; white-space:pre-wrap; word-break:break-word; }
+  .int-item-step { font-size:11px; color:#7c3aed; background:#f5f3ff; border-radius:6px; padding:5px 9px; margin-bottom:6px; }
+  .int-item-step::before { content:'→ '; font-weight:700; }
+  .int-item-scad { font-size:10px; color:#d97706; margin-left:4px; font-weight:600; }
+  .int-item-actions { display:flex; gap:6px; justify-content:flex-end; }
+  .int-act-btn { background:none; border:1px solid #e2e8f0; border-radius:6px; padding:3px 9px; font-size:11px; cursor:pointer; color:#64748b; font-family:inherit; transition:background 0.12s; }
+  .int-act-btn:hover { background:#f8faff; color:#1a1a2e; }
+  .int-act-del:hover { background:#fef2f2; color:#dc2626; border-color:#fecaca; }
+  .client-last-int { font-size:10.5px; color:#94a3b8; margin-top:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:260px; }
+  .client-last-int .cli-tipo { font-weight:700; color:#1B3A6B; }
+  .btn-log-sm { background:white; border:1.5px solid #e2e8f0; color:#64748b; padding:4px 9px; border-radius:7px; font-size:11px; font-weight:700; cursor:pointer; font-family:inherit; transition:all 0.15s; white-space:nowrap; }
+  .btn-log-sm:hover { background:#eef2ff; border-color:#1B3A6B; color:#1B3A6B; }
+  body.dark .int-panel { background:#0f1928; }
+  body.dark .int-panel-head { border-color:#1e2d47; }
+  body.dark .int-panel-title { color:#dde4f0; }
+  body.dark .int-panel-subtitle { color:#4a6080; }
+  body.dark .int-form-wrap { background:#162035; border-color:#2d3f5e; }
+  body.dark .int-form-title { color:#93c5fd; }
+  body.dark .int-type-btn { background:#1e2d47; border-color:#2d3f5e; color:#94a3b8; }
+  body.dark .int-type-btn.sel { border-color:#4a7fcb; background:#1a3460; color:#93c5fd; }
+  body.dark .int-form-input, body.dark .int-form-textarea { background:#1e2d47; border-color:#2d3f5e; color:#dde4f0; }
+  body.dark .int-form-input:focus, body.dark .int-form-textarea:focus { border-color:#4a7fcb; }
+  body.dark .int-btn-cancel { background:#162035; border-color:#2d3f5e; color:#94a3b8; }
+  body.dark .int-item { border-color:#1e2d47; }
+  body.dark .int-item-testo { color:#cbd5e1; }
+  body.dark .int-tipo-badge { background:#1a3460; color:#93c5fd; }
+  body.dark .int-act-btn { border-color:#2d3f5e; color:#64748b; }
+  body.dark .int-act-btn:hover { background:#162035; color:#dde4f0; }
+  body.dark .client-last-int { color:#4a6080; }
+  body.dark .client-last-int .cli-tipo { color:#4a7fcb; }
+  body.dark .btn-log-sm { background:#162035; border-color:#2d3f5e; color:#64748b; }
+  body.dark .btn-log-sm:hover { background:#1a3460; border-color:#4a7fcb; color:#93c5fd; }
 </style>
 </head>
 <body>
@@ -1829,6 +1898,22 @@
 <div class="side-panel" id="side-panel">
   <button class="panel-close" onclick="closePanel()">✕</button>
   <div id="panel-content"></div>
+</div>
+
+<!-- INTERAZIONI PANEL -->
+<div class="int-panel-overlay" id="int-panel-overlay" onclick="closeInterazioniPanel()"></div>
+<div class="int-panel" id="int-panel">
+  <div class="int-panel-head">
+    <div>
+      <div class="int-panel-title" id="int-panel-title">Log Interazioni</div>
+      <div class="int-panel-subtitle" id="int-panel-subtitle">cronologia contatti</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <button class="int-btn-new" onclick="openIntForm()">➕ Nuova</button>
+      <button class="int-panel-close" onclick="closeInterazioniPanel()">✕</button>
+    </div>
+  </div>
+  <div class="int-panel-body" id="int-panel-body"></div>
 </div>
 
 <div class="footer">Next4 International S.R.L. · <em>next4international.com</em> · Dashboard aggiornata: <span id="footer-date"></span></div>
@@ -3895,7 +3980,7 @@ function closePanel() {
   document.getElementById('side-panel').classList.remove('open');
   document.getElementById('panel-overlay').classList.remove('open');
 }
-document.addEventListener('keydown', e => { if (e.key === 'Escape') { closePanel(); closeModalPipeline(); closeTaskModal(); } });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') { closePanel(); closeModalPipeline(); closeTaskModal(); closeInterazioniPanel(); } });
 document.getElementById('modal-pipeline').addEventListener('click', e => { if (e.target === e.currentTarget) closeModalPipeline(); });
 
 // ─── DE MINIMIS SECTION ──────────────────────────────────────────────────
@@ -4354,6 +4439,10 @@ function renderClienti() {
     const safeName = name.replace(/'/g,"\\'").replace(/\\/g,'\\\\');
     const selSet   = selectedBandiPerCliente[name] || new Set();
     const selCount = selSet.size;
+    const lastInt  = getLastInterazione(name);
+    const lastIntHTML = lastInt
+      ? `<span class="client-last-int"><span class="cli-tipo">${(INT_TIPI[lastInt.tipo]||{icon:'📝'}).icon}</span> ${lastInt.data}${lastInt.testo ? ' · ' + lastInt.testo.substring(0,38) + (lastInt.testo.length>38?'…':'') : ''}</span>`
+      : '';
 
     // Avatar e colori
     const avatarColor   = clientAvatarColor(name);
@@ -4422,10 +4511,12 @@ function renderClienti() {
             ${inAp.length ? `<span class="cs cs-i">${inAp.length} in apertura</span>` : ''}
             ${isEmpty ? '<span class="cs" style="background:#f1f5f9;color:#94a3b8">no bandi</span>' : ''}
           </span>
+          ${lastIntHTML}
         </div>
         <div class="client-actions">
           <button class="btn-edit-sm" onclick="event.stopPropagation();openEditClienteModal('${safeName}')" title="Modifica cliente">✏️</button>
           ${inClienti ? `<button class="btn-danger-sm" onclick="event.stopPropagation();deleteCliente('${safeName}')" title="Elimina cliente">🗑</button>` : ''}
+          <button class="btn-log-sm" onclick="event.stopPropagation();openInterazioniPanel('${safeName}')" title="Log interazioni">📋 Log</button>
           <button class="btn-print-cliente" onclick="event.stopPropagation();printCliente('${safeName}')">🖨 Stampa</button>
           <button class="btn-ap${selCount>0?' ap-active':''}" id="btn-ap-${safeId}" ${selCount===0?'disabled':''} onclick="event.stopPropagation();openApModal('${safeName}')">${selCount>0?'📄 Action Plan ('+selCount+')':'📄 Action Plan'}</button>
           <span class="client-chevron">▾</span>
@@ -5700,6 +5791,214 @@ function _rqShowResults() {
   `;
 
   ris.scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+// ─── INTERAZIONI ─────────────────────────────────────────────────────────────
+const INT_TIPI = {
+  chiamata: { icon: '📞', label: 'Chiamata' },
+  email:    { icon: '📧', label: 'Email' },
+  meeting:  { icon: '🤝', label: 'Meeting' },
+  nota:     { icon: '📝', label: 'Nota' }
+};
+
+let _intCurrentCliente = null;
+
+function getInterazioni() { return JSON.parse(localStorage.getItem('n4_interazioni') || '{}'); }
+function saveInterazioni(d) { localStorage.setItem('n4_interazioni', JSON.stringify(d)); }
+
+function getLastInterazione(nome) {
+  const list = getInterazioni()[nome] || [];
+  if (!list.length) return null;
+  return list.reduce((best, cur) => cur.id > best.id ? cur : best);
+}
+
+function openInterazioniPanel(nome) {
+  _intCurrentCliente = nome;
+  document.getElementById('int-panel-title').textContent = nome;
+  document.getElementById('int-panel-subtitle').textContent = 'Log interazioni';
+  _renderIntPanel();
+  document.getElementById('int-panel').classList.add('open');
+  document.getElementById('int-panel-overlay').classList.add('open');
+}
+
+function closeInterazioniPanel() {
+  document.getElementById('int-panel').classList.remove('open');
+  document.getElementById('int-panel-overlay').classList.remove('open');
+  _intCurrentCliente = null;
+}
+
+function _renderIntPanel() {
+  const nome = _intCurrentCliente;
+  const list = (getInterazioni()[nome] || []).slice().sort((a,b) => b.id - a.id);
+  const allBandi = [...BANDI, ...(JSON.parse(localStorage.getItem('n4_bandi_extra')||'[]'))];
+  const bandiNomi = allBandi.map(b => b.nome).filter(Boolean);
+
+  const formHTML = `<div class="int-form-wrap" id="int-form-wrap" style="display:none;">
+    <div class="int-form-title" id="int-form-title">Nuova interazione</div>
+    <div class="int-type-row">
+      ${Object.entries(INT_TIPI).map(([k,v]) =>
+        `<button class="int-type-btn${k==='chiamata'?' sel':''}" data-tipo="${k}" onclick="selectIntTipo('${k}')">${v.icon} ${v.label}</button>`
+      ).join('')}
+    </div>
+    <div class="int-form-row">
+      <label class="int-form-label">Data</label>
+      <input type="date" class="int-form-input" id="int-data" value="${new Date().toISOString().slice(0,10)}">
+    </div>
+    <div class="int-form-row">
+      <label class="int-form-label">Note</label>
+      <textarea class="int-form-textarea" id="int-testo" placeholder="Descrivi l'interazione..."></textarea>
+    </div>
+    <div class="int-form-row">
+      <label class="int-form-label">Bando collegato (opzionale)</label>
+      <select class="int-form-input" id="int-bando">
+        <option value="">— nessuno —</option>
+        ${bandiNomi.map(n => `<option value="${n.replace(/"/g,'&quot;')}">${n}</option>`).join('')}
+      </select>
+    </div>
+    <div class="int-form-row">
+      <label class="int-form-label">Prossimo step (opzionale)</label>
+      <textarea class="int-form-textarea" id="int-step" placeholder="Cosa fare dopo..." style="min-height:54px;" oninput="toggleIntScadenza()"></textarea>
+    </div>
+    <div class="int-form-row" id="int-scad-row" style="display:none;">
+      <label class="int-form-label">Scadenza task</label>
+      <input type="date" class="int-form-input" id="int-scadenza">
+    </div>
+    <input type="hidden" id="int-editing-id" value="">
+    <div class="int-form-footer">
+      <button class="int-btn-cancel" onclick="closeIntForm()">Annulla</button>
+      <button class="int-btn-save" onclick="saveInterazione()">💾 Salva</button>
+    </div>
+  </div>`;
+
+  const listHTML = list.length === 0
+    ? '<div class="int-empty">📭 Nessuna interazione registrata.<br><strong>Premi Nuova per iniziare.</strong></div>'
+    : list.map(it => {
+        const t = INT_TIPI[it.tipo] || { icon: '📝', label: it.tipo };
+        const dataFmt = it.dataISO ? new Date(it.dataISO).toLocaleDateString('it-IT') : (it.data || '');
+        return `<div class="int-item" id="int-item-${it.id}">
+          <div class="int-item-meta">
+            <span class="int-tipo-badge">${t.icon} ${t.label}</span>
+            <span class="int-data">${dataFmt}</span>
+            ${it.bando ? `<span class="int-bando-tag" title="${it.bando}">${it.bando}</span>` : ''}
+          </div>
+          <div class="int-item-testo">${(it.testo||'').replace(/</g,'&lt;')}</div>
+          ${it.prossimoStep ? `<div class="int-item-step">${it.prossimoStep.replace(/</g,'&lt;')}${it.scadenzaStep ? `<span class="int-item-scad">· ${new Date(it.scadenzaStep).toLocaleDateString('it-IT')}</span>` : ''}</div>` : ''}
+          <div class="int-item-actions">
+            <button class="int-act-btn" onclick="editInterazione(${it.id})">✏️ Modifica</button>
+            <button class="int-act-btn int-act-del" onclick="deleteInterazione(${it.id})">🗑 Elimina</button>
+          </div>
+        </div>`;
+      }).join('');
+
+  document.getElementById('int-panel-body').innerHTML = formHTML + listHTML;
+}
+
+function openIntForm(editData) {
+  const wrap = document.getElementById('int-form-wrap');
+  if (!wrap) return;
+  wrap.style.display = '';
+  if (editData) {
+    document.getElementById('int-form-title').textContent = 'Modifica interazione';
+    document.getElementById('int-editing-id').value = editData.id;
+    document.getElementById('int-data').value = editData.dataISO || '';
+    document.getElementById('int-testo').value = editData.testo || '';
+    document.getElementById('int-bando').value = editData.bando || '';
+    document.getElementById('int-step').value = editData.prossimoStep || '';
+    document.getElementById('int-scadenza').value = editData.scadenzaStep || '';
+    toggleIntScadenza();
+    document.querySelectorAll('.int-type-btn').forEach(b => b.classList.toggle('sel', b.dataset.tipo === editData.tipo));
+  } else {
+    document.getElementById('int-form-title').textContent = 'Nuova interazione';
+    document.getElementById('int-editing-id').value = '';
+    document.getElementById('int-data').value = new Date().toISOString().slice(0,10);
+    document.getElementById('int-testo').value = '';
+    document.getElementById('int-bando').value = '';
+    document.getElementById('int-step').value = '';
+    document.getElementById('int-scadenza').value = '';
+    document.getElementById('int-scad-row').style.display = 'none';
+    document.querySelectorAll('.int-type-btn').forEach((b,i) => b.classList.toggle('sel', i===0));
+  }
+  wrap.scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+function closeIntForm() {
+  const wrap = document.getElementById('int-form-wrap');
+  if (wrap) wrap.style.display = 'none';
+}
+
+function selectIntTipo(tipo) {
+  document.querySelectorAll('.int-type-btn').forEach(b => b.classList.toggle('sel', b.dataset.tipo === tipo));
+}
+
+function toggleIntScadenza() {
+  const step = (document.getElementById('int-step')?.value || '').trim();
+  const row = document.getElementById('int-scad-row');
+  if (row) row.style.display = step ? '' : 'none';
+}
+
+function saveInterazione() {
+  const nome = _intCurrentCliente;
+  if (!nome) return;
+  const testo = (document.getElementById('int-testo')?.value || '').trim();
+  if (!testo) {
+    const el = document.getElementById('int-testo');
+    if (el) { el.style.borderColor = '#dc2626'; setTimeout(() => el.style.borderColor = '', 1200); el.focus(); }
+    return;
+  }
+  const tipo       = document.querySelector('.int-type-btn.sel')?.dataset.tipo || 'nota';
+  const dataISO    = document.getElementById('int-data')?.value || new Date().toISOString().slice(0,10);
+  const data       = new Date(dataISO).toLocaleDateString('it-IT');
+  const bando      = document.getElementById('int-bando')?.value || '';
+  const prossimoStep = (document.getElementById('int-step')?.value || '').trim();
+  const scadenzaStep = document.getElementById('int-scadenza')?.value || '';
+  const editId     = document.getElementById('int-editing-id')?.value || '';
+
+  const all = getInterazioni();
+  if (!all[nome]) all[nome] = [];
+
+  if (editId) {
+    const idx = all[nome].findIndex(i => String(i.id) === String(editId));
+    if (idx !== -1) {
+      all[nome][idx] = { ...all[nome][idx], tipo, dataISO, data, testo, bando, prossimoStep, scadenzaStep };
+    }
+  } else {
+    all[nome].push({ id: Date.now(), tipo, dataISO, data, testo, bando, prossimoStep, scadenzaStep });
+    if (prossimoStep) {
+      const tasks = getTasks();
+      tasks.push({
+        id: Date.now() + 1,
+        cliente: nome,
+        strumento: bando || '',
+        note: prossimoStep,
+        scadenza: scadenzaStep || '',
+        fatto: false,
+        created: data
+      });
+      saveTasks(tasks);
+      if (document.getElementById('view-task')?.style.display !== 'none') renderTask();
+    }
+  }
+
+  saveInterazioni(all);
+  _renderIntPanel();
+  renderClienti();
+}
+
+function editInterazione(id) {
+  const nome = _intCurrentCliente;
+  const it = (getInterazioni()[nome] || []).find(i => i.id === id);
+  if (!it) return;
+  openIntForm(it);
+}
+
+function deleteInterazione(id) {
+  if (!confirm('Eliminare questa interazione?')) return;
+  const nome = _intCurrentCliente;
+  const all = getInterazioni();
+  all[nome] = (all[nome] || []).filter(i => i.id !== id);
+  saveInterazioni(all);
+  _renderIntPanel();
+  renderClienti();
 }
 
 function _rqToggleEsclusi() {
