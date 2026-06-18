@@ -782,6 +782,15 @@
   /* tag checkbox nel modal nuovo bando */
   .nb-tipo-label { display:flex; align-items:center; gap:5px; font-size:11px; cursor:pointer; background:#f1f5f9; border:1.5px solid #e2e8f0; border-radius:6px; padding:4px 8px; user-select:none; transition:border-color 0.12s,background 0.12s; }
   .nb-tipo-label:has(input:checked) { border-color:#1B3A6B; background:#eff6ff; color:#1B3A6B; font-weight:700; }
+  /* sezione requisiti ammissibilità nel modal bando */
+  .nb-req-box { background:#f8fafc; border:1.5px solid #e2e8f0; border-radius:8px; padding:10px 12px; display:flex; flex-direction:column; gap:8px; }
+  .nb-req-row { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .nb-req-label { font-size:11px; font-weight:600; color:#64748b; min-width:110px; flex-shrink:0; }
+  .nb-req-row input[type=number] { width:56px; padding:3px 6px; border:1.5px solid #e2e8f0; border-radius:5px; font-size:12px; }
+  .nb-req-row input[type=text] { flex:1; min-width:160px; padding:4px 8px; border:1.5px solid #e2e8f0; border-radius:5px; font-size:12px; }
+  body.dark .nb-req-box { background:#1e293b; border-color:#334155; }
+  body.dark .nb-req-label { color:#94a3b8; }
+  body.dark .nb-req-row input { background:#0f172a; border-color:#334155; color:#e2e8f0; }
 
   /* ── HUB HOME ── */
   #view-hub { min-height: calc(100vh - 58px); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 32px; }
@@ -1567,8 +1576,40 @@
       <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer"><input type="checkbox" id="nb-imminente"> Apertura imminente</label>
     </div>
     <div class="modal-field">
-      <label>Descrizione / Note interne</label>
-      <textarea id="nb-desc" rows="4" style="resize:vertical" placeholder="Scrivi qui i requisiti del decreto, es:&#10;• Startup innovativa, costituita da meno di 5 anni, ATECO 62&#10;• PMI, almeno 2 anni, sede operativa Lazio&#10;• Micro e piccole imprese, escluso ATECO 01 02 03"></textarea>
+      <label>Requisiti ammissibilità</label>
+      <div class="nb-req-box">
+        <div class="nb-req-row">
+          <span class="nb-req-label">Dimensione</span>
+          <label class="nb-tipo-label"><input type="checkbox" name="nb-req-dim" value="micro"> Micro</label>
+          <label class="nb-tipo-label"><input type="checkbox" name="nb-req-dim" value="piccola"> Piccola</label>
+          <label class="nb-tipo-label"><input type="checkbox" name="nb-req-dim" value="media"> Media</label>
+          <label class="nb-tipo-label"><input type="checkbox" name="nb-req-dim" value="grande"> Grande</label>
+        </div>
+        <div class="nb-req-row">
+          <span class="nb-req-label">Status speciale</span>
+          <label class="nb-tipo-label"><input type="checkbox" id="nb-req-startup"> Startup Innovativa</label>
+          <label class="nb-tipo-label"><input type="checkbox" id="nb-req-pmi"> PMI Innovativa</label>
+          <label class="nb-tipo-label"><input type="checkbox" id="nb-req-femminile"> Impresa Femminile</label>
+          <label class="nb-tipo-label"><input type="checkbox" id="nb-req-giovanile"> Impresa Giovanile</label>
+        </div>
+        <div class="nb-req-row">
+          <span class="nb-req-label">ATECO ammessi</span>
+          <input type="text" id="nb-req-ateco-inc" placeholder="es. 62, 63.1, 28  (prefissi separati da virgola — lascia vuoto = tutti)">
+        </div>
+        <div class="nb-req-row">
+          <span class="nb-req-label">ATECO esclusi</span>
+          <input type="text" id="nb-req-ateco-exc" placeholder="es. 01, 02, 03">
+        </div>
+        <div class="nb-req-row">
+          <span class="nb-req-label">Età impresa</span>
+          min <input type="number" id="nb-req-eta-min" min="0" max="100" placeholder="—"> anni &nbsp;
+          max <input type="number" id="nb-req-eta-max" min="0" max="100" placeholder="—"> anni
+        </div>
+      </div>
+    </div>
+    <div class="modal-field">
+      <label>Note interne</label>
+      <textarea id="nb-desc" rows="3" style="resize:vertical" placeholder="Appunti, link utili, riferimenti normativi, contatti ente…"></textarea>
     </div>
     <div class="modal-field">
       <label>Link ufficiale</label>
@@ -4406,6 +4447,15 @@ function _resetBandoForm() {
   document.getElementById('nb-tipo-wrap').innerHTML = Object.entries(TIPO_CFG).map(([k,v]) =>
     `<label class="nb-tipo-label"><input type="checkbox" name="nb-tipo" value="${k}"> ${v.label}</label>`
   ).join('');
+  // reset requisiti ammissibilità
+  document.querySelectorAll('input[name="nb-req-dim"]').forEach(c => c.checked = false);
+  ['nb-req-startup','nb-req-pmi','nb-req-femminile','nb-req-giovanile'].forEach(id => {
+    document.getElementById(id).checked = false;
+  });
+  document.getElementById('nb-req-ateco-inc').value = '';
+  document.getElementById('nb-req-ateco-exc').value = '';
+  document.getElementById('nb-req-eta-min').value   = '';
+  document.getElementById('nb-req-eta-max').value   = '';
 }
 
 function openAddBandoModal() {
@@ -4441,6 +4491,17 @@ function openEditBandoModal(idx) {
   document.getElementById('nb-tipo-wrap').querySelectorAll('input[name="nb-tipo"]').forEach(chk => {
     chk.checked = tipi.includes(chk.value);
   });
+  // Popola i requisiti (usa requisiti salvati, poi MAP hardcoded, poi nulla)
+  const req = b.requisiti || BANDI_REQUISITI_MAP[b.nome] || {};
+  document.querySelectorAll('input[name="nb-req-dim"]').forEach(c => c.checked = (req.dimensioni||[]).includes(c.value));
+  document.getElementById('nb-req-startup').checked   = !!req.startupInnovativa;
+  document.getElementById('nb-req-pmi').checked       = !!req.pmiInnovativa;
+  document.getElementById('nb-req-femminile').checked = !!req.impresaFemminile;
+  document.getElementById('nb-req-giovanile').checked = !!req.impresaGiovanile;
+  document.getElementById('nb-req-ateco-inc').value   = (req.atecoInclude||[]).join(', ');
+  document.getElementById('nb-req-ateco-exc').value   = (req.atecoExclude||[]).join(', ');
+  document.getElementById('nb-req-eta-min').value     = req.etaMinAnni != null ? req.etaMinAnni : '';
+  document.getElementById('nb-req-eta-max').value     = req.etaMaxAnni != null ? req.etaMaxAnni : '';
   document.getElementById('modal-new-bando').classList.add('open');
   closePanel();
 }
@@ -4628,7 +4689,18 @@ function saveNewBando() {
 
   const tipo        = [...document.querySelectorAll('input[name="nb-tipo"]:checked')].map(c => c.value);
   const descrizione = document.getElementById('nb-desc').value.trim();
-  const requisiti   = parseRequisitiFromNote(descrizione);
+  const _splitAteco = s => s.split(/[,;\s]+/).map(x => x.trim()).filter(x => /^\d/.test(x));
+  const requisiti   = {
+    dimensioni:        [...document.querySelectorAll('input[name="nb-req-dim"]:checked')].map(c => c.value),
+    startupInnovativa: document.getElementById('nb-req-startup').checked,
+    pmiInnovativa:     document.getElementById('nb-req-pmi').checked,
+    impresaFemminile:  document.getElementById('nb-req-femminile').checked,
+    impresaGiovanile:  document.getElementById('nb-req-giovanile').checked,
+    atecoInclude:      _splitAteco(document.getElementById('nb-req-ateco-inc').value),
+    atecoExclude:      _splitAteco(document.getElementById('nb-req-ateco-exc').value),
+    etaMinAnni:        parseInt(document.getElementById('nb-req-eta-min').value) || null,
+    etaMaxAnni:        parseInt(document.getElementById('nb-req-eta-max').value) || null,
+  };
 
   const dati = {
     nome, ente, regione,
