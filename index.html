@@ -1563,49 +1563,11 @@
     </div>
     <div class="modal-field">
       <label>Descrizione / Note interne</label>
-      <textarea id="nb-desc" rows="3" style="resize:vertical" placeholder="Requisiti, note, clienti target..."></textarea>
+      <textarea id="nb-desc" rows="4" style="resize:vertical" placeholder="Scrivi qui i requisiti del decreto, es:&#10;• Startup innovativa, costituita da meno di 5 anni, ATECO 62&#10;• PMI, almeno 2 anni, sede operativa Lazio&#10;• Micro e piccole imprese, escluso ATECO 01 02 03"></textarea>
     </div>
     <div class="modal-field">
       <label>Link ufficiale</label>
       <input type="url" id="nb-link" placeholder="https://...">
-    </div>
-    <div class="modal-field">
-      <label>Requisiti ammissibilità <span style="font-size:10px;color:#94a3b8;font-weight:400">— lascia vuoto = nessun vincolo</span></label>
-      <div style="display:flex;flex-direction:column;gap:10px;background:#f8fafc;border-radius:8px;padding:12px;border:1.5px solid #e2e8f0;margin-top:4px">
-        <div>
-          <div style="font-size:11px;font-weight:600;color:#64748b;margin-bottom:6px">Dimensione aziendale ammessa</div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap">
-            <label class="nb-tipo-label"><input type="checkbox" name="nb-dim" value="micro"> Micro</label>
-            <label class="nb-tipo-label"><input type="checkbox" name="nb-dim" value="piccola"> Piccola</label>
-            <label class="nb-tipo-label"><input type="checkbox" name="nb-dim" value="media"> Media</label>
-            <label class="nb-tipo-label"><input type="checkbox" name="nb-dim" value="grande"> Grande</label>
-          </div>
-        </div>
-        <div style="display:flex;gap:20px;flex-wrap:wrap">
-          <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer"><input type="checkbox" id="nb-req-startup"> Solo Startup Innovative</label>
-          <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer"><input type="checkbox" id="nb-req-pmi-inn"> Solo PMI Innovative</label>
-        </div>
-        <div class="modal-row2" style="margin:0">
-          <div class="modal-field" style="margin:0">
-            <label style="font-size:11px">ATECO ammessi <span style="color:#94a3b8">(prefissi separati da virgola)</span></label>
-            <input type="text" id="nb-ateco-inc" placeholder="es. 62,63,72 — vuoto = tutti">
-          </div>
-          <div class="modal-field" style="margin:0">
-            <label style="font-size:11px">ATECO esclusi</label>
-            <input type="text" id="nb-ateco-exc" placeholder="es. 01,02,03">
-          </div>
-        </div>
-        <div class="modal-row2" style="margin:0">
-          <div class="modal-field" style="margin:0">
-            <label style="font-size:11px">Età minima impresa (anni)</label>
-            <input type="number" id="nb-eta-min" placeholder="es. 2 — vuoto = nessun limite" min="0">
-          </div>
-          <div class="modal-field" style="margin:0">
-            <label style="font-size:11px">Età massima impresa (anni)</label>
-            <input type="number" id="nb-eta-max" placeholder="es. 7 — vuoto = nessun limite" min="0">
-          </div>
-        </div>
-      </div>
     </div>
     <div class="modal-actions">
       <button class="btn-modal-cancel" onclick="document.getElementById('modal-new-bando').classList.remove('open')">Annulla</button>
@@ -4362,13 +4324,6 @@ function openAddBandoModal() {
   document.getElementById('nb-tipo-wrap').innerHTML = Object.entries(TIPO_CFG).map(([k,v]) =>
     `<label class="nb-tipo-label"><input type="checkbox" name="nb-tipo" value="${k}"> ${v.label}</label>`
   ).join('');
-  ['nb-ateco-inc','nb-ateco-exc','nb-eta-min','nb-eta-max'].forEach(id => {
-    document.getElementById(id).value = '';
-  });
-  document.querySelectorAll('input[name="nb-dim"]').forEach(c => c.checked = false);
-  document.getElementById('nb-req-startup').checked  = false;
-  document.getElementById('nb-req-pmi-inn').checked  = false;
-
   document.getElementById('modal-new-bando').classList.add('open');
 }
 
@@ -4377,12 +4332,59 @@ function openAddBandoModal() {
 // Abbina automaticamente le aziende al bando in base alla regione.
 // Le aziende già nella regione → nome; le altre → nome + " *" (sede da aprire).
 // Bandi nazionali → tutte le aziende con P.IVA nota.
+// Estrae requisiti di ammissibilità da testo libero (campo note/descrizione del bando).
+function parseRequisitiFromNote(testo) {
+  if (!testo) return {};
+  const req = { dimensioni: [], startupInnovativa: false, pmiInnovativa: false, atecoInclude: [], atecoExclude: [], etaMinAnni: null, etaMaxAnni: null };
+
+  // Startup / PMI Innovativa
+  if (/startup\s*innovat/i.test(testo)) req.startupInnovativa = true;
+  if (/pmi\s*innovat/i.test(testo))     req.pmiInnovativa     = true;
+
+  // Dimensioni
+  const addDim = d => { if (!req.dimensioni.includes(d)) req.dimensioni.push(d); };
+  if (/\bmicro\b/i.test(testo))                               addDim('micro');
+  if (/piccol[ae]\b/i.test(testo))                            addDim('piccola');
+  if (/\bmedi[ae]\s+impres|\bmedie\s+impres/i.test(testo))    addDim('media');
+  if (/grand[ei]\s+impres|\bgrandi\s+impres/i.test(testo))    addDim('grande');
+  // PMI senza "innovativa" → micro+piccola+media
+  if (/\bpmi\b/i.test(testo) && !req.pmiInnovativa && req.dimensioni.length === 0)
+    req.dimensioni = ['micro','piccola','media'];
+
+  // ATECO esclusi (cerca prima "escluso/non ammesso + ATECO")
+  const excBlocks = [...testo.matchAll(/(?:esclus[oi]|non\s+ammess[oi]|esclud\w+)\s+(?:ateco\s+)?((?:\d[\d.]*(?:[,;\s]+)?)+)/gi)];
+  excBlocks.forEach(m => {
+    m[1].split(/[,;\s]+/).map(x => x.trim()).filter(x => /^\d/.test(x)).forEach(c => req.atecoExclude.push(c));
+  });
+
+  // ATECO inclusi (tutto il resto preceduto da "ATECO" non già in esclusi)
+  const incBlocks = [...testo.matchAll(/(?<!esclus\w{0,4}\s{1,10})ateco[\s:]+(\d[\d.,;\s]*)/gi)];
+  incBlocks.forEach(m => {
+    m[1].split(/[,;\s]+/).map(x => x.trim()).filter(x => /^\d/.test(x)).forEach(c => {
+      if (!req.atecoExclude.includes(c)) req.atecoInclude.push(c);
+    });
+  });
+
+  // Età minima: "almeno X anni", "costituita da X anni", "min X anni", "età minima X"
+  const minM = testo.match(/(?:almeno|età\s+min\w*|minimo|da\s+almeno)\s+(\d+)\s+ann/i)
+            || testo.match(/costituit\w+\s+(?:da\s+)?almeno\s+(\d+)\s+ann/i);
+  if (minM) req.etaMinAnni = parseInt(minM[1]);
+
+  // Età massima: "meno di X anni", "max X anni", "entro X anni", "non più di X anni", "fino a X anni"
+  const maxM = testo.match(/(?:meno\s+di|età\s+max\w*|massimo|non\s+più\s+di|entro\s+(?:i\s+)?|fino\s+a\s+)\s*(\d+)\s+ann/i)
+            || testo.match(/costituit\w+\s+da\s+(?:non\s+più\s+di|meno\s+di)\s+(\d+)\s+ann/i);
+  if (maxM) req.etaMaxAnni = parseInt(maxM[1]);
+
+  return req;
+}
+
 // Controlla se un cliente soddisfa i requisiti di ammissibilità di un bando.
 // Restituisce { ok: bool, reasons: string[] }.
 // Se requisiti è vuoto o il campo cliente non è compilato → non blocca il match.
 function matchClienteBando(nomeCliente, bando) {
   const d   = CLIENTI[nomeCliente] || {};
-  const req = (bando && bando.requisiti) || {};
+  // Usa i requisiti salvati; se assenti, prova a parsarli dalla descrizione (bandi pre-esistenti)
+  const req = (bando && bando.requisiti) || parseRequisitiFromNote(bando && bando.descrizione) || {};
   const reasons = [];
   const annoOggi = new Date().getFullYear();
 
@@ -4477,16 +4479,8 @@ function saveNewBando() {
     return;
   }
   const tipo = [...document.querySelectorAll('input[name="nb-tipo"]:checked')].map(c => c.value);
-  const parseAteco = s => (s || '').split(',').map(x => x.trim()).filter(Boolean);
-  const requisiti = {
-    dimensioni:        [...document.querySelectorAll('input[name="nb-dim"]:checked')].map(c => c.value),
-    startupInnovativa: document.getElementById('nb-req-startup').checked,
-    pmiInnovativa:     document.getElementById('nb-req-pmi-inn').checked,
-    atecoInclude:      parseAteco(document.getElementById('nb-ateco-inc').value),
-    atecoExclude:      parseAteco(document.getElementById('nb-ateco-exc').value),
-    etaMinAnni:        parseInt(document.getElementById('nb-eta-min').value) || null,
-    etaMaxAnni:        parseInt(document.getElementById('nb-eta-max').value) || null,
-  };
+  const descrizione = document.getElementById('nb-desc').value.trim();
+  const requisiti   = parseRequisitiFromNote(descrizione);
   const bando = {
     nome, ente, regione,
     tipo: tipo.length ? tipo : ['impresa'],
@@ -4497,9 +4491,9 @@ function saveNewBando() {
     urgente:          document.getElementById('nb-urgente').checked,
     altaRilevanza:    document.getElementById('nb-alta').checked,
     aperturaImminente:document.getElementById('nb-imminente').checked,
-    descrizione: document.getElementById('nb-desc').value.trim(),
+    descrizione,
     requisiti,
-    clienti:     autoMatchClienti(document.getElementById('nb-regione').value.trim()),
+    clienti:     autoMatchClienti(regione),
     link:        document.getElementById('nb-link').value.trim(),
     _extra: true
   };
@@ -4512,8 +4506,9 @@ function saveNewBando() {
   const nGeo  = bando.clienti.filter(c => !c.endsWith(' *')).length;
   const nPot  = bando.clienti.filter(c => c.endsWith(' *')).length;
   const nElig = bando.clienti.filter(c => matchClienteBando(c.replace(' *',''), bando).ok).length;
-  const reqMsg = (requisiti.dimensioni.length || requisiti.startupInnovativa || requisiti.pmiInnovativa || requisiti.atecoInclude.length || requisiti.etaMinAnni || requisiti.etaMaxAnni)
-    ? ` · Idonei ai requisiti: ${nElig}` : '';
+  const hasReq = requisiti.dimensioni?.length || requisiti.startupInnovativa || requisiti.pmiInnovativa
+              || requisiti.atecoInclude?.length || requisiti.etaMinAnni || requisiti.etaMaxAnni;
+  const reqMsg = hasReq ? ` · Idonei ai requisiti: ${nElig}` : '';
   showToast(`✅ Bando "${nome}" aggiunto · Match geo: ${nGeo} confermati, ${nPot} potenziali${reqMsg}`, 'ok');
 }
 
