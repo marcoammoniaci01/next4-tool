@@ -8,7 +8,75 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@700;800;900&display=swap" rel="stylesheet">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Inter', 'Segoe UI', Arial, sans-serif; background: radial-gradient(ellipse 90% 45% at 50% 0%, #dce8fc 0%, #f0f4f9 58%); min-height: 100vh; color: #1a1a2e; font-size: 14px; }
+  body { font-family: 'Inter', 'Segoe UI', Arial, sans-serif; background: radial-gradient(ellipse 90% 45% at 50% 0%, #dce8fc 0%, #f0f4f9 58%); min-height: 100vh; color: #1a1a2e; font-size: 14px; display: flex; }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 220px;
+    min-height: 100vh;
+    background: linear-gradient(175deg, #0d2248 0%, #1B3A6B 60%, #1e4080 100%);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 200;
+    overflow-y: auto;
+  }
+  .sidebar-brand {
+    padding: 20px 16px 16px;
+    border-bottom: 1px solid rgba(255,255,255,.1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  .sidebar-brand-img { height: 26px; width: auto; display: block; filter: brightness(0) invert(1); }
+  .sidebar-brand-text { color: #fff; min-width: 0; }
+  .sidebar-brand-name { font-size: 12.5px; font-weight: 700; letter-spacing: .01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sidebar-brand-sub  { font-size: 10px; color: rgba(255,255,255,.4); }
+  .sidebar-section-lbl { padding: 14px 16px 4px; font-size: 9.5px; font-weight: 700; color: rgba(255,255,255,.3); text-transform: uppercase; letter-spacing: .08em; flex-shrink: 0; }
+  .sidebar-item {
+    display: flex; align-items: center; gap: 9px;
+    padding: 9px 14px;
+    margin: 1px 8px;
+    border-radius: 9px;
+    cursor: pointer;
+    color: rgba(255,255,255,.55);
+    font-size: 12.5px;
+    font-weight: 500;
+    transition: all .14s;
+    border: none; background: none; font-family: inherit;
+    text-align: left;
+    flex-shrink: 0;
+  }
+  .sidebar-item:hover { background: rgba(255,255,255,.07); color: rgba(255,255,255,.9); }
+  .sidebar-item.active {
+    background: rgba(0,229,209,.1);
+    color: #00E5D1;
+    font-weight: 700;
+    border-left: 3px solid #00E5D1;
+  }
+  .sidebar-item-ico { font-size: 14px; width: 18px; text-align: center; flex-shrink: 0; }
+  .sidebar-badge { margin-left: auto; background: rgba(0,229,209,.2); color: #00E5D1; font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 8px; flex-shrink: 0; }
+  .sidebar-divider { height: 1px; background: rgba(255,255,255,.08); margin: 8px 16px; flex-shrink: 0; }
+  .sidebar-footer {
+    margin-top: auto;
+    padding: 14px 16px;
+    border-top: 1px solid rgba(255,255,255,.08);
+    font-size: 10px;
+    color: rgba(255,255,255,.25);
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  /* ── PAGE MAIN (shift right of sidebar) ── */
+  .page-main { margin-left: 220px; flex: 1; min-height: 100vh; display: flex; flex-direction: column; min-width: 0; }
+
+  /* ── TABS: hide since sidebar replaces them ── */
+  .tabs { display: none !important; }
+  /* ── SECTION-NAV: hidden, sidebar provides context ── */
+  .section-nav { display: none !important; }
 
 
   /* ── LOGO PILL ── */
@@ -131,21 +199,41 @@
   .no-results { text-align: center; padding: 60px 20px; color: #94a3b8; font-size: 14px; }
 
 
-  /* ── CARD HEADER BAND ── */
+  /* ── CARD HEAD STATO (Concept B style: colored header with status text + wave) ── */
+  .card-head-stato {
+    padding: 10px 16px 24px;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .card-head-stato::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; left: 0; right: 0;
+    height: 18px;
+    background: white;
+    clip-path: ellipse(55% 100% at 50% 100%);
+  }
+  body.dark .card-head-stato::after { background: #162035; }
+  .card-head-aperto      { background: linear-gradient(135deg, #14532d, #16a34a); }
+  .card-head-inapertura  { background: linear-gradient(135deg, #0c4a42, #0f766e); }
+  .card-head-monitorare  { background: linear-gradient(135deg, #78350f, #d97706); }
+  .card-head-lavorazione { background: linear-gradient(135deg, #1e3a8a, #2563eb); }
+  .card-head-chiuso      { background: linear-gradient(135deg, #7f1d1d, #dc2626); }
+  .card-head-stato-lbl {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: rgba(255,255,255,.9);
+    text-transform: uppercase;
+    letter-spacing: .07em;
+    display: flex; align-items: center; gap: 5px;
+  }
+
+  /* ── CARD HEADER BAND (kept for backward compat, not used) ── */
   @keyframes bandShimmer {
     0%   { background-position: -200% center; }
     100% { background-position:  200% center; }
   }
-  .card-band {
-    height: 5px; width: 100%; flex-shrink: 0;
-    background-size: 200% 100%;
-    animation: bandShimmer 3s linear infinite;
-  }
-  .card-aperto      .card-band { background-image: linear-gradient(90deg,#16a34a,#4ade80,#bbf7d0,#4ade80,#16a34a); }
-  .card-inapertura  .card-band { background-image: linear-gradient(90deg,#0f766e,#2dd4bf,#99f6e4,#2dd4bf,#0f766e); }
-  .card-monitorare  .card-band { background-image: linear-gradient(90deg,#d97706,#fbbf24,#fef08a,#fbbf24,#d97706); }
-  .card-lavorazione .card-band { background-image: linear-gradient(90deg,#2563eb,#60a5fa,#bfdbfe,#60a5fa,#2563eb); }
-  .card-chiuso      .card-band { background-image: linear-gradient(90deg,#dc2626,#f87171,#fecaca,#f87171,#dc2626); }
   /* ── BANDO CARD ── */
   .card {
     background: white;
@@ -590,6 +678,8 @@
     background: radial-gradient(ellipse 90% 45% at 50% 0%, #0d1b30 0%, #0a1220 58%);
     color: #dde4f0;
   }
+  /* sidebar dark: it's already navy so minimal changes needed */
+  body.dark .sidebar { background: linear-gradient(175deg, #060e1e 0%, #0d1f40 60%, #0f2448 100%); }
 
   /* stat cards */
   body.dark .stat-card { background: #162035; box-shadow: 0 1px 4px rgba(0,0,0,0.4); }
@@ -1595,6 +1685,57 @@
   </div>
 </div>
 
+<!-- ── SIDEBAR ── -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <img class="sidebar-brand-img" src="logo_n4.png" alt="Next4">
+    <div class="sidebar-brand-text">
+      <div class="sidebar-brand-name">Next4 International</div>
+      <div class="sidebar-brand-sub">Dashboard operativa</div>
+    </div>
+  </div>
+
+  <div class="sidebar-section-lbl">Navigazione</div>
+  <button class="sidebar-item" id="sb-home" onclick="goHome()">
+    <span class="sidebar-item-ico">⌂</span> Home
+  </button>
+
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-section-lbl">Finanza Agevolata</div>
+  <button class="sidebar-item" id="sb-bandi" onclick="sbEnter('finanza','bandi')">
+    <span class="sidebar-item-ico">📋</span> Bandi
+    <span class="sidebar-badge" id="sb-badge-bandi" style="display:none"></span>
+  </button>
+  <button class="sidebar-item" id="sb-clienti" onclick="sbEnter('finanza','clienti')">
+    <span class="sidebar-item-ico">🏢</span> Vista Clienti
+  </button>
+  <button class="sidebar-item" id="sb-scadenzario" onclick="sbEnter('finanza','scadenzario')">
+    <span class="sidebar-item-ico">📅</span> Scadenzario
+  </button>
+  <button class="sidebar-item" id="sb-ricerca" onclick="sbEnter('finanza','ricerca')">
+    <span class="sidebar-item-ico">🔍</span> Ricerca
+  </button>
+  <button class="sidebar-item" id="sb-radar" onclick="sbEnter('finanza','radar')">
+    <span class="sidebar-item-ico">📡</span> Radar
+    <span class="sidebar-badge" id="sb-badge-radar" style="display:none"></span>
+  </button>
+
+  <div class="sidebar-divider"></div>
+  <div class="sidebar-section-lbl">Area Riservata</div>
+  <button class="sidebar-item" id="sb-pipeline" onclick="sbEnter('riservata','pipeline')">
+    <span class="sidebar-item-ico">💼</span> Pipeline
+  </button>
+  <button class="sidebar-item" id="sb-task" onclick="sbEnter('riservata','task')">
+    <span class="sidebar-item-ico">✅</span> Task
+    <span class="sidebar-badge" id="sb-badge-task" style="display:none"></span>
+  </button>
+
+  <div class="sidebar-footer">© 2026 Next4 International</div>
+</div>
+
+<!-- ── PAGE MAIN ── -->
+<div class="page-main">
+
 <div class="header">
   <div class="header-brand">
     <div class="header-logo-pill"><img src="logo_n4.png" alt="Next4 International"></div>
@@ -2302,6 +2443,11 @@ function showHub() {
     const el = document.getElementById(id);
     if (el) el.style.display = 'none';
   });
+  // deseleziona tutti gli item della sidebar e attiva Home
+  const allSb = ['sb-home','sb-bandi','sb-clienti','sb-scadenzario','sb-ricerca','sb-radar','sb-pipeline','sb-task'];
+  allSb.forEach(id => { const el = document.getElementById(id); if (el) el.classList.remove('active'); });
+  const home = document.getElementById('sb-home');
+  if (home) home.classList.add('active');
   renderAllerte();
   renderHubStats();
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -2426,31 +2572,22 @@ function radarRemove(idx) {
   renderRadarList(data);
 }
 
-function enterSection(section) {
+function enterSection(section, defaultTab) {
   document.getElementById('view-hub').style.display = 'none';
-
-  const nav = document.getElementById('section-nav');
-  const navLabel = document.getElementById('section-nav-label');
-  nav.style.display = 'flex';
+  document.getElementById('section-nav').style.display = 'none';
 
   if (section === 'finanza') {
-    navLabel.textContent = '💼 Finanza Agevolata';
-    navLabel.className = 'section-nav-label';
     document.getElementById('stats-bar').style.display = 'flex';
     document.getElementById('data-toolbar').style.display = 'flex';
     document.getElementById('tabs-finanza').style.display = 'flex';
     document.getElementById('tabs-riservata').style.display = 'none';
-    // attiva bandi di default
-    switchTab('bandi');
+    switchTab(defaultTab || 'bandi');
   } else {
-    navLabel.textContent = '🔒 Area Riservata';
-    navLabel.className = 'section-nav-label section-nav-label-riservata';
     document.getElementById('stats-bar').style.display = 'none';
     document.getElementById('data-toolbar').style.display = 'none';
     document.getElementById('tabs-finanza').style.display = 'none';
     document.getElementById('tabs-riservata').style.display = 'flex';
-    // attiva pipeline di default
-    switchTab('pipeline');
+    switchTab(defaultTab || 'pipeline');
   }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -4089,6 +4226,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById(id).addEventListener(id==='q'?'input':'change', render)
   );
   render();
+  setTimeout(updateSidebarBadges, 200);
 
   // Toolbar clienti: search + sort
   const csearch = document.getElementById('clienti-search');
@@ -4274,7 +4412,9 @@ function render() {
     const hasDom = doms.length > 0;
 
     card.innerHTML = `
-      <div class="card-band"></div>
+      <div class="card-head-stato card-head-${sc.stato}">
+        <span class="card-head-stato-lbl">${sc.label}</span>
+      </div>
       <div class="card-top">
         <div class="card-ico">${getBandoIco(b)}</div>
         <div class="card-toprow">
@@ -4338,10 +4478,49 @@ function render() {
 }
 
 // ─── TAB SWITCHING ───────────────────────────────────────────────────────
+// ─── SIDEBAR NAVIGATION ──────────────────────────────────────────────────────
+function sbEnter(section, tab) {
+  // Se già nella stessa sezione, switch diretto; altrimenti enter
+  const finanzaOpen = document.getElementById('tabs-finanza').style.display !== 'none';
+  const riservataOpen = document.getElementById('tabs-riservata').style.display !== 'none';
+  const alreadyIn = (section === 'finanza' && finanzaOpen) || (section === 'riservata' && riservataOpen);
+  if (alreadyIn) {
+    switchTab(tab);
+  } else {
+    enterSection(section, tab);
+  }
+}
+
+function updateSidebarActive(tab) {
+  const allIds = ['sb-home','sb-bandi','sb-clienti','sb-scadenzario','sb-ricerca','sb-radar','sb-pipeline','sb-task'];
+  allIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('active');
+  });
+  const map = { bandi:'sb-bandi', clienti:'sb-clienti', scadenzario:'sb-scadenzario', ricerca:'sb-ricerca', radar:'sb-radar', pipeline:'sb-pipeline', task:'sb-task' };
+  if (map[tab]) {
+    const el = document.getElementById(map[tab]);
+    if (el) el.classList.add('active');
+  }
+}
+
+function updateSidebarBadges() {
+  const nBandi = BANDI.filter(b => b.stato !== 'chiuso').length;
+  const bdg = document.getElementById('sb-badge-bandi');
+  if (bdg) { bdg.textContent = nBandi; bdg.style.display = nBandi ? '' : 'none'; }
+  const nTask = getTasks ? getTasks().filter(t => !t.fatto).length : 0;
+  const tbdg = document.getElementById('sb-badge-task');
+  if (tbdg) { tbdg.textContent = nTask; tbdg.style.display = nTask ? '' : 'none'; }
+  const radar = getRadarData ? getRadarData() : null;
+  const nRadar = radar ? (radar.bandi || []).filter(b => b.nuovo !== false).length : 0;
+  const rbdg = document.getElementById('sb-badge-radar');
+  if (rbdg) { rbdg.textContent = nRadar; rbdg.style.display = nRadar ? '' : 'none'; }
+}
+
 function switchTab(tab) {
   closePanel();
 
-  // aggiorna active nel gruppo tabs corretto
+  // aggiorna active nel gruppo tabs corretto (tabs sono hidden ma JS li usa ancora)
   const finanzaTabs = ['bandi','clienti','scadenzario','ricerca','radar'];
   const riservTabs  = ['pipeline','task'];
   const groupId = finanzaTabs.includes(tab) ? 'tabs-finanza' : 'tabs-riservata';
@@ -4363,6 +4542,9 @@ function switchTab(tab) {
       el.style.display = 'none';
     }
   });
+
+  // aggiorna sidebar active state
+  updateSidebarActive(tab);
 
   if (tab === 'clienti')     renderClienti();
   if (tab === 'scadenzario') renderScadenzario();
@@ -6592,5 +6774,6 @@ function _rqToggleEsclusi() {
   if (btn) btn.textContent = open ? 'Nascondi bandi non idonei ↑' : btn.textContent.replace('Nascondi','Mostra').replace('↑','↓');
 }
 </script>
+</div><!-- /page-main -->
 </body>
 </html>
