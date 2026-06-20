@@ -72,6 +72,8 @@
 
   /* ── PAGE MAIN (shift right of sidebar) ── */
   .page-main { margin-left: 220px; flex: 1; min-height: 100vh; display: flex; flex-direction: column; min-width: 0; }
+  body.hub-mode .sidebar { display: none; }
+  body.hub-mode .page-main { margin-left: 0; }
 
   /* ── TABS: hide since sidebar replaces them ── */
   .tabs { display: none !important; }
@@ -1644,7 +1646,7 @@
   body.dark .radar-chip-scadenza { background:#0e1e35; color:#4a6080; }
 </style>
 </head>
-<body>
+<body class="hub-mode">
 
 <div id="pw-gate">
   <!-- sinistra: branding -->
@@ -2443,6 +2445,8 @@ function showHub() {
     const el = document.getElementById(id);
     if (el) el.style.display = 'none';
   });
+  // nascondi sidebar sull'hub
+  document.body.classList.add('hub-mode');
   // deseleziona tutti gli item della sidebar e attiva Home
   const allSb = ['sb-home','sb-bandi','sb-clienti','sb-scadenzario','sb-ricerca','sb-radar','sb-pipeline','sb-task'];
   allSb.forEach(id => { const el = document.getElementById(id); if (el) el.classList.remove('active'); });
@@ -2575,6 +2579,8 @@ function radarRemove(idx) {
 function enterSection(section, defaultTab) {
   document.getElementById('view-hub').style.display = 'none';
   document.getElementById('section-nav').style.display = 'none';
+  // mostra sidebar quando si entra in una sezione
+  document.body.classList.remove('hub-mode');
 
   if (section === 'finanza') {
     document.getElementById('stats-bar').style.display = 'flex';
