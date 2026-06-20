@@ -1469,6 +1469,55 @@
   body.dark .client-last-int .cli-tipo { color:#4a7fcb; }
   body.dark .btn-log-sm { background:#162035; border-color:#2d3f5e; color:#64748b; }
   body.dark .btn-log-sm:hover { background:#1a3460; border-color:#4a7fcb; color:#93c5fd; }
+
+  /* ── RADAR BANDI ── */
+  #view-radar { padding: 20px 24px 40px; }
+  .radar-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; flex-wrap:wrap; gap:10px; }
+  .radar-title { font-size:17px; font-weight:700; color:#1B3A6B; display:flex; align-items:center; gap:8px; }
+  .radar-pulse { width:9px; height:9px; border-radius:50%; background:#22c55e; display:inline-block; box-shadow:0 0 0 0 rgba(34,197,94,.4); animation:radar-ping 1.8s ease-in-out infinite; }
+  @keyframes radar-ping { 0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.4)} 50%{box-shadow:0 0 0 7px rgba(34,197,94,0)} }
+  .radar-meta { font-size:11.5px; color:#64748b; }
+  .radar-status-bar { background:#f0f7ff; border:1px solid #c7deff; border-radius:10px; padding:12px 16px; display:flex; align-items:center; gap:12px; margin-bottom:22px; flex-wrap:wrap; }
+  .radar-stat-pill { background:#fff; border:1px solid #dde9f9; border-radius:20px; padding:4px 12px; font-size:11.5px; color:#1B3A6B; font-weight:600; }
+  .radar-gmail-btn { margin-left:auto; background:#1B3A6B; color:#fff; border:none; border-radius:7px; padding:6px 14px; font-size:12px; font-weight:600; cursor:pointer; display:flex; align-items:center; gap:6px; transition:background .15s; }
+  .radar-gmail-btn:hover { background:#14305a; }
+  .radar-refresh-btn { background:#fff; border:1.5px solid #c7deff; border-radius:7px; padding:6px 12px; font-size:12px; color:#1B3A6B; cursor:pointer; font-weight:600; transition:all .15s; }
+  .radar-refresh-btn:hover { background:#eef4ff; }
+  .radar-section-title { font-size:12px; font-weight:700; color:#64748b; text-transform:uppercase; letter-spacing:.06em; margin:0 0 10px; }
+  .radar-empty { background:#f8fafc; border:1.5px dashed #c7deff; border-radius:10px; padding:32px; text-align:center; color:#94a3b8; font-size:13px; }
+  .radar-card { background:#fff; border:1.5px solid #e2e8f0; border-radius:10px; padding:14px 16px; margin-bottom:10px; display:flex; align-items:flex-start; gap:14px; transition:box-shadow .15s; }
+  .radar-card:hover { box-shadow:0 2px 12px rgba(27,58,107,.08); }
+  .radar-card-left { flex:1; min-width:0; }
+  .radar-card-nome { font-weight:700; color:#1B3A6B; font-size:13.5px; margin-bottom:3px; }
+  .radar-card-ente { font-size:12px; color:#64748b; margin-bottom:5px; }
+  .radar-card-badges { display:flex; gap:5px; flex-wrap:wrap; }
+  .radar-chip { font-size:10.5px; padding:2px 8px; border-radius:10px; font-weight:600; }
+  .radar-chip-stato-aperto      { background:#dcfce7; color:#16a34a; }
+  .radar-chip-stato-inapertura  { background:#fef9c3; color:#a16207; }
+  .radar-chip-stato-monitorare  { background:#e0e7ff; color:#4338ca; }
+  .radar-chip-scadenza { background:#f1f5f9; color:#475569; }
+  .radar-card-note { font-size:12px; color:#475569; margin-top:6px; line-height:1.4; }
+  .radar-card-actions { display:flex; flex-direction:column; gap:6px; align-items:flex-end; flex-shrink:0; }
+  .radar-btn-add { background:#1B3A6B; color:#fff; border:none; border-radius:7px; padding:6px 12px; font-size:11.5px; font-weight:600; cursor:pointer; white-space:nowrap; transition:background .15s; }
+  .radar-btn-add:hover { background:#14305a; }
+  .radar-btn-link { background:#f1f5f9; color:#1B3A6B; border:none; border-radius:7px; padding:6px 12px; font-size:11.5px; font-weight:600; cursor:pointer; text-decoration:none; white-space:nowrap; }
+  .radar-btn-link:hover { background:#e2e8f0; }
+  .radar-btn-remove { background:none; border:none; color:#94a3b8; cursor:pointer; font-size:13px; padding:2px 4px; }
+  .radar-btn-remove:hover { color:#ef4444; }
+  .radar-loading { text-align:center; color:#94a3b8; padding:24px; font-size:13px; }
+  body.dark #view-radar { background:transparent; }
+  body.dark .radar-title { color:#93c5fd; }
+  body.dark .radar-meta { color:#4a6080; }
+  body.dark .radar-status-bar { background:#0e1e35; border-color:#2d3f5e; }
+  body.dark .radar-stat-pill { background:#162035; border-color:#2d3f5e; color:#93c5fd; }
+  body.dark .radar-empty { background:#0e1e35; border-color:#2d3f5e; color:#4a6080; }
+  body.dark .radar-card { background:#162035; border-color:#2d3f5e; }
+  body.dark .radar-card-nome { color:#dde4f0; }
+  body.dark .radar-card-ente { color:#4a6080; }
+  body.dark .radar-card-note { color:#4a6080; }
+  body.dark .radar-section-title { color:#4a6080; }
+  body.dark .radar-btn-link { background:#0e1e35; color:#93c5fd; }
+  body.dark .radar-chip-scadenza { background:#0e1e35; color:#4a6080; }
 </style>
 </head>
 <body>
@@ -1608,6 +1657,7 @@
   <button class="tab" onclick="switchTab('clienti')">🏢 Vista Clienti</button>
   <button class="tab" onclick="switchTab('scadenzario')">📅 Scadenzario</button>
   <button class="tab" onclick="switchTab('ricerca')">🔍 Ricerca</button>
+  <button class="tab" onclick="switchTab('radar')" id="tab-radar">📡 Radar</button>
 </div>
 <div class="tabs" id="tabs-riservata" style="display:none;">
   <button class="tab active" onclick="switchTab('pipeline')">💼 Pipeline</button>
@@ -1656,6 +1706,30 @@
 </div>
 
 </div><!-- /view-bandi -->
+
+<!-- ── RADAR BANDI ── -->
+<div id="view-radar" style="display:none;">
+  <div class="radar-header">
+    <div class="radar-title">
+      <span class="radar-pulse"></span>
+      Radar Bandi
+    </div>
+    <div class="radar-meta">Aggiornamento automatico ogni lunedì alle 8:00</div>
+  </div>
+
+  <div class="radar-status-bar">
+    <div class="radar-stat-pill">🤖 Agente attivo</div>
+    <div class="radar-stat-pill" id="radar-last-update">⏱ In attesa del primo aggiornamento</div>
+    <div class="radar-stat-pill" id="radar-count" style="display:none;"></div>
+    <button class="radar-refresh-btn" onclick="loadRadarData(true)">⟳ Aggiorna ora</button>
+    <a href="https://mail.google.com/mail/#drafts" target="_blank" class="radar-gmail-btn">📧 Gmail Drafts →</a>
+  </div>
+
+  <div class="radar-section-title">Bandi trovati online non ancora nel dashboard</div>
+  <div id="radar-list">
+    <div class="radar-loading">Caricamento in corso…</div>
+  </div>
+</div><!-- /view-radar -->
 
 <div id="view-clienti" style="display:none;">
   <div class="clienti-toolbar">
@@ -2217,6 +2291,105 @@ function renderHubStats() {
 
 function goHome() {
   showHub();
+}
+
+// ─── RADAR BANDI ─────────────────────────────────────────────────────────────
+const RADAR_URL = 'https://raw.githubusercontent.com/marcoammoniaci01/next4-dashboard/main/radar_bandi.json';
+const RADAR_KEY = 'n4_radar_bandi';
+
+function getRadarData() {
+  try { return JSON.parse(localStorage.getItem(RADAR_KEY) || 'null'); } catch(e) { return null; }
+}
+function saveRadarData(data) {
+  localStorage.setItem(RADAR_KEY, JSON.stringify(data));
+}
+
+async function loadRadarData(force) {
+  const el = document.getElementById('radar-list');
+  if (!el) return;
+  const cached = getRadarData();
+  if (cached && !force) { renderRadarList(cached); return; }
+  el.innerHTML = '<div class="radar-loading">⟳ Cerco nuovi bandi…</div>';
+  try {
+    const r = await fetch(RADAR_URL + '?t=' + Date.now());
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const data = await r.json();
+    saveRadarData(data);
+    renderRadarList(data);
+  } catch(e) {
+    if (cached) { renderRadarList(cached); return; }
+    el.innerHTML = '<div class="radar-empty">📡 Nessun dato ancora.<br><small>L\'agente inizierà a inviare segnalazioni ogni lunedì alle 8:00.</small></div>';
+    document.getElementById('radar-last-update').textContent = '⏱ In attesa del primo aggiornamento';
+  }
+}
+
+function renderRadar() {
+  loadRadarData(false);
+}
+
+function renderRadarList(data) {
+  const el = document.getElementById('radar-list');
+  if (!el) return;
+  const elUpd = document.getElementById('radar-last-update');
+  const elCnt = document.getElementById('radar-count');
+  if (data.aggiornato && elUpd) elUpd.textContent = '📅 Aggiornato il ' + data.aggiornato;
+  const nuovi = (data.bandi || []).filter(b => b.nuovo !== false);
+  if (elCnt) { elCnt.textContent = nuovi.length + ' bandi nuovi'; elCnt.style.display = nuovi.length ? '' : 'none'; }
+  if (!nuovi.length) {
+    el.innerHTML = '<div class="radar-empty">✅ Nessun bando nuovo trovato questa settimana.<br><small>I bandi rilevanti sono già tutti nel dashboard.</small></div>';
+    return;
+  }
+  const statoChip = s => {
+    const map = { aperto:'aperto', inapertura:'inapertura', monitorare:'monitorare' };
+    const cls = 'radar-chip radar-chip-stato-' + (map[s] || 'monitorare');
+    const lbl = s === 'aperto' ? '🟢 Aperto' : s === 'inapertura' ? '🟡 In apertura' : '🔵 Monitorare';
+    return `<span class="${cls}">${lbl}</span>`;
+  };
+  el.innerHTML = nuovi.map((b, i) => `
+    <div class="radar-card" id="rcard-${i}">
+      <div class="radar-card-left">
+        <div class="radar-card-nome">${b.nome}</div>
+        <div class="radar-card-ente">${b.ente || ''}</div>
+        <div class="radar-card-badges">
+          ${statoChip(b.stato || 'monitorare')}
+          ${b.scadenza ? `<span class="radar-chip radar-chip-scadenza">📅 ${b.scadenza}</span>` : ''}
+        </div>
+        ${b.note ? `<div class="radar-card-note">${b.note}</div>` : ''}
+      </div>
+      <div class="radar-card-actions">
+        ${b.url ? `<a href="${b.url}" target="_blank" class="radar-btn-link">🔗 Apri</a>` : ''}
+        <button class="radar-btn-add" onclick="radarAddToDashboard(${i})">+ Aggiungi</button>
+        <button class="radar-btn-remove" onclick="radarRemove(${i})" title="Rimuovi">✕</button>
+      </div>
+    </div>`).join('');
+}
+
+function radarAddToDashboard(idx) {
+  const data = getRadarData();
+  if (!data) return;
+  const nuovi = (data.bandi || []).filter(b => b.nuovo !== false);
+  const b = nuovi[idx];
+  if (!b) return;
+  const extra = JSON.parse(localStorage.getItem('n4_bandi_extra') || '[]');
+  extra.push({
+    nome: b.nome, ente: b.ente || '', regione: b.regione || 'Nazionale',
+    tipo: ['impresa'], contributo: b.note || '', scadenza: b.scadenza || '',
+    proc: '', stato: b.stato || 'monitorare', urgente: false,
+    altaRilevanza: false, aperturaImminente: b.stato === 'inapertura',
+    descrizione: b.note || '', domande: [], clienti: [], link: b.url || ''
+  });
+  localStorage.setItem('n4_bandi_extra', JSON.stringify(extra));
+  location.reload();
+}
+
+function radarRemove(idx) {
+  const data = getRadarData();
+  if (!data) return;
+  const nuovi = (data.bandi || []).filter(b => b.nuovo !== false);
+  const removed = nuovi[idx]?.nome;
+  data.bandi = (data.bandi || []).filter(b => b.nome !== removed);
+  saveRadarData(data);
+  renderRadarList(data);
 }
 
 function enterSection(section) {
@@ -4135,7 +4308,7 @@ function switchTab(tab) {
   closePanel();
 
   // aggiorna active nel gruppo tabs corretto
-  const finanzaTabs = ['bandi','clienti','scadenzario','ricerca'];
+  const finanzaTabs = ['bandi','clienti','scadenzario','ricerca','radar'];
   const riservTabs  = ['pipeline','task'];
   const groupId = finanzaTabs.includes(tab) ? 'tabs-finanza' : 'tabs-riservata';
   const groupTabs = finanzaTabs.includes(tab) ? finanzaTabs : riservTabs;
@@ -4144,7 +4317,7 @@ function switchTab(tab) {
   });
 
   // mostra/nascondi views
-  ['bandi','clienti','scadenzario','ricerca','pipeline','task'].forEach(v => {
+  ['bandi','clienti','scadenzario','ricerca','pipeline','task','radar'].forEach(v => {
     const el = document.getElementById('view-' + v);
     if (!el) return;
     if (v === tab) {
@@ -4162,6 +4335,7 @@ function switchTab(tab) {
   if (tab === 'pipeline')    renderPipeline();
   if (tab === 'task')        renderTask();
   if (tab === 'ricerca')     _rqInit();
+  if (tab === 'radar')       renderRadar();
 }
 
 // ─── SIDE PANEL ──────────────────────────────────────────────────────────
