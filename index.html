@@ -2415,6 +2415,16 @@
           max <input type="number" id="nb-req-add-max" min="0" placeholder="—">
         </div>
         <div class="nb-req-row">
+          <span class="nb-req-label">Bilanci approvati</span>
+          min <input type="number" id="nb-req-bil-min" min="0" placeholder="—"> &nbsp;
+          max <input type="number" id="nb-req-bil-max" min="0" placeholder="—">
+        </div>
+        <div class="nb-req-row">
+          <span class="nb-req-label">N° soci</span>
+          min <input type="number" id="nb-req-soci-min" min="0" placeholder="—"> &nbsp;
+          max <input type="number" id="nb-req-soci-max" min="0" placeholder="—">
+        </div>
+        <div class="nb-req-row">
           <span class="nb-req-label">Fatturato (€)</span>
           min <input type="number" id="nb-req-fatt-min" min="0" placeholder="—"> &nbsp;
           max <input type="number" id="nb-req-fatt-max" min="0" placeholder="—">
@@ -2518,10 +2528,13 @@
     </div>
     <div class="modal-row2">
       <div class="modal-field">
-        <label>Bilanci approvati depositati <span style="font-weight:400;color:#64748b">(SIMEST)</span></label>
+        <label>Bilanci approvati depositati</label>
         <input type="number" id="mc-bilanci" placeholder="es. 2" min="0" max="50">
       </div>
-      <div class="modal-field"></div>
+      <div class="modal-field">
+        <label>N° soci <span style="font-weight:400;color:#64748b">(quota societaria)</span></label>
+        <input type="number" id="mc-soci" placeholder="es. 2" min="1" max="100">
+      </div>
     </div>
     <div class="modal-field">
       <label>Regioni operative <span style="font-weight:400;color:#64748b">(oltre alla sede legale, separate da virgola)</span></label>
@@ -4450,7 +4463,12 @@ function render() {
     if (fs && b.stato!==fs) return false;
     if (fr && b.regione!==fr) return false;
     if (ft && !b.tipo.includes(ft)) return false;
-    if (fc && !b.clienti.some(c=>c.replace(' *','')=== fc)) return false;
+    if (fc) {
+      if (!b.clienti.some(c => c.replace(' *','') === fc)) return false;
+      // Escludi bandi dove il cliente non soddisfa i requisiti di ammissibilità
+      const _reqCheck = matchClienteBando(fc, b);
+      if (!_reqCheck.ok) return false;
+    }
     if (fd === 'con' && !(b.domande && b.domande.length > 0)) return false;
     if (fd === 'senza' && b.domande && b.domande.length > 0) return false;
     if (q && ![b.nome,b.ente,b.descrizione,b.regione,...b.clienti].join(' ').toLowerCase().includes(q)) return false;
@@ -5467,6 +5485,10 @@ function _resetBandoForm() {
   document.getElementById('nb-req-eta-max').value   = '';
   document.getElementById('nb-req-add-min').value   = '';
   document.getElementById('nb-req-add-max').value   = '';
+  document.getElementById('nb-req-bil-min').value   = '';
+  document.getElementById('nb-req-bil-max').value   = '';
+  document.getElementById('nb-req-soci-min').value  = '';
+  document.getElementById('nb-req-soci-max').value  = '';
   document.getElementById('nb-req-fatt-min').value  = '';
   document.getElementById('nb-req-fatt-max').value  = '';
 }
@@ -5517,6 +5539,10 @@ function openEditBandoModal(idx) {
   document.getElementById('nb-req-eta-max').value     = req.etaMaxAnni  != null ? req.etaMaxAnni  : '';
   document.getElementById('nb-req-add-min').value     = req.addettiMin  != null ? req.addettiMin  : '';
   document.getElementById('nb-req-add-max').value     = req.addettiMax  != null ? req.addettiMax  : '';
+  document.getElementById('nb-req-bil-min').value     = req.bilanciMin  != null ? req.bilanciMin  : '';
+  document.getElementById('nb-req-bil-max').value     = req.bilanciMax  != null ? req.bilanciMax  : '';
+  document.getElementById('nb-req-soci-min').value    = req.sociMin     != null ? req.sociMin     : '';
+  document.getElementById('nb-req-soci-max').value    = req.sociMax     != null ? req.sociMax     : '';
   document.getElementById('nb-req-fatt-min').value    = req.fatturatoMin != null ? req.fatturatoMin : '';
   document.getElementById('nb-req-fatt-max').value    = req.fatturatoMax != null ? req.fatturatoMax : '';
   document.getElementById('modal-new-bando').classList.add('open');
@@ -5537,12 +5563,22 @@ const BANDI_REQUISITI_MAP = {
   "TecnoNidi Puglia":                        { dimensioni:["micro","piccola","media"],    startupInnovativa:false, pmiInnovativa:false, impresaFemminile:false, impresaGiovanile:false, atecoInclude:[], atecoExclude:[], etaMinAnni:null, etaMaxAnni:null },
   "Innovazione Strategica STEP – Toscana":   { dimensioni:[],                            startupInnovativa:false, pmiInnovativa:false, impresaFemminile:false, impresaGiovanile:false, atecoInclude:[], atecoExclude:[], etaMinAnni:null, etaMaxAnni:null },
   "Voucher Startup – Sardegna":              { dimensioni:["micro","piccola"],            startupInnovativa:true,  pmiInnovativa:false, impresaFemminile:false, impresaGiovanile:false, atecoInclude:[], atecoExclude:[], etaMinAnni:null, etaMaxAnni:4  },
-  "Investimenti Sostenibili 4.0 MIMIT":      { dimensioni:["micro","piccola","media"],    startupInnovativa:false, pmiInnovativa:false, impresaFemminile:false, impresaGiovanile:false, atecoInclude:[], atecoExclude:[], etaMinAnni:2, etaMaxAnni:null },
+  "Investimenti Sostenibili 4.0 MIMIT":      { dimensioni:["micro","piccola","media"],    startupInnovativa:false, pmiInnovativa:false, impresaFemminile:false, impresaGiovanile:false, atecoInclude:[], atecoExclude:[], etaMinAnni:2,    etaMaxAnni:null, bilanciMin:2 },
   "Brevetti+, Disegni+, Marchi+ e EUIPO SME Fund": { dimensioni:["micro","piccola","media"], startupInnovativa:false, pmiInnovativa:false, impresaFemminile:false, impresaGiovanile:false, atecoInclude:[], atecoExclude:[], etaMinAnni:null, etaMaxAnni:null },
   "Brevetti+ 2025":                          { dimensioni:["micro","piccola","media"],    startupInnovativa:false, pmiInnovativa:false, impresaFemminile:false, impresaGiovanile:false, atecoInclude:[], atecoExclude:[], etaMinAnni:null, etaMaxAnni:null },
   "Donne e Impresa Lazio 2026":              { dimensioni:["micro","piccola","media"],    startupInnovativa:false, pmiInnovativa:false, impresaFemminile:true,  impresaGiovanile:false, atecoInclude:[], atecoExclude:[], etaMinAnni:null, etaMaxAnni:null },
-  "Accordi per l'Innovazione 2025":          { dimensioni:[],                            startupInnovativa:false, pmiInnovativa:false, impresaFemminile:false, impresaGiovanile:false, atecoInclude:[], atecoExclude:[], etaMinAnni:2,    etaMaxAnni:null },
+  "Accordi per l'Innovazione 2025":          { dimensioni:[],                            startupInnovativa:false, pmiInnovativa:false, impresaFemminile:false, impresaGiovanile:false, atecoInclude:[], atecoExclude:[], etaMinAnni:2,    etaMaxAnni:null, bilanciMin:2 },
   "Bando Internazionalizzazione Imprese FVG 2026": { dimensioni:[],                      startupInnovativa:false, pmiInnovativa:false, impresaFemminile:false, impresaGiovanile:false, atecoInclude:[], atecoExclude:[], etaMinAnni:null, etaMaxAnni:null },
+  "SIMEST – Inserimento Mercati (IM)":                { dimensioni:["micro","piccola","media"], startupInnovativa:false, pmiInnovativa:false, impresaFemminile:false, impresaGiovanile:false, atecoInclude:[], atecoExclude:[], etaMinAnni:null, etaMaxAnni:null, bilanciMin:2 },
+  "SIMEST – Transizione Digitale/Ecologica (DE)":    { dimensioni:["micro","piccola","media"], startupInnovativa:false, pmiInnovativa:false, impresaFemminile:false, impresaGiovanile:false, atecoInclude:[], atecoExclude:[], etaMinAnni:null, etaMaxAnni:null, bilanciMin:2 },
+  "SIMEST – Fiere ed Events (FM)":                   { dimensioni:["micro","piccola","media"], startupInnovativa:false, pmiInnovativa:false, impresaFemminile:false, impresaGiovanile:false, atecoInclude:[], atecoExclude:[], etaMinAnni:null, etaMaxAnni:null, bilanciMin:2 },
+  "SIMEST – E-Commerce (EC)":                        { dimensioni:["micro","piccola","media"], startupInnovativa:false, pmiInnovativa:false, impresaFemminile:false, impresaGiovanile:false, atecoInclude:[], atecoExclude:[], etaMinAnni:null, etaMaxAnni:null, bilanciMin:2 },
+  "SIMEST – Certificazioni e Consulenze (SC)":       { dimensioni:["micro","piccola","media"], startupInnovativa:false, pmiInnovativa:false, impresaFemminile:false, impresaGiovanile:false, atecoInclude:[], atecoExclude:[], etaMinAnni:null, etaMaxAnni:null, bilanciMin:2 },
+  "SIMEST – Temporary Export Manager (TM)":          { dimensioni:["micro","piccola","media"], startupInnovativa:false, pmiInnovativa:false, impresaFemminile:false, impresaGiovanile:false, atecoInclude:[], atecoExclude:[], etaMinAnni:null, etaMaxAnni:null, bilanciMin:2 },
+  "SIMEST – Potenziamento Mercati Africani":          { dimensioni:["micro","piccola","media"], startupInnovativa:false, pmiInnovativa:false, impresaFemminile:false, impresaGiovanile:false, atecoInclude:[], atecoExclude:[], etaMinAnni:null, etaMaxAnni:null, bilanciMin:2 },
+  "SIMEST – Competitività America Latina (LatAm)":   { dimensioni:["micro","piccola","media"], startupInnovativa:false, pmiInnovativa:false, impresaFemminile:false, impresaGiovanile:false, atecoInclude:[], atecoExclude:[], etaMinAnni:null, etaMaxAnni:null, bilanciMin:2 },
+  "SIMEST – Affiancamento Strategico Mercato Indiano": { dimensioni:["micro","piccola","media"], startupInnovativa:false, pmiInnovativa:false, impresaFemminile:false, impresaGiovanile:false, atecoInclude:[], atecoExclude:[], etaMinAnni:null, etaMaxAnni:null, bilanciMin:2 },
+  "SIMEST – Energia per la Competitività Internazionale": { dimensioni:["micro","piccola","media"], startupInnovativa:false, pmiInnovativa:false, impresaFemminile:false, impresaGiovanile:false, atecoInclude:[], atecoExclude:[], etaMinAnni:null, etaMaxAnni:null, bilanciMin:2 },
 };
 
 // Estrae requisiti di ammissibilità da testo libero (campo note/descrizione del bando).
@@ -5591,6 +5627,19 @@ function parseRequisitiFromNote(testo) {
   const maxM = testo.match(/(?:meno\s+di|età\s+max\w*|massimo|non\s+più\s+di|entro\s+(?:i\s+)?|fino\s+a\s+)\s*(\d+)\s+ann/i)
             || testo.match(/costituit\w+\s+da\s+(?:non\s+più\s+di|meno\s+di)\s+(\d+)\s+ann/i);
   if (maxM) req.etaMaxAnni = parseInt(maxM[1]);
+
+  // Bilanci minimi: "almeno X bilanci", "min X bilanci approvati", "X bilanci depositati"
+  const bilM = testo.match(/(?:almeno|minimo|min\.?)\s+(\d+)\s+bilanc/i)
+            || testo.match(/(\d+)\s+bilanc\w{0,10}\s+approvati/i);
+  if (bilM) req.bilanciMin = parseInt(bilM[1]);
+
+  // Addetti minimi: "almeno X dipendenti/addetti/FTE"
+  const addM = testo.match(/(?:almeno|minimo|min\.?)\s+(\d+)\s+(?:dipendenti|addetti|fte)/i);
+  if (addM && !req.addettiMin) req.addettiMin = parseInt(addM[1]);
+
+  // Soci minimi: "almeno X soci"
+  const socM = testo.match(/(?:almeno|minimo|min\.?)\s+(\d+)\s+soci/i);
+  if (socM) req.sociMin = parseInt(socM[1]);
 
   return req;
 }
@@ -5649,12 +5698,34 @@ function matchClienteBando(nomeCliente, bando) {
   if (req.fatturatoMax != null && d.fatturatoUltimo != null && d.fatturatoUltimo > req.fatturatoMax)
     reasons.push(`Fatturato troppo alto: €${d.fatturatoUltimo.toLocaleString('it-IT')} (max €${req.fatturatoMax.toLocaleString('it-IT')})`);
 
-  // SIMEST: almeno 2 bilanci approvati e fatturato > 0
+  // Bilanci approvati (check generico — funziona per tutti i bandi con bilanciMin impostato)
+  if (req.bilanciMin != null) {
+    if (d.bilanciApprovati != null && d.bilanciApprovati < req.bilanciMin)
+      reasons.push(`Troppo pochi bilanci approvati: ${d.bilanciApprovati} (richiesti almeno ${req.bilanciMin})`);
+    else if (d.bilanciApprovati == null && d.annoFondazione != null) {
+      const stimaBilanci = Math.max(0, annoOggi - d.annoFondazione - 1);
+      if (stimaBilanci < req.bilanciMin)
+        reasons.push(`Probabilmente bilanci insufficienti: ~${stimaBilanci} stimati (richiesti almeno ${req.bilanciMin}; fondata ${d.annoFondazione})`);
+    }
+  }
+  if (req.bilanciMax != null && d.bilanciApprovati != null && d.bilanciApprovati > req.bilanciMax)
+    reasons.push(`Troppi bilanci depositati: ${d.bilanciApprovati} (max ${req.bilanciMax})`);
+
+  // Numero soci
+  if (req.sociMin != null && d.nSoci != null && d.nSoci < req.sociMin)
+    reasons.push(`Troppo pochi soci: ${d.nSoci} (richiesti almeno ${req.sociMin})`);
+  if (req.sociMax != null && d.nSoci != null && d.nSoci > req.sociMax)
+    reasons.push(`Troppi soci: ${d.nSoci} (max ${req.sociMax})`);
+
+  // SIMEST: check fatturato zero (il bilanci check è ora gestito via bilanciMin in BANDI_REQUISITI_MAP)
   if (bando && /^SIMEST/i.test(bando.nome)) {
-    if (d.bilanciApprovati != null && d.bilanciApprovati < 2)
-      reasons.push(`SIMEST richiede almeno 2 bilanci approvati (${d.bilanciApprovati} depositati)`);
-    else if (d.bilanciApprovati == null && d.annoFondazione != null && (annoOggi - d.annoFondazione) < 2)
-      reasons.push('SIMEST richiede almeno 2 bilanci approvati (impresa troppo giovane)');
+    if (req.bilanciMin == null) {
+      // Fallback per bandi SIMEST non ancora in BANDI_REQUISITI_MAP
+      if (d.bilanciApprovati != null && d.bilanciApprovati < 2)
+        reasons.push(`SIMEST richiede almeno 2 bilanci approvati (${d.bilanciApprovati} depositati)`);
+      else if (d.bilanciApprovati == null && d.annoFondazione != null && (annoOggi - d.annoFondazione) < 2)
+        reasons.push('SIMEST richiede almeno 2 bilanci approvati (impresa troppo giovane)');
+    }
     if (d.fatturatoUltimo != null && d.fatturatoUltimo === 0)
       reasons.push('SIMEST non ammissibile: fatturato zero');
   }
@@ -5738,8 +5809,12 @@ function saveNewBando() {
     atecoExclude:      _splitAteco(document.getElementById('nb-req-ateco-exc').value),
     etaMinAnni:        parseInt(document.getElementById('nb-req-eta-min').value)   || null,
     etaMaxAnni:        parseInt(document.getElementById('nb-req-eta-max').value)   || null,
-    addettiMin:        parseInt(document.getElementById('nb-req-add-min').value)   || null,
-    addettiMax:        parseInt(document.getElementById('nb-req-add-max').value)   || null,
+    addettiMin:        parseInt(document.getElementById('nb-req-add-min').value)    || null,
+    addettiMax:        parseInt(document.getElementById('nb-req-add-max').value)    || null,
+    bilanciMin:        parseInt(document.getElementById('nb-req-bil-min').value)    || null,
+    bilanciMax:        parseInt(document.getElementById('nb-req-bil-max').value)    || null,
+    sociMin:           parseInt(document.getElementById('nb-req-soci-min').value)   || null,
+    sociMax:           parseInt(document.getElementById('nb-req-soci-max').value)   || null,
     fatturatoMin:      parseFloat(document.getElementById('nb-req-fatt-min').value) || null,
     fatturatoMax:      parseFloat(document.getElementById('nb-req-fatt-max').value) || null,
   };
@@ -5832,6 +5907,7 @@ function openEditClienteModal(nome) {
   document.getElementById('mc-addetti').value       = d.addetti           != null ? d.addetti : '';
   document.getElementById('mc-fatturato').value     = d.fatturatoUltimo   != null ? d.fatturatoUltimo : '';
   document.getElementById('mc-bilanci').value       = d.bilanciApprovati  != null ? d.bilanciApprovati : '';
+  document.getElementById('mc-soci').value          = d.nSoci             != null ? d.nSoci : '';
   document.getElementById('mc-regioni-op').value    = (d.regioniOperative || []).join(', ');
   document.getElementById('modal-cliente').classList.add('open');
 }
@@ -5862,6 +5938,7 @@ function saveCliente() {
     addetti:           parseInt(document.getElementById('mc-addetti').value)    || null,
     fatturatoUltimo:   parseFloat(document.getElementById('mc-fatturato').value) || null,
     bilanciApprovati:  parseInt(document.getElementById('mc-bilanci').value)    ?? null,
+    nSoci:             parseInt(document.getElementById('mc-soci').value)       || null,
     regioniOperative:  document.getElementById('mc-regioni-op').value.split(',').map(r => r.trim()).filter(Boolean),
   };
   _saveClienti();
