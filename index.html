@@ -105,44 +105,96 @@
   .header-tagline { font-size: 11px; color: rgba(255,255,255,0.5); font-weight: 400; }
   .header-date { font-size: 11px; color: rgba(255,255,255,0.5); text-align: right; line-height: 1.7; }
 
-  /* ── STATS ── */
-  .stats { display: flex; gap: 10px; padding: 20px 32px 0; flex-wrap: wrap; }
-  .stat-card {
-    background: white;
-    border-radius: 12px;
-    padding: 14px 18px;
-    flex: 1; min-width: 110px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.07);
-    cursor: pointer;
-    transition: transform 0.15s, box-shadow 0.15s;
+  /* ── BENTO HEADER ── */
+  .stats {
+    display: grid;
+    grid-template-columns: 2.2fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: auto auto auto;
+    gap: 10px;
+    padding: 16px 24px;
+    background: #f0f4ff;
   }
-  .stat-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
-  .stat-dot { width: 8px; height: 8px; border-radius: 50%; margin-bottom: 8px; }
-  .stat-num { font-size: 26px; font-weight: 800; line-height: 1; }
-  .stat-label { font-size: 11px; color: #94a3b8; margin-top: 4px; font-weight: 500; }
-  .s-aperto      .stat-dot { background: #16a34a; }
-  .s-inapertura  .stat-dot { background: #0f766e; }
-  .s-monitorare  .stat-dot { background: #d97706; }
-  .s-lavorazione .stat-dot { background: #2563eb; }
-  .s-chiuso      .stat-dot { background: #dc2626; }
-  .stat-total    .stat-dot { background: #1B3A6B; }
-  .s-aperto      .stat-num { color: #16a34a; }
-  .s-inapertura  .stat-num { color: #0f766e; }
-  .s-monitorare  .stat-num { color: #d97706; }
-  .s-lavorazione .stat-num { color: #2563eb; }
-  .s-chiuso      .stat-num { color: #dc2626; }
-  .stat-total    .stat-num { color: #1B3A6B; }
-
-
-  /* ── STAT MINI BAR ── */
-  .stat-bar { height: 4px; border-radius: 2px; margin-top: 8px; background: #f1f5f9; overflow: hidden; }
-  .stat-bar-fill { height: 100%; border-radius: 2px; transition: width 0.6s ease; }
-  .s-aperto      .stat-bar-fill { background: #16a34a; }
-  .s-inapertura  .stat-bar-fill { background: #0f766e; }
-  .s-monitorare  .stat-bar-fill { background: #d97706; }
-  .s-lavorazione .stat-bar-fill { background: #2563eb; }
-  .s-chiuso      .stat-bar-fill { background: #dc2626; }
-  .stat-total    .stat-bar-fill { background: #1B3A6B; }
+  .btile {
+    border-radius: 18px; padding: 20px; background: white;
+    position: relative; overflow: hidden;
+    transition: transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s;
+    box-shadow: 0 1px 4px rgba(27,58,107,.06);
+  }
+  .btile.clickable { cursor: pointer; }
+  .btile.clickable:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(27,58,107,.12); }
+  .btile::after { content:''; position:absolute; top:0; left:0; right:0; height:3px; border-radius:18px 18px 0 0; }
+  .bt-ap::after  { background:linear-gradient(90deg,#16a34a,#4ade80); }
+  .bt-ia::after  { background:linear-gradient(90deg,#0f766e,#2dd4bf); }
+  .bt-lv::after  { background:linear-gradient(90deg,#2563eb,#60a5fa); }
+  .bt-mo::after  { background:linear-gradient(90deg,#d97706,#fbbf24); }
+  .bt-ch::after  { background:linear-gradient(90deg,#dc2626,#f87171); }
+  .bt-act::after { background:linear-gradient(90deg,#1B3A6B,#2563eb); }
+  .bt-srch::after{ background:linear-gradient(90deg,#00E5D1,#3b82f6); }
+  .bt-i3::after  { background:linear-gradient(90deg,#7c3aed,#a78bfa); }
+  .bt-i4::after  { background:linear-gradient(90deg,#0f766e,#00E5D1); }
+  /* hero tile */
+  .bt-hero {
+    grid-column:1; grid-row:1/3;
+    background:linear-gradient(145deg,#f0fdf4 0%,#dcfce7 100%);
+    border:1.5px solid #bbf7d0;
+    box-shadow:0 4px 24px rgba(22,163,74,.1);
+    display:flex; flex-direction:column; justify-content:space-between;
+    min-height:200px;
+  }
+  .bt-hero::before { content:''; position:absolute; top:-50px; right:-50px; width:200px; height:200px; border-radius:50%; background:radial-gradient(circle,rgba(22,163,74,.1) 0%,transparent 70%); }
+  .bt-hero::after  { background:linear-gradient(90deg,#16a34a,#4ade80); }
+  .bt-hero.clickable:hover { box-shadow:0 14px 40px rgba(22,163,74,.2); }
+  /* KPI typography */
+  .bt-tag  { font-size:9px; font-weight:800; letter-spacing:.8px; text-transform:uppercase; color:#94a3b8; margin-bottom:8px; }
+  .bt-num  { font-size:40px; font-weight:900; line-height:1; letter-spacing:-1.5px; }
+  .bt-bar  { height:4px; background:#f1f5f9; border-radius:4px; margin-top:12px; overflow:hidden; }
+  .bt-bar-fill { height:100%; border-radius:4px; transition:width 0.6s ease; }
+  .bt-hero .bt-num { font-size:72px; letter-spacing:-3px; color:#15803d; }
+  .bt-hero .bt-tag { color:#86efac; }
+  .bt-ap .bt-num { color:#16a34a; } .bt-ap .bt-bar-fill { background:linear-gradient(90deg,#16a34a,#4ade80); }
+  .bt-ia .bt-num { color:#0f766e; } .bt-ia .bt-bar-fill { background:linear-gradient(90deg,#0f766e,#2dd4bf); }
+  .bt-lv .bt-num { color:#2563eb; } .bt-lv .bt-bar-fill { background:linear-gradient(90deg,#2563eb,#60a5fa); }
+  .bt-mo .bt-num { color:#d97706; } .bt-mo .bt-bar-fill { background:linear-gradient(90deg,#d97706,#fbbf24); }
+  .bt-ch .bt-num { color:#dc2626; } .bt-ch .bt-bar-fill { background:linear-gradient(90deg,#dc2626,#f87171); }
+  /* ghost icon */
+  .bt-glow { position:absolute; bottom:-14px; right:-8px; font-size:78px; opacity:.18; filter:saturate(.3); line-height:1; user-select:none; pointer-events:none; }
+  .bt-hero .bt-glow { font-size:130px; bottom:-24px; right:-16px; opacity:.22; }
+  /* totale tile */
+  .bt-tot { grid-column:1; grid-row:3; background:linear-gradient(135deg,#1B3A6B 0%,#14305a 100%); display:flex; align-items:center; gap:20px; padding:16px 22px; box-shadow:0 4px 24px rgba(27,58,107,.2); }
+  .bt-tot::before { content:''; position:absolute; top:-40px; right:-40px; width:160px; height:160px; border-radius:50%; background:radial-gradient(circle,rgba(0,229,209,.15) 0%,transparent 70%); }
+  .bt-tot::after  { display:none; }
+  .bt-tot.clickable:hover { box-shadow:0 12px 36px rgba(27,58,107,.3); }
+  .tot-num { font-size:46px; font-weight:900; letter-spacing:-2px; line-height:1; color:#00E5D1; }
+  .tot-lbl { font-size:9px; font-weight:800; text-transform:uppercase; letter-spacing:.6px; color:rgba(255,255,255,.4); margin-top:3px; }
+  .tot-spark { flex:1; display:flex; align-items:flex-end; gap:4px; height:38px; }
+  .tot-spark-bar { border-radius:4px 4px 0 0; min-width:10px; flex:1; }
+  /* info tiles */
+  .bt-info-label { font-size:9px; font-weight:800; letter-spacing:.6px; text-transform:uppercase; color:#94a3b8; margin-bottom:6px; }
+  .bt-info-val   { font-size:18px; font-weight:900; color:#1B3A6B; line-height:1.1; }
+  .bt-info-sub   { font-size:11px; color:#94a3b8; margin-top:4px; font-weight:500; }
+  /* actions tile */
+  .bt-act { grid-column:2/4; grid-row:2; display:flex; align-items:center; gap:7px; flex-wrap:wrap; padding:16px 18px; }
+  .bt-act:hover { transform:none !important; box-shadow:0 1px 4px rgba(27,58,107,.06) !important; }
+  /* search tile */
+  .bt-srch { grid-column:2/6; grid-row:3; display:flex; align-items:center; gap:10px; padding:0 20px; cursor:text; min-height:56px; }
+  .bt-srch:hover { transform:none !important; box-shadow:0 1px 4px rgba(27,58,107,.06) !important; }
+  .bt-srch:focus-within { box-shadow:0 0 0 2px #1B3A6B,0 8px 28px rgba(27,58,107,.1) !important; transform:none !important; }
+  .bt-srch-ico { color:#c0ccdc; font-size:16px; flex-shrink:0; }
+  .bt-srch input { flex:1; border:none; background:transparent; outline:none; font-family:inherit; font-size:14px; font-weight:600; color:#1a2e4a; }
+  .bt-srch input::placeholder { color:#d0d8ec; }
+  .bt-kbd { background:#f4f6ff; border:1.5px solid #e4e8f5; border-radius:6px; padding:3px 7px; font-size:10px; font-weight:800; color:#94a3b8; flex-shrink:0; font-family:monospace; }
+  /* action buttons */
+  .bt-btn { display:inline-flex; align-items:center; gap:5px; border-radius:10px; padding:9px 14px; font-size:11px; font-weight:800; cursor:pointer; font-family:inherit; transition:all .15s; white-space:nowrap; border:none; }
+  .bt-btn-p  { background:linear-gradient(135deg,#1B3A6B,#2563eb); color:white; box-shadow:0 4px 14px rgba(27,58,107,.35); padding:11px 18px; font-size:12px; border:2px solid rgba(255,255,255,.15); }
+  .bt-btn-p:hover  { box-shadow:0 7px 24px rgba(27,58,107,.5); transform:translateY(-2px); }
+  .bt-btn-tl { background:linear-gradient(135deg,#0f766e,#00E5D1); color:white; box-shadow:0 3px 10px rgba(0,229,209,.2); }
+  .bt-btn-tl:hover { box-shadow:0 5px 18px rgba(0,229,209,.35); transform:translateY(-1px); }
+  .bt-btn-fl { background:#f4f6ff; color:#475569; border:1.5px solid #e4e8f5; }
+  .bt-btn-fl:hover { border-color:#1B3A6B; color:#1B3A6B; background:#eef2ff; }
+  /* stat-num alias per compat JS */
+  .stat-num { font-size:40px; font-weight:900; line-height:1; letter-spacing:-1.5px; }
+  .stat-bar { height:4px; border-radius:4px; background:#f1f5f9; overflow:hidden; margin-top:12px; }
+  .stat-bar-fill { height:100%; border-radius:4px; transition:width 0.6s ease; }
   /* ── ALERT BANNERS ── */
   .urgenza-bar  { margin: 14px 32px 0; background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 10px 14px; font-size: 12px; color: #92400e; }
   .urgenza-bar strong { color: #78350f; }
@@ -690,6 +742,24 @@
   body.dark .stat-num  { }
   body.dark .stat-label { color: #6b7fa3; }
   body.dark .stat-bar { background: #243050; }
+
+  /* dark bento */
+  body.dark .stats { background: #0c1628; }
+  body.dark .btile { background: #162035; box-shadow: 0 1px 4px rgba(0,0,0,.4); }
+  body.dark .btile.clickable:hover { box-shadow: 0 10px 28px rgba(0,0,0,.5); }
+  body.dark .bt-hero { background: linear-gradient(145deg,#0d2a12,#0a1f0a); border-color: #1a4020; }
+  body.dark .bt-tag  { color: #4a6080; }
+  body.dark .bt-bar  { background: #1e3050; }
+  body.dark .bt-info-label { color: #4a6080; }
+  body.dark .bt-info-val   { color: #93c5fd; }
+  body.dark .bt-info-sub   { color: #4a6080; }
+  body.dark .bt-srch input { color: #dde4f0; }
+  body.dark .bt-srch { background: #162035; }
+  body.dark .bt-act  { background: #162035; }
+  body.dark .bt-btn-fl { background: #1e3050; color: #8ba4c8; border-color: #2d4060; }
+  body.dark .bt-btn-fl:hover { border-color: #93c5fd; color: #93c5fd; background: #1a2d4a; }
+  body.dark .bt-kbd  { background: #1e3050; border-color: #2d4060; color: #4a6080; }
+  body.dark .stat-bar { background: #1e3050; }
 
   /* alert bars */
   body.dark .urgenza-bar  { background: #2a1f05; border-color: #78450a; color: #fcd34d; }
@@ -1954,12 +2024,97 @@
 </div>
 
 <div class="stats" id="stats-bar" style="display:none;">
-  <div class="stat-card s-aperto"     onclick="quickFilter('aperto')">    <div class="stat-dot"></div><div class="stat-num" id="c-aperto">0</div><div class="stat-bar"><div class="stat-bar-fill" id="bar-c-aperto" style="width:0%"></div></div><div class="stat-label">Aperti</div></div>
-  <div class="stat-card s-inapertura" onclick="quickFilter('inapertura')"><div class="stat-dot"></div><div class="stat-num" id="c-inapertura">0</div><div class="stat-bar"><div class="stat-bar-fill" id="bar-c-inapertura" style="width:0%"></div></div><div class="stat-label">In apertura</div></div>
-  <div class="stat-card s-lavorazione"onclick="quickFilter('lavorazione')"><div class="stat-dot"></div><div class="stat-num" id="c-lavorazione">0</div><div class="stat-bar"><div class="stat-bar-fill" id="bar-c-lavorazione" style="width:0%"></div></div><div class="stat-label">In lavorazione</div></div>
-  <div class="stat-card s-monitorare" onclick="quickFilter('monitorare')"> <div class="stat-dot"></div><div class="stat-num" id="c-monitorare">0</div><div class="stat-bar"><div class="stat-bar-fill" id="bar-c-monitorare" style="width:0%"></div></div><div class="stat-label">Da monitorare</div></div>
-  <div class="stat-card s-chiuso"     onclick="quickFilter('chiuso')">     <div class="stat-dot"></div><div class="stat-num" id="c-chiuso">0</div><div class="stat-bar"><div class="stat-bar-fill" id="bar-c-chiuso" style="width:0%"></div></div><div class="stat-label">Chiusi</div></div>
-  <div class="stat-card stat-total"   onclick="quickFilter('')">            <div class="stat-dot"></div><div class="stat-num" id="c-totale">0</div><div class="stat-bar"><div class="stat-bar-fill" id="bar-c-totale" style="width:0%"></div></div><div class="stat-label">Totale</div></div>
+
+  <!-- HERO: Aperti -->
+  <div class="btile bt-hero bt-ap clickable stat-card" onclick="quickFilter('aperto')">
+    <div class="bt-tag">Stato principale</div>
+    <div>
+      <div class="bt-num stat-num" id="c-aperto">0</div>
+      <div class="bt-tag" style="color:#86efac;margin-top:5px;margin-bottom:0">Bandi aperti</div>
+      <div class="bt-bar stat-bar"><div class="bt-bar-fill stat-bar-fill" id="bar-c-aperto" style="width:0%"></div></div>
+    </div>
+    <div class="bt-glow">📋</div>
+  </div>
+
+  <!-- In apertura -->
+  <div class="btile bt-ia clickable stat-card" onclick="quickFilter('inapertura')">
+    <div class="bt-tag">In apertura</div>
+    <div class="bt-num stat-num" id="c-inapertura">0</div>
+    <div class="bt-bar stat-bar"><div class="bt-bar-fill stat-bar-fill" id="bar-c-inapertura" style="width:0%"></div></div>
+    <div class="bt-glow">🕐</div>
+  </div>
+
+  <!-- In lavorazione -->
+  <div class="btile bt-lv clickable stat-card" onclick="quickFilter('lavorazione')">
+    <div class="bt-tag">In lavorazione</div>
+    <div class="bt-num stat-num" id="c-lavorazione">0</div>
+    <div class="bt-bar stat-bar"><div class="bt-bar-fill stat-bar-fill" id="bar-c-lavorazione" style="width:0%"></div></div>
+    <div class="bt-glow">⚙️</div>
+  </div>
+
+  <!-- Da monitorare -->
+  <div class="btile bt-mo clickable stat-card" onclick="quickFilter('monitorare')">
+    <div class="bt-tag">Da monitorare</div>
+    <div class="bt-num stat-num" id="c-monitorare">0</div>
+    <div class="bt-bar stat-bar"><div class="bt-bar-fill stat-bar-fill" id="bar-c-monitorare" style="width:0%"></div></div>
+    <div class="bt-glow">👁</div>
+  </div>
+
+  <!-- Chiusi -->
+  <div class="btile bt-ch clickable stat-card" onclick="quickFilter('chiuso')">
+    <div class="bt-tag">Chiusi</div>
+    <div class="bt-num stat-num" id="c-chiuso">0</div>
+    <div class="bt-bar stat-bar"><div class="bt-bar-fill stat-bar-fill" id="bar-c-chiuso" style="width:0%"></div></div>
+    <div class="bt-glow">🔒</div>
+  </div>
+
+  <!-- Azioni (riga 2, colonne 2-3) -->
+  <div class="btile bt-act">
+    <button class="bt-btn bt-btn-p" onclick="openAddBandoModal()">＋ Bando</button>
+    <button class="bt-btn bt-btn-fl" onclick="openAddClienteModal()">＋ Cliente</button>
+    <button class="bt-btn bt-btn-fl" onclick="exportCSV('pipeline')">⬇ Pipeline CSV</button>
+    <button class="bt-btn bt-btn-fl" onclick="exportCSV('clienti')">⬇ Clienti CSV</button>
+    <button class="bt-btn bt-btn-tl" onclick="backupJSON()">💾 Backup</button>
+    <button class="bt-btn bt-btn-fl" onclick="importJSON()">⬆ Ripristina</button>
+    <input type="file" id="import-json-input" accept=".json" style="display:none" onchange="_handleImport(event)">
+  </div>
+
+  <!-- Info clienti (riga 2, col 4) -->
+  <div class="btile bt-i3" style="grid-column:4;grid-row:2">
+    <div class="bt-info-label">Clienti nel database</div>
+    <div class="bt-info-val" id="bento-clienti-count" style="color:#7c3aed">—</div>
+    <div class="bt-info-sub">abbinabili ai bandi</div>
+  </div>
+
+  <!-- Info aggiornamento (riga 2, col 5) -->
+  <div class="btile bt-i4" style="grid-column:5;grid-row:2">
+    <div class="bt-info-label">Aggiornato al</div>
+    <div class="bt-info-val" style="color:#0f766e;font-size:14px">11 giu 2026</div>
+    <div class="bt-info-sub">dati in tempo reale</div>
+  </div>
+
+  <!-- Totale (riga 3, col 1) -->
+  <div class="btile bt-tot clickable stat-card" onclick="quickFilter('')">
+    <div>
+      <div class="tot-lbl">Totale bandi</div>
+      <div class="tot-num stat-num" id="c-totale">0</div>
+    </div>
+    <div class="tot-spark" id="bento-spark">
+      <div class="tot-spark-bar" id="bar-c-totale" style="height:53%;background:linear-gradient(0deg,rgba(22,163,74,.6),rgba(22,163,74,.2))"></div>
+      <div class="tot-spark-bar" style="height:16%;background:linear-gradient(0deg,rgba(15,118,110,.6),rgba(15,118,110,.2))"></div>
+      <div class="tot-spark-bar" style="height:2%;background:linear-gradient(0deg,rgba(37,99,235,.6),rgba(37,99,235,.2))"></div>
+      <div class="tot-spark-bar" style="height:6%;background:linear-gradient(0deg,rgba(217,119,6,.6),rgba(217,119,6,.2))"></div>
+      <div class="tot-spark-bar" style="height:25%;background:linear-gradient(0deg,rgba(220,38,38,.6),rgba(220,38,38,.2))"></div>
+    </div>
+  </div>
+
+  <!-- Search (riga 3, col 2-5) -->
+  <div class="btile bt-srch">
+    <span class="bt-srch-ico">🔍</span>
+    <input id="q" type="text" placeholder="Cerca bando, ente, descrizione…" oninput="render()">
+    <span class="bt-kbd">/</span>
+  </div>
+
 </div>
 
 
@@ -1975,27 +2130,11 @@
   <button class="tab" onclick="switchTab('task')">✅ Task</button>
 </div>
 
-<div class="data-toolbar" id="data-toolbar" style="display:none;">
-  <div class="data-toolbar-group">
-    <span class="data-toolbar-label">Aggiungi</span>
-    <button class="btn-data-primary" onclick="openAddBandoModal()">+ Bando</button>
-    <button class="btn-data-primary" onclick="openAddClienteModal()">+ Cliente</button>
-  </div>
-  <div class="data-toolbar-group">
-    <span class="data-toolbar-label">Esporta</span>
-    <button class="btn-data" onclick="exportCSV('pipeline')">⬇ Pipeline CSV</button>
-    <button class="btn-data" onclick="exportCSV('clienti')">⬇ Clienti CSV</button>
-    <button class="btn-data" onclick="backupJSON()">💾 Backup JSON</button>
-    <button class="btn-data" onclick="importJSON()">⬆ Ripristina JSON</button>
-    <input type="file" id="import-json-input" accept=".json" style="display:none" onchange="_handleImport(event)">
-  </div>
-</div>
 
 <div id="view-bandi" class="tab-view">
 
 <div class="filtri-wrap">
   <div class="filtri">
-    <div class="search-wrap"><label>Ricerca</label><input id="q" type="text" placeholder="Cerca bando, ente, descrizione..."><span class="search-hint">/</span></div>
     <div><label>Stato</label><select id="f-stato"></select></div>
     <div><label>Regione</label><select id="f-regione"></select></div>
     <div><label>Tipologia</label><select id="f-tipo"></select></div>
@@ -2745,7 +2884,6 @@ function showHub() {
   document.getElementById('view-hub').style.display = '';
   document.getElementById('section-nav').style.display = 'none';
   document.getElementById('stats-bar').style.display = 'none';
-  document.getElementById('data-toolbar').style.display = 'none';
   document.getElementById('tabs-finanza').style.display = 'none';
   document.getElementById('tabs-riservata').style.display = 'none';
   ['view-bandi','view-clienti','view-scadenzario','view-ricerca','view-pipeline','view-task','view-previsioni'].forEach(id => {
@@ -2773,6 +2911,8 @@ function renderHubStats() {
     (bandUrgenti > 0 ? `<div class="hub-stat-pill"><span class="hub-stat-num warn">${bandUrgenti}</span><span class="hub-stat-lbl">In scadenza</span></div>` : '');
 
   const nClienti = CLIENTI.length;
+  const elBentoC = document.getElementById('bento-clienti-count');
+  if (elBentoC) elBentoC.textContent = nClienti;
   const nTask    = getTasks().filter(t => !t.fatto).length;
   const elRsvd = document.getElementById('hub-stats-riservata');
   if (elRsvd) elRsvd.innerHTML =
@@ -2890,14 +3030,12 @@ function enterSection(section, defaultTab) {
   document.body.classList.remove('hub-mode');
 
   if (section === 'finanza') {
-    document.getElementById('stats-bar').style.display = 'flex';
-    document.getElementById('data-toolbar').style.display = 'flex';
+    document.getElementById('stats-bar').style.display = '';
     document.getElementById('tabs-finanza').style.display = 'flex';
     document.getElementById('tabs-riservata').style.display = 'none';
     switchTab(defaultTab || 'bandi');
   } else {
     document.getElementById('stats-bar').style.display = 'none';
-    document.getElementById('data-toolbar').style.display = 'none';
     document.getElementById('tabs-finanza').style.display = 'none';
     document.getElementById('tabs-riservata').style.display = 'flex';
     switchTab(defaultTab || 'pipeline');
@@ -4530,7 +4668,7 @@ function countUp(el, target, duration, delay) {
   const from = parseInt(el.textContent) || 0;
   // statPop solo al primo caricamento (non ad ogni cambio filtro)
   if (_firstRender) {
-    const card = el.closest('.stat-card');
+    const card = el.closest('.btile,.stat-card');
     if (card) {
       card.classList.remove('just-loaded');
       void card.offsetWidth;
