@@ -1763,6 +1763,10 @@
   body.dark .radar-btn-link { background:#0e1e35; color:#93c5fd; }
   body.dark .radar-chip-scadenza { background:#0e1e35; color:#4a6080; }
 </style>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 </head>
 <body class="hub-mode">
 
@@ -1789,12 +1793,19 @@
     <div class="pw-form-inner">
       <div class="pw-form-eyebrow">Area riservata</div>
       <div class="pw-form-title">Bentornato 👋</div>
-      <div class="pw-form-sub">Inserisci la password per accedere alla dashboard.</div>
+      <div class="pw-form-sub">Accedi con la tua email e password personale.</div>
       <div class="pw-field">
+        <label for="pw-email">Email</label>
+        <div class="pw-field-wrap">
+          <input type="email" id="pw-email" class="pw-input" placeholder="nome@next4international.com"
+                 onkeydown="if(event.key==='Enter')document.getElementById('pw-input').focus()" autofocus>
+        </div>
+      </div>
+      <div class="pw-field" style="margin-top:12px">
         <label for="pw-input">Password</label>
         <div class="pw-field-wrap">
           <input type="password" id="pw-input" class="pw-input" placeholder="••••••••••"
-                 onkeydown="if(event.key==='Enter')verificaPassword()" autofocus>
+                 onkeydown="if(event.key==='Enter')verificaPassword()">
           <button class="pw-eye-btn" onclick="togglePwVis(this)" tabindex="-1" type="button">👁</button>
         </div>
       </div>
@@ -1856,7 +1867,10 @@
     <span class="sidebar-item-ico">📒</span> Contabilità
   </button>
 
-  <div class="sidebar-footer">© 2026 Next4 International</div>
+  <div class="sidebar-footer" style="padding:12px 16px 16px;border-top:1px solid rgba(255,255,255,.08)">
+    <div style="font-size:11px;color:rgba(255,255,255,.4);margin-bottom:8px">Accesso come: <span id="sb-user-label" style="color:rgba(255,255,255,.7);font-weight:600"></span></div>
+    <button onclick="n4Logout()" style="width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.6);border-radius:7px;padding:7px 12px;font-size:12px;font-weight:600;cursor:pointer;text-align:left">⎋ Esci</button>
+  </div>
 </div>
 
 <!-- ── PAGE MAIN ── -->
@@ -2636,38 +2650,113 @@
 <div class="footer">Next4 International S.R.L. · <em>next4international.com</em> · Dashboard aggiornata: <span id="footer-date"></span></div>
 
 <script>
-// ── Password Gate ─────────────────────────────────────────────────────────
-(function() {
-  if (sessionStorage.getItem('n4auth') === '1') {
+// ── Firebase init ──────────────────────────────────────────────────────────
+firebase.initializeApp({
+  apiKey: "AIzaSyCNeEYLCxVklO45LIUff7DC_wF3aN89Sn0",
+  authDomain: "next4-dashboard.firebaseapp.com",
+  projectId: "next4-dashboard",
+  storageBucket: "next4-dashboard.firebasestorage.app",
+  messagingSenderId: "816509532912",
+  appId: "1:816509532912:web:c0eb7d23b622243edfa035"
+});
+const _auth = firebase.auth();
+const _db   = firebase.firestore();
+
+// ── Storage layer: chiavi riservate → Firestore, resto → localStorage ──────
+const _CLOUD_KEYS = ['n4_pipeline','n4_tasks','n4_fatture','n4_interazioni',
+  'n4_bandi_extra','n4_bandi_overrides','n4_bandi_stato_overrides',
+  'n4_clienti_data','n4_visure_ver'];
+let _n4UID = null;
+const _n4Cache = {};
+const _n4Timers = {};
+
+const n4Storage = {
+  getItem(key) {
+    if (_CLOUD_KEYS.includes(key)) return _n4Cache[key] ?? null;
+    return n4Storage.getItem(key);
+  },
+  setItem(key, val) {
+    if (_CLOUD_KEYS.includes(key)) {
+      _n4Cache[key] = val;
+      if (_n4UID) {
+        clearTimeout(_n4Timers[key]);
+        _n4Timers[key] = setTimeout(() => {
+          _db.collection('users').doc(_n4UID).set({ [key]: val }, { merge: true });
+        }, 700);
+      }
+    } else {
+      n4Storage.setItem(key, val);
+    }
+  }
+};
+
+async function _loadUserData() {
+  if (!_n4UID) return;
+  try {
+    const doc = await _db.collection('users').doc(_n4UID).get();
+    if (doc.exists) Object.assign(_n4Cache, doc.data());
+  } catch(e) { console.warn('Firestore load error', e); }
+}
+
+function _showDashboard() {
+  document.getElementById('pw-err').textContent = '';
+  const form = document.querySelector('.pw-side-form');
+  form.style.transition = 'opacity 0.3s, transform 0.3s';
+  form.style.opacity = '0'; form.style.transform = 'translateX(16px)';
+  setTimeout(() => {
+    document.getElementById('pw-gate').classList.add('hidden');
+    form.style.opacity = ''; form.style.transform = '';
+    showHub();
+  }, 280);
+}
+
+// Auto-login se sessione Firebase già attiva
+_auth.onAuthStateChanged(async (user) => {
+  if (user) {
+    _n4UID = user.uid;
+    await _loadUserData();
     document.getElementById('pw-gate').classList.add('hidden');
     showHub();
+    _updateUserLabel(user.email);
   }
-})();
+});
 
+function _updateUserLabel(email) {
+  const el = document.getElementById('sb-user-label');
+  if (el) el.textContent = email.split('@')[0];
+}
+
+// ── Login ──────────────────────────────────────────────────────────────────
 async function verificaPassword() {
-  const input = document.getElementById('pw-input');
-  const val = input.value;
-  const enc = new TextEncoder().encode(val);
-  const buf = await crypto.subtle.digest('SHA-256', enc);
-  const hash = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
-  const HASH = 'ba590273c88061668c2964cc81dcf302d1c63c3a3037bb4e15448faabc0cde9e';
-  if (hash === HASH) {
-    sessionStorage.setItem('n4auth', '1');
-    document.getElementById('pw-err').textContent = '';
-    const form = document.querySelector('.pw-side-form');
-    form.style.transition = 'opacity 0.3s, transform 0.3s';
-    form.style.opacity = '0'; form.style.transform = 'translateX(16px)';
-    setTimeout(() => {
-      document.getElementById('pw-gate').classList.add('hidden');
-      showHub();
-    }, 280);
-  } else {
-    input.classList.add('pw-error');
-    document.getElementById('pw-err').textContent = 'Password errata. Riprova.';
-    input.value = '';
-    input.focus();
-    setTimeout(() => input.classList.remove('pw-error'), 400);
+  const email = document.getElementById('pw-email').value.trim();
+  const pass  = document.getElementById('pw-input').value;
+  const errEl = document.getElementById('pw-err');
+  if (!email || !pass) { errEl.textContent = 'Inserisci email e password.'; return; }
+  errEl.textContent = 'Accesso in corso…';
+  try {
+    const cred = await _auth.signInWithEmailAndPassword(email, pass);
+    _n4UID = cred.user.uid;
+    await _loadUserData();
+    _updateUserLabel(cred.user.email);
+    _showDashboard();
+  } catch(e) {
+    const inp = document.getElementById('pw-input');
+    inp.classList.add('pw-error');
+    errEl.textContent = 'Email o password errata. Riprova.';
+    inp.value = ''; inp.focus();
+    setTimeout(() => inp.classList.remove('pw-error'), 400);
   }
+}
+
+async function n4Logout() {
+  await _auth.signOut();
+  _n4UID = null;
+  Object.keys(_n4Cache).forEach(k => delete _n4Cache[k]);
+  document.getElementById('pw-gate').classList.remove('hidden');
+  document.getElementById('pw-email').value = '';
+  document.getElementById('pw-input').value = '';
+  document.getElementById('pw-err').textContent = '';
+  document.getElementById('pw-email').focus();
 }
 
 function togglePwVis(btn) {
@@ -2724,10 +2813,10 @@ const RADAR_URL = 'https://raw.githubusercontent.com/marcoammoniaci01/next4-dash
 const RADAR_KEY = 'n4_radar_bandi';
 
 function getRadarData() {
-  try { return JSON.parse(localStorage.getItem(RADAR_KEY) || 'null'); } catch(e) { return null; }
+  try { return JSON.parse(n4Storage.getItem(RADAR_KEY) || 'null'); } catch(e) { return null; }
 }
 function saveRadarData(data) {
-  localStorage.setItem(RADAR_KEY, JSON.stringify(data));
+  n4Storage.setItem(RADAR_KEY, JSON.stringify(data));
 }
 
 async function loadRadarData(force) {
@@ -2796,7 +2885,7 @@ function radarAddToDashboard(idx) {
   const nuovi = (data.bandi || []).filter(b => b.nuovo !== false);
   const b = nuovi[idx];
   if (!b) return;
-  const extra = JSON.parse(localStorage.getItem('n4_bandi_extra') || '[]');
+  const extra = JSON.parse(n4Storage.getItem('n4_bandi_extra') || '[]');
   extra.push({
     nome: b.nome, ente: b.ente || '', regione: b.regione || 'Nazionale',
     tipo: ['impresa'], contributo: b.note || '', scadenza: b.scadenza || '',
@@ -2804,7 +2893,7 @@ function radarAddToDashboard(idx) {
     altaRilevanza: false, aperturaImminente: b.stato === 'inapertura',
     descrizione: b.note || '', domande: [], clienti: [], link: b.url || ''
   });
-  localStorage.setItem('n4_bandi_extra', JSON.stringify(extra));
+  n4Storage.setItem('n4_bandi_extra', JSON.stringify(extra));
   location.reload();
 }
 
@@ -3550,7 +3639,7 @@ function isBandoSIMEST(bando) {
 
 // ─── PROFILI CLIENTI DA VISURE CAMERALI ──────────────────────────────────
 // Dati estratti dalle visure. Migrazione one-shot: la versione cresce ad ogni
-// nuovo batch di visure lette. Sovrascrive i campi profilo nel localStorage.
+// nuovo batch di visure lette. Sovrascrive i campi profilo nel n4Storage.
 const CLIENTI_VISURE_VER = 3;
 const CLIENTI_VISURE = {
   // Batch 1 (giugno 2026)
@@ -3582,7 +3671,7 @@ const CLIENTI_VISURE = {
 };
 
 // ─── DATI DINAMICI (localStorage) ────────────────────────────────────────
-// I bandi aggiuntivi e i clienti modificati vengono salvati in localStorage.
+// I bandi aggiuntivi e i clienti modificati vengono salvati in n4Storage.
 // Al caricamento vengono uniti con i dati hardcoded.
 
 const BANDI_BASE_LEN = BANDI.length;   // lunghezza array prima di aggiungere extra
@@ -3590,7 +3679,7 @@ const BANDI_BASE_LEN = BANDI.length;   // lunghezza array prima di aggiungere ex
 (function initDatiDinamici() {
   // Overrides bandi hardcoded (modifiche salvate dall'utente)
   try {
-    const ov = JSON.parse(localStorage.getItem('n4_bandi_overrides') || '{}');
+    const ov = JSON.parse(n4Storage.getItem('n4_bandi_overrides') || '{}');
     Object.entries(ov).forEach(([nome, data]) => {
       const idx = BANDI.findIndex(b => b.nome === nome);
       if (idx >= 0) Object.assign(BANDI[idx], data);
@@ -3599,13 +3688,13 @@ const BANDI_BASE_LEN = BANDI.length;   // lunghezza array prima di aggiungere ex
 
   // Bandi extra → aggiungi in coda a BANDI
   try {
-    const extra = JSON.parse(localStorage.getItem('n4_bandi_extra') || '[]');
+    const extra = JSON.parse(n4Storage.getItem('n4_bandi_extra') || '[]');
     BANDI.push(...extra);
   } catch(e) {}
 
   // Clienti → sostituisci contenuto di CLIENTI con versione salvata
   try {
-    const raw = localStorage.getItem('n4_clienti_data');
+    const raw = n4Storage.getItem('n4_clienti_data');
     if (raw) {
       const defaults = {}; // snapshot degli annoFondazione hardcoded
       Object.keys(CLIENTI).forEach(k => { if (CLIENTI[k].annoFondazione != null) defaults[k] = CLIENTI[k].annoFondazione; });
@@ -3616,32 +3705,32 @@ const BANDI_BASE_LEN = BANDI.length;   // lunghezza array prima di aggiungere ex
       Object.keys(defaults).forEach(k => { if (CLIENTI[k] && CLIENTI[k].annoFondazione == null) CLIENTI[k].annoFondazione = defaults[k]; });
     } else {
       // Prima visita: persisti i clienti di default
-      localStorage.setItem('n4_clienti_data', JSON.stringify(CLIENTI));
+      n4Storage.setItem('n4_clienti_data', JSON.stringify(CLIENTI));
     }
   } catch(e) {}
 
   // Migrazione dati visure camerali (sovrascrive campi profilo con dati reali estratti)
   try {
-    const verSalvata = parseInt(localStorage.getItem('n4_visure_ver') || '0');
+    const verSalvata = parseInt(n4Storage.getItem('n4_visure_ver') || '0');
     if (verSalvata < CLIENTI_VISURE_VER) {
       Object.entries(CLIENTI_VISURE).forEach(([nome, dati]) => {
         if (CLIENTI[nome]) Object.assign(CLIENTI[nome], dati);
       });
-      localStorage.setItem('n4_clienti_data', JSON.stringify(CLIENTI));
-      localStorage.setItem('n4_visure_ver', String(CLIENTI_VISURE_VER));
+      n4Storage.setItem('n4_clienti_data', JSON.stringify(CLIENTI));
+      n4Storage.setItem('n4_visure_ver', String(CLIENTI_VISURE_VER));
     }
   } catch(e) {}
 
   // Overrides stato bando da pipeline: se non ancora presenti, costruiscili adesso
   // dalla pipeline esistente (migrazione one-shot per i bandi già inseriti)
   try {
-    const pipeline = JSON.parse(localStorage.getItem('n4_pipeline') || '[]');
-    let overrides = JSON.parse(localStorage.getItem('n4_bandi_stato_overrides') || '{}');
+    const pipeline = JSON.parse(n4Storage.getItem('n4_pipeline') || '[]');
+    let overrides = JSON.parse(n4Storage.getItem('n4_bandi_stato_overrides') || '{}');
     const stati_attivi = ['proposto','firmato','lavorazione','presentato','istruttoria','concesso','incassato'];
     pipeline.forEach(p => {
       if (stati_attivi.includes(p.stato) && p.bando) overrides[p.bando] = 'lavorazione';
     });
-    localStorage.setItem('n4_bandi_stato_overrides', JSON.stringify(overrides));
+    n4Storage.setItem('n4_bandi_stato_overrides', JSON.stringify(overrides));
     // Salva gli stati originali prima di sovrascriverli con la pipeline
     BANDI.forEach(b => { if (!b._statoOrig) b._statoOrig = b.stato; });
     BANDI.forEach(b => { if (overrides[b.nome]) b.stato = overrides[b.nome]; });
@@ -3649,15 +3738,15 @@ const BANDI_BASE_LEN = BANDI.length;   // lunghezza array prima di aggiungere ex
 })();
 
 function _saveBandiExtra() {
-  localStorage.setItem('n4_bandi_extra', JSON.stringify(BANDI.slice(BANDI_BASE_LEN)));
+  n4Storage.setItem('n4_bandi_extra', JSON.stringify(BANDI.slice(BANDI_BASE_LEN)));
 }
 function _saveBandiOverrides() {
   const ov = {};
   BANDI.slice(0, BANDI_BASE_LEN).forEach(b => { if (b._edited) ov[b.nome] = b; });
-  localStorage.setItem('n4_bandi_overrides', JSON.stringify(ov));
+  n4Storage.setItem('n4_bandi_overrides', JSON.stringify(ov));
 }
 function _saveClienti() {
-  localStorage.setItem('n4_clienti_data', JSON.stringify(CLIENTI));
+  n4Storage.setItem('n4_clienti_data', JSON.stringify(CLIENTI));
 }
 function _refreshFiltriSelects() {
   const regioni = ['',...new Set(BANDI.map(b=>b.regione))].sort((a,b)=>a<b?-1:1);
@@ -3686,7 +3775,7 @@ const PIPELINE_DEFAULT = [
 ];
 
 function getPipeline() {
-  const raw = localStorage.getItem('n4_pipeline');
+  const raw = n4Storage.getItem('n4_pipeline');
   if (raw) {
     try {
       const saved = JSON.parse(raw);
@@ -3699,7 +3788,7 @@ function getPipeline() {
   }
   return [...PIPELINE_DEFAULT];
 }
-function savePipeline(pl) { localStorage.setItem('n4_pipeline', JSON.stringify(pl)); }
+function savePipeline(pl) { n4Storage.setItem('n4_pipeline', JSON.stringify(pl)); }
 
 const PIPELINE_STATO_CFG = {
   proposto:    { label:'Proposto',        bg:'#f1f5f9', color:'#64748b' },
@@ -4291,14 +4380,14 @@ function syncBandoStatoFromPipeline(bandoNome) {
 
   // Leggi/scrivi overrides in localStorage
   let overrides = {};
-  try { overrides = JSON.parse(localStorage.getItem('n4_bandi_stato_overrides') || '{}'); } catch(e) {}
+  try { overrides = JSON.parse(n4Storage.getItem('n4_bandi_stato_overrides') || '{}'); } catch(e) {}
 
   if (hasActive) {
     overrides[bandoNome] = 'lavorazione';
   } else {
     delete overrides[bandoNome];
   }
-  localStorage.setItem('n4_bandi_stato_overrides', JSON.stringify(overrides));
+  n4Storage.setItem('n4_bandi_stato_overrides', JSON.stringify(overrides));
 
   // Applica all'array in memoria
   applyBandiStatoOverrides();
@@ -4306,7 +4395,7 @@ function syncBandoStatoFromPipeline(bandoNome) {
 
 function applyBandiStatoOverrides() {
   let overrides = {};
-  try { overrides = JSON.parse(localStorage.getItem('n4_bandi_stato_overrides') || '{}'); } catch(e) {}
+  try { overrides = JSON.parse(n4Storage.getItem('n4_bandi_stato_overrides') || '{}'); } catch(e) {}
   BANDI.forEach(b => {
     if (overrides[b.nome]) b.stato = overrides[b.nome];
   });
@@ -4484,10 +4573,10 @@ function countUp(el, target, duration, delay) {
 function toggleDark() {
   const isDark = document.body.classList.toggle('dark');
   document.getElementById('btn-dm').textContent = isDark ? '☀️' : '🌙';
-  localStorage.setItem('n4-dark', isDark ? '1' : '0');
+  n4Storage.setItem('n4-dark', isDark ? '1' : '0');
 }
 function initDark() {
-  if (localStorage.getItem('n4-dark') === '1') {
+  if (n4Storage.getItem('n4-dark') === '1') {
     document.body.classList.add('dark');
     const btn = document.getElementById('btn-dm');
     if (btn) btn.textContent = '☀️';
@@ -6412,8 +6501,8 @@ function _handleImport(e) {
 }
 
 // ─── TASK ─────────────────────────────────────────────────────────────────
-function getTasks() { return JSON.parse(localStorage.getItem('n4_tasks') || '[]'); }
-function saveTasks(t) { localStorage.setItem('n4_tasks', JSON.stringify(t)); }
+function getTasks() { return JSON.parse(n4Storage.getItem('n4_tasks') || '[]'); }
+function saveTasks(t) { n4Storage.setItem('n4_tasks', JSON.stringify(t)); }
 
 function openTaskModal(taskData) {
   document.getElementById('task-editing-id').value = taskData ? taskData.id : '';
@@ -6439,7 +6528,7 @@ function openTaskModal(taskData) {
   // popola select strumenti (BANDI + extra localStorage)
   const selStr = document.getElementById('task-strumento-select');
   while (selStr.options.length > 1) selStr.remove(1);
-  const bandiExtra = JSON.parse(localStorage.getItem('n4_bandi_extra') || '[]');
+  const bandiExtra = JSON.parse(n4Storage.getItem('n4_bandi_extra') || '[]');
   const tuttiBandi = [...BANDI, ...bandiExtra];
   tuttiBandi.forEach(b => {
     const opt = document.createElement('option');
@@ -7088,7 +7177,7 @@ function radarAddToDashboard_rq(idx) {
   if (!sorted) return;
   const b = sorted[idx];
   if (!b) return;
-  const extra = JSON.parse(localStorage.getItem('n4_bandi_extra') || '[]');
+  const extra = JSON.parse(n4Storage.getItem('n4_bandi_extra') || '[]');
   extra.push({
     nome: b.nome, ente: b.ente || '', regione: b.regione || 'Nazionale',
     tipo: ['impresa'], contributo: b.note || '', scadenza: b.scadenza || '',
@@ -7096,7 +7185,7 @@ function radarAddToDashboard_rq(idx) {
     altaRilevanza: false, aperturaImminente: b.stato === 'inapertura',
     descrizione: b.note || '', domande: [], clienti: [], link: b.url || ''
   });
-  localStorage.setItem('n4_bandi_extra', JSON.stringify(extra));
+  n4Storage.setItem('n4_bandi_extra', JSON.stringify(extra));
   showToast('Bando aggiunto al dashboard!', 'ok');
   const card = onlineDiv.querySelector(`.rq-online-card:nth-child(${idx + 4})`);
   if (card) { card.style.opacity = '.4'; card.style.pointerEvents = 'none'; }
@@ -7112,8 +7201,8 @@ const INT_TIPI = {
 
 let _intCurrentCliente = null;
 
-function getInterazioni() { return JSON.parse(localStorage.getItem('n4_interazioni') || '{}'); }
-function saveInterazioni(d) { localStorage.setItem('n4_interazioni', JSON.stringify(d)); }
+function getInterazioni() { return JSON.parse(n4Storage.getItem('n4_interazioni') || '{}'); }
+function saveInterazioni(d) { n4Storage.setItem('n4_interazioni', JSON.stringify(d)); }
 
 function getLastInterazione(nome) {
   const list = getInterazioni()[nome] || [];
@@ -7139,7 +7228,7 @@ function closeInterazioniPanel() {
 function _renderIntPanel() {
   const nome = _intCurrentCliente;
   const list = (getInterazioni()[nome] || []).slice().sort((a,b) => b.id - a.id);
-  const allBandi = [...BANDI, ...(JSON.parse(localStorage.getItem('n4_bandi_extra')||'[]'))];
+  const allBandi = [...BANDI, ...(JSON.parse(n4Storage.getItem('n4_bandi_extra')||'[]'))];
   const bandiNomi = allBandi.map(b => b.nome).filter(Boolean);
 
   const formHTML = `<div class="int-form-wrap" id="int-form-wrap" style="display:none;">
@@ -7349,9 +7438,9 @@ function _rqToggleEsclusi() {
 // ═══════════════════════════════════════════════════════════════════════════
 
 function getFatture() {
-  try { return JSON.parse(localStorage.getItem('n4_fatture') || '[]'); } catch(e) { return []; }
+  try { return JSON.parse(n4Storage.getItem('n4_fatture') || '[]'); } catch(e) { return []; }
 }
-function saveFatture(arr) { localStorage.setItem('n4_fatture', JSON.stringify(arr)); }
+function saveFatture(arr) { n4Storage.setItem('n4_fatture', JSON.stringify(arr)); }
 
 let _contCurrentTab = 'cruscotto';
 
