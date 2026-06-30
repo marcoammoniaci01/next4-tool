@@ -6429,11 +6429,14 @@ function exportCSV(tipo) {
 
 function backupJSON() {
   const payload = {
-    version: 1,
+    version: 2,
     exportDate: new Date().toISOString(),
-    pipeline:   getPipeline(),
-    bandiExtra: BANDI.slice(BANDI_BASE_LEN),
-    clienti:    CLIENTI
+    pipeline:     getPipeline(),
+    bandiExtra:   BANDI.slice(BANDI_BASE_LEN),
+    clienti:      CLIENTI,
+    tasks:        getTasks(),
+    fatture:      getFatture(),
+    interazioni:  getInterazioni()
   };
   _dlText(JSON.stringify(payload, null, 2), `backup_next4_${_dateStr()}.json`, 'application/json');
   showToast('💾 Backup scaricato', 'ok', 3000);
@@ -6450,9 +6453,10 @@ function _handleImport(e) {
       const data = JSON.parse(evt.target.result);
       if (!data.version) throw new Error('File non riconosciuto (manca version)');
 
-      if (data.pipeline) {
-        savePipeline(data.pipeline);
-      }
+      if (data.pipeline)    savePipeline(data.pipeline);
+      if (data.tasks)       saveTasks(data.tasks);
+      if (data.fatture)     saveFatture(data.fatture);
+      if (data.interazioni) n4Storage.setItem('n4_interazioni', JSON.stringify(data.interazioni));
       if (data.bandiExtra) {
         BANDI.splice(BANDI_BASE_LEN, BANDI.length - BANDI_BASE_LEN, ...data.bandiExtra);
         _saveBandiExtra();
