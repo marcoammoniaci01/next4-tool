@@ -1479,6 +1479,59 @@
 
   /* ── RICERCA BANDI ── */
   #view-ricerca { padding: 28px 32px 60px; }
+
+  /* ── PREVISIONI ── */
+  .prev-header { margin-bottom: 22px; }
+  .prev-header h2 { font-size: 18px; font-weight: 800; color: #1B3A6B; margin: 0 0 4px; }
+  .prev-header p  { font-size: 12.5px; color: #64748b; margin: 0; }
+  .prev-legenda { display: flex; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+  .prev-leg-item { display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: #64748b; }
+  .prev-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .prev-dot.alta   { background: #16a34a; }
+  .prev-dot.media  { background: #d97706; }
+  .prev-dot.bassa  { background: #94a3b8; }
+  .prev-filtri { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+  .prev-filtro { padding: 5px 14px; border-radius: 20px; border: 1.5px solid #e2e8f0; font-size: 12px; cursor: pointer; background: white; color: #475569; font-family: inherit; transition: all .14s; }
+  .prev-filtro:hover { border-color: #1B3A6B; color: #1B3A6B; }
+  .prev-filtro.active { background: #1B3A6B; border-color: #1B3A6B; color: white; }
+  .prev-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
+  .prev-card { background: white; border-radius: 12px; border: 1.5px solid #e2e8f0; padding: 18px 20px; box-shadow: 0 1px 4px rgba(0,0,0,.05); position: relative; transition: box-shadow .15s; }
+  .prev-card:hover { box-shadow: 0 4px 16px rgba(27,58,107,.1); }
+  .prev-card-top { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
+  .prev-conf { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 6px; }
+  .prev-conf.alta  { background: #16a34a; }
+  .prev-conf.media { background: #d97706; }
+  .prev-conf.bassa { background: #94a3b8; }
+  .prev-nome { font-size: 13.5px; font-weight: 700; color: #1B3A6B; line-height: 1.3; flex: 1; }
+  .prev-ente { font-size: 11px; color: #64748b; margin-bottom: 8px; }
+  .prev-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+  .prev-badge { font-size: 10.5px; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+  .prev-badge.periodo { background: #eff6ff; color: #1d4ed8; }
+  .prev-badge.conf-alta  { background: #dcfce7; color: #166534; }
+  .prev-badge.conf-media { background: #fef3c7; color: #92400e; }
+  .prev-badge.conf-bassa { background: #f1f5f9; color: #475569; }
+  .prev-badge.tipo { background: #f1f5f9; color: #475569; }
+  .prev-motivo { font-size: 11.5px; color: #475569; line-height: 1.5; margin-bottom: 10px; border-left: 3px solid #e2e8f0; padding-left: 8px; }
+  .prev-checklist { margin: 0; padding: 0; list-style: none; }
+  .prev-checklist li { font-size: 11.5px; color: #374151; padding: 3px 0 3px 18px; position: relative; border-bottom: 1px dashed #f1f5f9; }
+  .prev-checklist li:last-child { border-bottom: none; }
+  .prev-checklist li::before { content: "✓"; position: absolute; left: 0; color: #16a34a; font-weight: 700; font-size: 11px; }
+  .prev-checklist-title { font-size: 10.5px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 4px; }
+  .prev-aggiornato { font-size: 10px; color: #94a3b8; text-align: right; margin-top: 10px; }
+  .prev-section-title { font-size: 13px; font-weight: 800; color: #374151; margin: 24px 0 12px; padding-bottom: 6px; border-bottom: 2px solid #f1f5f9; text-transform: uppercase; letter-spacing: .04em; display: flex; align-items: center; gap: 8px; }
+  body.dark .prev-card { background: #162035; border-color: #1e3050; }
+  body.dark .prev-nome { color: #93c5fd; }
+  body.dark .prev-ente { color: #64748b; }
+  body.dark .prev-motivo { border-left-color: #1e3050; color: #94a3b8; }
+  body.dark .prev-checklist li { color: #cbd5e1; border-bottom-color: #1e3050; }
+  body.dark .prev-filtro { background: #162035; border-color: #1e3050; color: #94a3b8; }
+  body.dark .prev-filtro.active { background: #1B3A6B; color: white; }
+  body.dark .prev-section-title { color: #e2e8f0; border-bottom-color: #1e3050; }
+  body.dark .prev-badge.tipo { background: #0f1e35; color: #64748b; }
+  body.dark .prev-badge.periodo { background: #0f2040; color: #93c5fd; }
+  body.dark .prev-badge.conf-alta { background: #052e16; color: #86efac; }
+  body.dark .prev-badge.conf-media { background: #2d1a00; color: #fde68a; }
+  body.dark .prev-badge.conf-bassa { background: #0f1e35; color: #64748b; }
   .rq-wrap { max-width: 640px; margin: 0 auto; }
   .rq-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; }
   .rq-title { font-size:20px; font-weight:800; color:#1B3A6B; }
@@ -1902,6 +1955,7 @@
   <button class="tab" onclick="switchTab('scadenzario')">📅 Scadenzario</button>
   <button class="tab" onclick="switchTab('ricerca')">🔍 Ricerca</button>
   <button class="tab" onclick="switchTab('radar')" id="tab-radar">📡 Radar</button>
+  <button class="tab" onclick="switchTab('previsioni')">🔮 Previsioni</button>
 </div>
 <div class="tabs" id="tabs-riservata" style="display:none;">
   <button class="tab active" onclick="switchTab('pipeline')">💼 Pipeline</button>
@@ -2056,6 +2110,11 @@
     <div id="task-stats" style="margin-bottom:20px;"></div>
     <div id="task-list"></div>
   </div>
+</div>
+
+<!-- ── PREVISIONI ── -->
+<div id="view-previsioni" style="display:none;">
+  <div id="previsioni-root" style="padding:28px 32px 60px;"></div>
 </div>
 
 <!-- ── CONTABILITÀ ── -->
@@ -2615,7 +2674,7 @@ function showHub() {
   document.getElementById('data-toolbar').style.display = 'none';
   document.getElementById('tabs-finanza').style.display = 'none';
   document.getElementById('tabs-riservata').style.display = 'none';
-  ['view-bandi','view-clienti','view-scadenzario','view-ricerca','view-pipeline','view-task'].forEach(id => {
+  ['view-bandi','view-clienti','view-scadenzario','view-ricerca','view-pipeline','view-task','view-previsioni'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.style.display = 'none';
   });
@@ -4666,7 +4725,7 @@ function switchTab(tab) {
   closePanel();
 
   // aggiorna active nel gruppo tabs corretto (tabs sono hidden ma JS li usa ancora)
-  const finanzaTabs = ['bandi','clienti','scadenzario','ricerca','radar'];
+  const finanzaTabs = ['bandi','clienti','scadenzario','ricerca','radar','previsioni'];
   const riservTabs  = ['pipeline','task','contabilita'];
   const groupId = finanzaTabs.includes(tab) ? 'tabs-finanza' : 'tabs-riservata';
   const groupTabs = finanzaTabs.includes(tab) ? finanzaTabs : riservTabs;
@@ -4675,7 +4734,7 @@ function switchTab(tab) {
   });
 
   // mostra/nascondi views
-  ['bandi','clienti','scadenzario','ricerca','pipeline','task','radar','contabilita'].forEach(v => {
+  ['bandi','clienti','scadenzario','ricerca','pipeline','task','radar','contabilita','previsioni'].forEach(v => {
     const el = document.getElementById('view-' + v);
     if (!el) return;
     if (v === tab) {
@@ -4698,6 +4757,7 @@ function switchTab(tab) {
   if (tab === 'ricerca')      _rqInit();
   if (tab === 'radar')        renderRadar();
   if (tab === 'contabilita')  renderContabilita();
+  if (tab === 'previsioni')   renderPrevisioni();
 }
 
 // ─── SIDE PANEL ──────────────────────────────────────────────────────────
@@ -5166,6 +5226,302 @@ function clientDominantColor(entries) {
   if (entries.some(e => e.b?.stato === 'aperto')) return '#16a34a';
   if (entries.some(e => e.b?.stato === 'inapertura')) return '#0f766e';
   return '#94a3b8';
+}
+
+// ─── PREVISIONI BANDI ────────────────────────────────────────────────────────
+// Aggiornato: 2026-06-30
+// Confidenza: alta (≥3 edizioni storiche), media (2 edizioni o segnali forti), bassa (1 ed. o ipotesi)
+const PREVISIONI = [
+
+  // ── ALTA CONFIDENZA ────────────────────────────────────────────────────────
+
+  { nome: "Accordi per l'Innovazione – MIMIT",
+    ente: "Ministero delle Imprese e Made in Italy",
+    tipo: ["rs","innovazione"], regione: "Nazionale",
+    confidenza: "alta",
+    periodo: "Gennaio – Marzo 2027",
+    motivazione: "Edizioni documentate ogni anno dal 2019. Struttura stabile: domande a finestra fissa (gen–feb), esiti in estate. L'ed. 2025 si è chiusa a febbraio 2026.",
+    preparazione: [
+      "Definire il progetto R&S con obiettivi misurabili e piano tecnico",
+      "Costituire o aggiornare il team R&S interno (requisito min. 2 ricercatori FTE)",
+      "Raccogliere preventivi da fornitori per le spese previste",
+      "Verificare assenza procedure concorsuali e requisiti DURC",
+      "Predisporre il business plan e il piano finanziario del progetto"
+    ],
+    aggiornato: "2026-06-30" },
+
+  { nome: "Brevetti+ – MIMIT",
+    ente: "Ministero delle Imprese e Made in Italy / UIBM",
+    tipo: ["rs"], regione: "Nazionale",
+    confidenza: "alta",
+    periodo: "Ottobre – Novembre 2026",
+    motivazione: "Click day annuale ogni autunno (ott–nov) dal 2022. Ed. 2025 chiusa nov 2025. Edizione 2026 attesa stesso periodo. Dotazione stabile ~€30M.",
+    preparazione: [
+      "Depositare il brevetto (o avere la domanda in corso) prima del click day",
+      "Conservare tutte le fatture delle spese brevettuali sostenute (ultime 2 annualità)",
+      "Registrarsi su Invitalia Digital Hub in anticipo (spesso richiesto)",
+      "Verificare ATECO e dimensione: ammesse micro/piccole/medie imprese"
+    ],
+    aggiornato: "2026-06-30" },
+
+  { nome: "EUIPO SME Fund – Rimborso tasse IP",
+    ente: "EUIPO (Ufficio UE per la Proprietà Intellettuale)",
+    tipo: ["rs"], regione: "Europeo",
+    confidenza: "alta",
+    periodo: "Gennaio 2027 (apertura annuale)",
+    motivazione: "Apre ogni anno a gennaio da 2021. Rimborso 75% tasse EUIPO per marchi/disegni/brevetti europei. Ed. 2026 aperta fino dic 2026.",
+    preparazione: [
+      "Registrarsi su euipo.europa.eu come PMI con P.IVA italiana",
+      "Pianificare depositi di marchi o disegni EU entro inizio 2027",
+      "Tenere traccia di tutte le tasse EUIPO pagate nell'anno in corso"
+    ],
+    aggiornato: "2026-06-30" },
+
+  { nome: "EIC Accelerator – Commissione Europea",
+    ente: "European Innovation Council",
+    tipo: ["startup","rs"], regione: "Europeo",
+    confidenza: "alta",
+    periodo: "Cut-off dicembre 2026 (già aperto) + luglio 2027",
+    motivazione: "Cut-off fissi 2 volte l'anno (luglio e dicembre) ogni anno dal 2021. Grant fino a €2,5M + equity fino a €15M. Struttura immutata.",
+    preparazione: [
+      "Registrarsi su EIC Platform (eic.ec.europa.eu) e completare il profilo",
+      "Preparare il pitch video (3 min) e il pitch deck in inglese",
+      "Avere un prototipo funzionante (TRL 5–6 minimo)",
+      "Identificare almeno un potenziale cliente/partner europeo",
+      "Inizio proposta almeno 8 settimane prima del cut-off"
+    ],
+    aggiornato: "2026-06-30" },
+
+  { nome: "Donne e Impresa – Lazio",
+    ente: "Regione Lazio / Lazio Innova",
+    tipo: ["impresa"], regione: "Lazio",
+    confidenza: "alta",
+    periodo: "Marzo – Aprile 2027",
+    motivazione: "Bando annuale. Ed. 2026 aperta apr–giu 2026. Ed. 2025 stessa finestra. Riservato a imprese femminili nel Lazio.",
+    preparazione: [
+      "Verificare o acquisire i requisiti di impresa femminile (>50% quote a donne)",
+      "Identificare le spese ammissibili (attrezzature, software, formazione, consulenze)",
+      "Preparare dichiarazione antimafia e DURC in regola"
+    ],
+    aggiornato: "2026-06-30" },
+
+  { nome: "Voucher Digitalizzazione PMI – Lazio (III ed.)",
+    ente: "Regione Lazio / Lazio Innova",
+    tipo: ["digitale","impresa"], regione: "Lazio",
+    confidenza: "alta",
+    periodo: "Autunno 2026",
+    motivazione: "II ed. 2025 (ott–nov 2025), I ed. 2024. Cadenza annuale autunnale. Voucher fino a €10.000 per digitalizzazione PMI laziali.",
+    preparazione: [
+      "Identificare la soluzione digitale da acquistare (software, e-commerce, CRM)",
+      "Verificare che il fornitore sia tra quelli ammessi (abilitazione AGID o equivalente)",
+      "Raccogliere preventivo dal fornitore tecnologico"
+    ],
+    aggiornato: "2026-06-30" },
+
+  { nome: "Voucher Internazionalizzazione PMI – Lazio",
+    ente: "Regione Lazio / Lazio Innova",
+    tipo: ["internazionalizzazione","impresa"], regione: "Lazio",
+    confidenza: "alta",
+    periodo: "Fine 2026 – Inizio 2027",
+    motivazione: "Edizione 2025 chiusa nov 2025. Edizione precedente stessa finestra. Contributo per partecipazione fiere internazionali e attività export.",
+    preparazione: [
+      "Pianificare la partecipazione a fiere internazionali 2027",
+      "Raccogliere documentazione spese export (fatture traduttori, fiere, cataloghi)",
+      "Verificare requisiti: PMI con sede nel Lazio, P.IVA attiva"
+    ],
+    aggiornato: "2026-06-30" },
+
+  { nome: "Internazionalizzazione PMI – Calabria",
+    ente: "Regione Calabria / FINCALABRA",
+    tipo: ["internazionalizzazione","impresa"], regione: "Calabria",
+    confidenza: "alta",
+    periodo: "Autunno 2026 (riapertura attesa)",
+    motivazione: "Avviso chiuso 31/05/2026. Ciclo FESR 2021–2027 ha ancora risorse. Monitorare riapertura sportello successivo.",
+    preparazione: [
+      "Verificare lo stato dei fondi residui sul sito FINCALABRA",
+      "Predisporre piano di internazionalizzazione con mercati target",
+      "Raccogliere documentazione sull'attività export già in corso"
+    ],
+    aggiornato: "2026-06-30" },
+
+  // ── MEDIA CONFIDENZA ───────────────────────────────────────────────────────
+
+  { nome: "Fondo Impresa Femminile – MIMIT / Invitalia",
+    ente: "Ministero delle Imprese e Made in Italy / Invitalia",
+    tipo: ["impresa","startup"], regione: "Nazionale",
+    confidenza: "media",
+    periodo: "2027 (riedizione attesa)",
+    motivazione: "Misura strutturale istituita con D.Lgs. 25/2022. Precedente finestra 2023–2024. Stanziamento pluriennale: nuova finestra attesa quando si esauriranno i fondi attuali.",
+    preparazione: [
+      "Costituire impresa femminile (>50% quote/cariche donne) se non già fatto",
+      "Predisporre business plan con proiezioni a 3 anni",
+      "Valutare quale linea richiedere: contributo a fondo perduto (startup) o finanziamento agevolato (sviluppo)"
+    ],
+    aggiornato: "2026-06-30" },
+
+  { nome: "Contratti di Sviluppo – Invitalia",
+    ente: "Invitalia / MIMIT",
+    tipo: ["impresa","rs","ambiente"], regione: "Nazionale",
+    confidenza: "media",
+    periodo: "Sportello permanente – verificare riapertura sportelli tematici",
+    motivazione: "Strumento strutturale per investimenti >€20M. Sportello aperto in continuo ma con finestre specifiche per settori (manifattura, turismo, agroindustria). Riedizioni tematiche frequenti.",
+    preparazione: [
+      "Verificare che l'investimento superi €20M (soglia minima programma)",
+      "Identificare il settore di riferimento e lo sportello tematico più adatto",
+      "Predisporre studio di fattibilità e piano industriale dettagliato",
+      "Coinvolgere consulenti specializzati: iter istruttorio lungo (12–18 mesi)"
+    ],
+    aggiornato: "2026-06-30" },
+
+  { nome: "Investimenti Sostenibili 4.0 – MIMIT",
+    ente: "Ministero delle Imprese e Made in Italy",
+    tipo: ["digitale","ambiente","impresa"], regione: "Nazionale",
+    confidenza: "media",
+    periodo: "2027 (decreto atteso dopo esaurimento dotazione corrente)",
+    motivazione: "Primo decreto atteso nel 2026. Misura rientra nel piano PNRR/Transizione 5.0. Se la dotazione si esaurisce, possibile rifinanziamento con nuove risorse Transizione 5.0.",
+    preparazione: [
+      "Mappare i macchinari/software 4.0 già presenti e quelli da acquisire",
+      "Verificare interconnessione al sistema gestionale (requisito Industria 4.0)",
+      "Raccogliere perizie tecniche sugli asset e preventivi fornitori",
+      "Predisporre dichiarazione del perito abilitato (requisito per credito d'imposta 4.0)"
+    ],
+    aggiornato: "2026-06-30" },
+
+  { nome: "Pre-Seed – Regione Lazio",
+    ente: "Regione Lazio / Lazio Innova",
+    tipo: ["startup","rs"], regione: "Lazio",
+    confidenza: "media",
+    periodo: "Fine 2026 – Inizio 2027 (III edizione attesa)",
+    motivazione: "Ed. 3.0 esaurita a mar 2026 in pochi giorni. La Regione ha già finanziato 2 edizioni precedenti. Alta probabilità di riedizione con nuova dotazione entro fine anno.",
+    preparazione: [
+      "Verificare o ottenere l'iscrizione come startup innovativa nel Registro Imprese",
+      "Predisporre pitch deck e prototipo/MVP dimostrabile",
+      "Avere un team con almeno 1 figura tecnica",
+      "Monitorare il sito Lazio Innova ogni 2 settimane"
+    ],
+    aggiornato: "2026-06-30" },
+
+  { nome: "Tech4Health – Regione Lazio",
+    ente: "Regione Lazio / Lazio Innova",
+    tipo: ["startup","rs"], regione: "Lazio",
+    confidenza: "media",
+    periodo: "Autunno 2026 – Inizio 2027",
+    motivazione: "Prima edizione chiusa mag 2026. Bando verticale su healthtech con call competitiva. Alta probabilità di II edizione dato il successo della prima e il FESR ancora disponibile.",
+    preparazione: [
+      "Avere soluzioni healthcare digitale con TRL ≥ 4 (prototipo testato)",
+      "Identificare un partner clinico (ASL, ospedale, IRCCS) per validazione",
+      "Predisporre documentazione regolatoria se il prodotto è dispositivo medico"
+    ],
+    aggiornato: "2026-06-30" },
+
+  { nome: "STEP – Regioni Sud (Campania, Sicilia, Veneto)",
+    ente: "Regioni / Min. Imprese (fondi FESR Strategic Technologies)",
+    tipo: ["rs","digitale"], regione: "Campania / Sicilia / Veneto",
+    confidenza: "media",
+    periodo: "Settembre – Dicembre 2026 (riapertura dopo esaurimento I ed.)",
+    motivazione: "STEP Campania chiuso feb 2026, STEP Sicilia chiuso feb 2026. Veneto chiuso mag 2026. Fondi FESR 2021–2027 ancora disponibili: riedizioni attese a fine 2026.",
+    preparazione: [
+      "Verificare che l'ATECO rientri nei settori STEP (Deep Tech, Digital, Green, Bio, Aero/Difesa)",
+      "Predisporre il piano di ricerca e sviluppo con obiettivi misurabili",
+      "Identificare eventuali partner universitari o centri di ricerca"
+    ],
+    aggiornato: "2026-06-30" },
+
+  // ── BASSA CONFIDENZA / MONITORARE ─────────────────────────────────────────
+
+  { nome: "Fondo Patrimonializzazione PMI – Lazio",
+    ente: "Regione Lazio / Lazio Innova",
+    tipo: ["impresa"], regione: "Lazio",
+    confidenza: "bassa",
+    periodo: "2027 (ipotesi riedizione)",
+    motivazione: "Prima edizione chiusa. La nota nel dashboard indica 'monitorare riedizione 2027'. Dipende da disponibilità FESR residuo. Incerto.",
+    preparazione: [
+      "Monitorare il sito Lazio Innova da settembre 2026",
+      "Verificare che la startup abbia deliberato un aumento di capitale",
+      "Identificare investitori qualificati co-investitori"
+    ],
+    aggiornato: "2026-06-30" },
+
+  { nome: "Staff House – Riqualificazione Immobili Commerciali",
+    ente: "Regione Lazio / Lazio Innova",
+    tipo: ["impresa"], regione: "Lazio",
+    confidenza: "bassa",
+    periodo: "2027 (incerto)",
+    motivazione: "Prima edizione chiusa mag 2026. Non ci sono segnali certi di riedizione ma il tema riqualificazione urbana è prioritario nel FESR Lazio 2021–2027.",
+    preparazione: [
+      "Monitorare il sito Lazio Innova",
+      "Predisporre perizia sull'immobile da riqualificare",
+      "Verificare la conformità urbanistica dell'immobile"
+    ],
+    aggiornato: "2026-06-30" },
+
+  { nome: "Consolidamento Startup – Regione Veneto",
+    ente: "Regione Veneto",
+    tipo: ["startup"], regione: "Veneto",
+    confidenza: "bassa",
+    periodo: "2027 (possibile II edizione)",
+    motivazione: "Prima edizione chiusa mag 2026. Bando giovane: un'unica edizione osservata. Dipende da dotazione FESR residua e volontà politica regionale.",
+    preparazione: [
+      "Monitorare il sito Regione Veneto / Veneto Innovazione",
+      "Mantenere o acquisire requisiti di startup innovativa"
+    ],
+    aggiornato: "2026-06-30" },
+];
+
+function renderPrevisioni() {
+  const root = document.getElementById('previsioni-root');
+  if (!root) return;
+
+  const filtroAttivo = root._filtroConf || 'tutti';
+
+  const confLabel = { alta: '🟢 Alta confidenza', media: '🟡 Media confidenza', bassa: '⚪ Bassa confidenza' };
+  const confOrder = ['alta','media','bassa'];
+
+  const prev = filtroAttivo === 'tutti' ? PREVISIONI : PREVISIONI.filter(p => p.confidenza === filtroAttivo);
+
+  const kpi = c => PREVISIONI.filter(p => p.confidenza === c).length;
+
+  root.innerHTML = `
+    <div class="prev-header">
+      <h2>🔮 Previsioni Bandi</h2>
+      <p>Bandi ciclici e misure strutturali con alta probabilità di riapertura. Aggiornate settimanalmente.</p>
+    </div>
+    <div class="prev-legenda">
+      <div class="prev-leg-item"><div class="prev-dot alta"></div> Alta confidenza — pattern ≥3 anni (${kpi('alta')} bandi)</div>
+      <div class="prev-leg-item"><div class="prev-dot media"></div> Media confidenza — 2 edizioni o segnali normativi (${kpi('media')} bandi)</div>
+      <div class="prev-leg-item"><div class="prev-dot bassa"></div> Bassa confidenza — ipotesi (${kpi('bassa')} bandi)</div>
+    </div>
+    <div class="prev-filtri">
+      ${['tutti','alta','media','bassa'].map(f => `<button class="prev-filtro${filtroAttivo===f?' active':''}" onclick="(function(){document.getElementById('previsioni-root')._filtroConf='${f}';renderPrevisioni();})()">${f==='tutti'?'Tutti ('+PREVISIONI.length+')':confLabel[f]}</button>`).join('')}
+    </div>
+    ${confOrder.filter(c => prev.some(p=>p.confidenza===c)).map(c => `
+      <div class="prev-section-title">
+        <div class="prev-dot ${c}" style="width:12px;height:12px;"></div>
+        ${confLabel[c]} — ${prev.filter(p=>p.confidenza===c).length} bandi
+      </div>
+      <div class="prev-grid">
+        ${prev.filter(p=>p.confidenza===c).map(p => `
+          <div class="prev-card">
+            <div class="prev-card-top">
+              <div class="prev-conf ${p.confidenza}"></div>
+              <div class="prev-nome">${p.nome}</div>
+            </div>
+            <div class="prev-ente">${p.ente}</div>
+            <div class="prev-badges">
+              <span class="prev-badge periodo">📅 ${p.periodo}</span>
+              <span class="prev-badge conf-${p.confidenza}">${p.confidenza === 'alta' ? '🟢 Alta' : p.confidenza === 'media' ? '🟡 Media' : '⚪ Bassa'}</span>
+              <span class="prev-badge tipo">${p.regione}</span>
+            </div>
+            <div class="prev-motivo">${p.motivazione}</div>
+            ${p.preparazione && p.preparazione.length ? `
+              <div class="prev-checklist-title">Cosa fare adesso</div>
+              <ul class="prev-checklist">
+                ${p.preparazione.map(s=>`<li>${s}</li>`).join('')}
+              </ul>` : ''}
+            <div class="prev-aggiornato">Aggiornato: ${p.aggiornato}</div>
+          </div>`).join('')}
+      </div>`).join('')}
+  `;
 }
 
 function renderClienti() {
