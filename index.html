@@ -2673,7 +2673,7 @@ const _n4Timers = {};
 const n4Storage = {
   getItem(key) {
     if (_CLOUD_KEYS.includes(key)) return _n4Cache[key] ?? null;
-    return n4Storage.getItem(key);
+    return localStorage.getItem(key);
   },
   setItem(key, val) {
     if (_CLOUD_KEYS.includes(key)) {
@@ -2685,7 +2685,7 @@ const n4Storage = {
         }, 700);
       }
     } else {
-      n4Storage.setItem(key, val);
+      localStorage.setItem(key, val);
     }
   }
 };
