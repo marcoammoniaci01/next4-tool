@@ -2644,9 +2644,14 @@
   }
 })();
 
-function verificaPassword() {
+async function verificaPassword() {
   const input = document.getElementById('pw-input');
-  if (input.value === 'next4international') {
+  const val = input.value;
+  const enc = new TextEncoder().encode(val);
+  const buf = await crypto.subtle.digest('SHA-256', enc);
+  const hash = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+  const HASH = 'ba590273c88061668c2964cc81dcf302d1c63c3a3037bb4e15448faabc0cde9e';
+  if (hash === HASH) {
     sessionStorage.setItem('n4auth', '1');
     document.getElementById('pw-err').textContent = '';
     const form = document.querySelector('.pw-side-form');
