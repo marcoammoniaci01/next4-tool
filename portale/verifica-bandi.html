@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verifica bandi disponibili — Next4</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background:#f8fafc; margin:0; padding:32px 16px 80px; color:#1e293b; }
+  .vb-page { max-width: 680px; margin: 0 auto; }
+  .vb-header { text-align:center; margin-bottom:28px; }
+  .vb-logo { font-size:13px; font-weight:800; color:#94a3b8; letter-spacing:.08em; text-transform:uppercase; margin-bottom:8px; }
+  .vb-title { font-size:26px; font-weight:800; color:#1B3A6B; margin-bottom:6px; }
+  .vb-sub { font-size:14px; color:#64748b; }
+
+  /* ── wizard (adattato da dashboard_bandi.html, blocco .rq-*) ── */
+  .rq-wrap { max-width: 640px; margin: 0 auto; }
+  .rq-progress-track { height:3px; background:#e2e8f0; border-radius:2px; margin-bottom:24px; overflow:hidden; }
+  .rq-progress-fill { height:100%; background:linear-gradient(90deg,#1B3A6B,#00E5D1); border-radius:2px; transition:width 0.4s ease; }
+  .rq-chips { display:flex; flex-wrap:wrap; gap:7px; margin-bottom:20px; min-height:4px; }
+  .rq-chip { display:inline-flex; align-items:center; gap:5px; background:#eff6ff; border:1.5px solid #bfdbfe; border-radius:20px; padding:3px 10px 3px 9px; font-size:11px; cursor:pointer; transition:background 0.12s; }
+  .rq-chip:hover { background:#dbeafe; }
+  .rq-chip-lbl { color:#64748b; }
+  .rq-chip-val { color:#1B3A6B; font-weight:700; max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .rq-chip-edit { color:#bfdbfe; font-size:9px; }
+  @keyframes rqIn { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+  .rq-step { background:#fff; border:1.5px solid #e2e8f0; border-radius:14px; padding:28px 30px 22px; box-shadow:0 4px 24px rgba(27,58,107,0.07); animation:rqIn 0.28s ease; }
+  .rq-step-num { font-size:10px; font-weight:700; color:#cbd5e1; text-transform:uppercase; letter-spacing:.07em; margin-bottom:8px; }
+  .rq-step-q { font-size:20px; font-weight:800; color:#1e293b; margin-bottom:5px; line-height:1.3; }
+  .rq-step-sub { font-size:13px; color:#94a3b8; margin-bottom:20px; }
+  .rq-btn-grp { display:flex; flex-wrap:wrap; gap:10px; }
+  .rq-opt { display:flex; flex-direction:column; align-items:flex-start; background:#f8fafc; border:2px solid #e2e8f0; border-radius:10px; padding:10px 16px; cursor:pointer; transition:all 0.13s; font-family:inherit; text-align:left; }
+  .rq-opt:hover { border-color:#93c5fd; background:#f0f7ff; }
+  .rq-opt.sel { border-color:#1B3A6B; background:#eff6ff; }
+  .rq-opt-lbl { font-size:14px; font-weight:700; color:#1e293b; }
+  .rq-opt-sub { font-size:11px; color:#94a3b8; margin-top:2px; }
+  .rq-opt.sel .rq-opt-lbl { color:#1B3A6B; }
+  .rq-input { width:100%; padding:12px 16px; border:2px solid #e2e8f0; border-radius:10px; font-size:16px; font-family:inherit; outline:none; transition:border-color 0.15s; box-sizing:border-box; background:#fff; color:#1e293b; }
+  .rq-input:focus { border-color:#1B3A6B; }
+  .rq-input.err { border-color:#ef4444; }
+  .rq-nav { display:flex; align-items:center; gap:12px; margin-top:22px; flex-wrap:wrap; }
+  .rq-btn-next { background:#1B3A6B; color:#fff; border:none; border-radius:8px; padding:10px 22px; font-size:14px; font-weight:700; cursor:pointer; font-family:inherit; transition:background 0.13s; }
+  .rq-btn-next:hover { background:#2952a3; }
+  .rq-btn-back { background:none; border:none; color:#94a3b8; font-size:13px; cursor:pointer; font-family:inherit; padding:0; }
+  .rq-btn-back:hover { color:#64748b; }
+  .rq-btn-skip { background:none; border:none; color:#94a3b8; font-size:13px; cursor:pointer; font-family:inherit; padding:0; margin-left:auto; }
+  .rq-btn-skip:hover { color:#64748b; }
+  .rq-ris-wrap { margin-top:36px; }
+  .rq-ris-hdr { font-size:17px; font-weight:800; color:#1B3A6B; margin-bottom:6px; }
+  .rq-ris-sub { font-size:13px; color:#64748b; margin-bottom:20px; }
+  .rq-sec-lbl { font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.07em; margin:20px 0 8px; }
+  .rq-card { background:#fff; border:1.5px solid #e2e8f0; border-radius:12px; padding:14px 18px; margin-bottom:9px; cursor:default; transition:all 0.14s; display:flex; align-items:flex-start; gap:12px; }
+  .rq-card:hover { border-color:#c7d7ef; box-shadow:0 4px 16px rgba(27,58,107,0.09); }
+  .rq-card.soft { border-left:3px solid #f59e0b; }
+  .rq-card.escluso { opacity:.65; }
+  .rq-card-body { flex:1; min-width:0; }
+  .rq-card-nome { font-size:14px; font-weight:700; color:#1e293b; margin-bottom:3px; }
+  .rq-card-meta { font-size:12px; color:#64748b; margin-bottom:4px; }
+  .rq-card-azioni { font-size:12px; color:#92400e; background:#fffbeb; border:1px solid #fde68a; border-radius:8px; padding:6px 10px; margin-top:6px; }
+  .rq-card-azioni div::before { content:'→ '; font-weight:700; }
+  .rq-card-link { display:inline-block; margin-top:8px; font-size:12px; font-weight:700; color:#1B3A6B; text-decoration:none; }
+  .rq-card-link:hover { text-decoration:underline; }
+  .rq-card-badges { display:flex; flex-wrap:wrap; gap:5px; flex-shrink:0; }
+  .rq-badge { font-size:10px; font-weight:700; border-radius:10px; padding:2px 8px; white-space:nowrap; }
+  .rq-badge-ok    { background:#dcfce7; color:#16a34a; }
+  .rq-badge-soft  { background:#fef3c7; color:#92400e; }
+  .rq-badge-naz   { background:#eff6ff; color:#1B3A6B; }
+  .rq-badge-inapertura { background:#e0e7ff; color:#4338ca; }
+  .rq-toggle-esclusi { background:none; border:1.5px solid #e2e8f0; border-radius:8px; padding:8px 18px; font-size:13px; color:#94a3b8; cursor:pointer; font-family:inherit; margin-top:4px; }
+  .rq-toggle-esclusi:hover { background:#f8fafc; color:#64748b; }
+  .rq-no-res { text-align:center; padding:48px 24px; color:#94a3b8; font-size:14px; }
+  .rq-done-bar { background:#f0f9ff; border:1.5px solid #bfdbfe; border-radius:10px; padding:12px 18px; display:flex; align-items:center; justify-content:space-between; margin-bottom:4px; animation:rqIn 0.28s ease; }
+  .rq-done-txt { font-size:13px; color:#1B3A6B; font-weight:600; }
+
+  /* CTA consulente */
+  .vb-cta { margin-top:32px; background:#eff6ff; border:1.5px solid #bfdbfe; border-radius:14px; padding:22px 24px; text-align:center; }
+  .vb-cta-title { font-size:15px; font-weight:800; color:#1B3A6B; margin-bottom:6px; }
+  .vb-cta-sub { font-size:13px; color:#475569; margin-bottom:14px; }
+  .vb-cta-btn { display:inline-block; background:#1B3A6B; color:#fff; text-decoration:none; font-size:14px; font-weight:700; padding:11px 24px; border-radius:9px; }
+  .vb-cta-btn:hover { background:#14305a; }
+
+  @media (prefers-color-scheme: dark) {
+    body { background:#0b1524; color:#e2e8f0; }
+    .vb-title { color:#93c5fd; }
+    .vb-sub { color:#94a3b8; }
+    .rq-step { background:#162035; border-color:#2d3f5e; box-shadow:0 4px 24px rgba(0,0,0,.3); }
+    .rq-step-q { color:#e2e8f0; }
+    .rq-opt { background:#1e293b; border-color:#334155; }
+    .rq-opt:hover { border-color:#4a7fcb; background:#1a3460; }
+    .rq-opt.sel { border-color:#4a7fcb; background:#1a3460; }
+    .rq-opt-lbl { color:#e2e8f0; }
+    .rq-opt.sel .rq-opt-lbl { color:#93c5fd; }
+    .rq-input { background:#1e293b; border-color:#334155; color:#e2e8f0; }
+    .rq-input:focus { border-color:#4a7fcb; }
+    .rq-chip { background:#1a3460; border-color:#2d4f7c; }
+    .rq-chip-val { color:#93c5fd; }
+    .rq-card { background:#162035; border-color:#2d3f5e; }
+    .rq-done-bar { background:#1a3460; border-color:#2d4f7c; }
+    .rq-progress-track { background:#2d3f5e; }
+    .rq-ris-hdr { color:#93c5fd; }
+    .rq-card-azioni { background:#2a2410; border-color:#78350f; color:#fbbf24; }
+    .vb-cta { background:#0e1e35; border-color:#2d4f7c; }
+    .vb-cta-title { color:#93c5fd; }
+    .vb-cta-sub { color:#94a3b8; }
+  }
+</style>
+</head>
+<body>
+<div class="vb-page">
+  <div class="vb-header">
+    <div class="vb-logo">Next4 Consulting</div>
+    <div class="vb-title">A quali bandi puoi accedere?</div>
+    <div class="vb-sub">Rispondi a qualche domanda sulla tua azienda: ti diciamo su cosa puoi presentare domanda oggi.</div>
+  </div>
+
+  <div class="rq-wrap">
+    <div class="rq-progress-track"><div class="rq-progress-fill" id="vb-progress-fill" style="width:0%"></div></div>
+    <div class="rq-chips" id="vb-chips"></div>
+    <div id="vb-step-wrap"></div>
+    <div class="rq-ris-wrap" id="vb-risultati" style="display:none;"></div>
+  </div>
+
+  <div class="vb-cta">
+    <div class="vb-cta-title">Vuoi una verifica con un consulente?</div>
+    <div class="vb-cta-sub">Un nostro consulente può controllare i dettagli, aiutarti a colmare i requisiti mancanti e seguirti nella presentazione della domanda.</div>
+    <a class="vb-cta-btn" id="vb-cta-mail" href="mailto:marcoammoniaci01@gmail.com?subject=Verifica%20bandi%20disponibili&body=Ciao%2C%20ho%20usato%20il%20tool%20di%20verifica%20bandi%20e%20vorrei%20una%20consulenza.">✉ Parla con un consulente</a>
+  </div>
+</div>
+
+<script src="../bandi/matching-engine.js"></script>
+<script src="../bandi/bandi_pubblici.js"></script>
+<script>
+// CLIENTI locale, mai popolato con dati reali — solo il profilo sintetico
+// dell'utente, sotto la chiave '__PUB__', cancellato dopo ogni calcolo.
+const CLIENTI = {};
+
+const TIPO_LABELS = {
+  innovazione: "Innovazione",
+  rs: "Ricerca e Sviluppo (R&S)",
+  internazionalizzazione: "Internazionalizzazione / Export",
+  digitale: "Digitalizzazione",
+  impresa: "Investimenti generali d'impresa",
+  fiscale: "Credito d'imposta / Fiscale",
+  step: "Tecnologie strategiche (STEP)",
+  ambiente: "Sostenibilità / Ambiente",
+  cultura: "Cultura e industria creativa",
+  startup: "Avvio startup / Seed",
+  lavoro: "Occupazione / Formazione",
+  energia: "Energia",
+  manifattura: "Manifattura / Produzione",
+};
+
+// Mostra in "Cosa stai cercando?" SOLO le categorie realmente presenti nel
+// dataset pubblico corrente — evita filtri che azzerano i risultati senza
+// spiegazione (es. "Fiscale"/"Ambiente" se nessun bando pubblico li copre oggi).
+const TIPI_DISPONIBILI = [...new Set((typeof BANDI_PUBBLICI !== 'undefined' ? BANDI_PUBBLICI : []).flatMap(b => b.tipo || []))];
+
+const VB_STEPS = [
+  // ── 4 domande rapide: bastano per un risultato indicativo immediato ──
+  { id:'nome', q:"Come si chiama la tua azienda?", sub:'Serve solo per personalizzare i risultati', type:'text', field:'nome', placeholder:'es. Acme S.r.l.', required:false, optional:true },
+  { id:'regione', q:"In quale regione ha sede l'impresa?", sub:'Regione della sede legale', type:'text', field:'regione', placeholder:'es. Lazio, Calabria, Lombardia…', required:true },
+  { id:'dimensione', q:"Qual è la dimensione dell'impresa?", sub:null, type:'buttons', field:'dimensione', required:true, autoAdvance:true,
+    opts:[{v:'micro',label:'Micro',sub:'< 10 dip. · ≤ €2M'},{v:'piccola',label:'Piccola',sub:'< 50 dip. · ≤ €10M'},{v:'media',label:'Media',sub:'< 250 dip. · ≤ €50M'},{v:'grande',label:'Grande',sub:'≥ 250 dip.'}] },
+  { id:'categorie', q:"Cosa stai cercando?", sub:'Seleziona uno o più ambiti di interesse — lascia vuoto per vedere tutti i bandi', type:'checkbox', field:'categorie', required:false, optional:true,
+    opts: TIPI_DISPONIBILI.map(v => ({ v, label: TIPO_LABELS[v] || v, sub:null })), quickBreak:true },
+  // ── approfondimento opzionale: per un risultato verificato su tutti i requisiti ──
+  { id:'sedi', q:"Ha sedi operative in altre regioni?", sub:'Separate da virgola — lascia vuoto se no', type:'text', field:'sedi', placeholder:'es. Calabria, Sicilia', required:false, optional:true },
+  { id:'anno', q:"In che anno è stata fondata?", sub:'Serve per verificare i vincoli di età', type:'number', field:'anno', placeholder:'es. 2019', required:false, optional:true },
+  { id:'bilanci', q:"Quanti bilanci approvati ha depositato?", sub:'Necessario per valutare alcuni bandi (es. SIMEST, min. 2)', type:'buttons', field:'bilanci', required:false, optional:true, autoAdvance:true,
+    opts:[{v:'0',label:'Nessuno',sub:'Impresa nuova'},{v:'1',label:'1 bilancio',sub:'< 2 anni'},{v:'2',label:'2 bilanci',sub:null},{v:'3+',label:'3 o più',sub:null}] },
+  { id:'ateco', q:"Qual è il codice ATECO principale?", sub:'Es. 62.10.00 = Software, 28.42 = Macchine', type:'text', field:'ateco', placeholder:'es. 62.10.00', required:false, optional:true },
+  { id:'status', q:"L'impresa ha status speciali?", sub:'Seleziona tutti quelli applicabili', type:'checkbox', field:'status', required:false, optional:true,
+    opts:[{v:'startup',label:'Startup Innovativa',sub:'Iscritta sezione speciale RI'},{v:'pmi',label:'PMI Innovativa',sub:'Iscritta sezione speciale RI'},{v:'femminile',label:'Impresa Femminile',sub:'> 50% quote / soci donne'},{v:'giovanile',label:'Impresa Giovanile',sub:'> 50% under 36'}] },
+  { id:'difficolta', q:"L'azienda si trova in una condizione di difficoltà finanziaria?", sub:'Patrimonio netto negativo, procedura di insolvenza o simili (Reg. UE 651/2014)', type:'buttons', field:'difficolta', required:false, optional:true, autoAdvance:true,
+    opts:[{v:'no',label:'No'},{v:'si',label:'Sì'}] },
+  { id:'concorsuali', q:"L'azienda è in liquidazione o soggetta a procedure concorsuali?", sub:null, type:'buttons', field:'concorsuali', required:false, optional:true, autoAdvance:true,
+    opts:[{v:'no',label:'No'},{v:'si',label:'Sì'}] },
+  { id:'addetti', q:"Quanti dipendenti ha l'impresa?", sub:'Opzionale — affina i bandi con soglie sul numero di addetti', type:'number', field:'addetti', placeholder:'es. 8', required:false, optional:true },
+  { id:'fatturato', q:"Qual è il fatturato dell'ultimo esercizio?", sub:'In euro — opzionale', type:'number', field:'fatturato', placeholder:'es. 500000', required:false, optional:true },
+  { id:'aiuti', q:"Quanti aiuti 'de minimis' ha ricevuto l'impresa negli ultimi 3 anni?", sub:'In euro — opzionale, verifica il rispetto dei massimali', type:'number', field:'aiuti', placeholder:'es. 50000', required:false, optional:true },
+];
+
+let _vbState = { step:0, answers:{} };
+
+function _vbInit() {
+  _vbState = { step:0, answers:{} };
+  document.getElementById('vb-progress-fill').style.width = '0%';
+  document.getElementById('vb-chips').innerHTML = '';
+  document.getElementById('vb-risultati').style.display = 'none';
+  _vbRender();
+}
+
+function _vbRender() {
+  const s = VB_STEPS[_vbState.step];
+  if (!s) { _vbShowResults(); return; }
+
+  document.getElementById('vb-progress-fill').style.width = ((_vbState.step / VB_STEPS.length) * 100) + '%';
+
+  document.getElementById('vb-chips').innerHTML = VB_STEPS.slice(0, _vbState.step)
+    .filter(x => { const v = _vbState.answers[x.id]; return v !== null && v !== undefined && v !== '' && !(Array.isArray(v) && v.length === 0); })
+    .map(x => {
+      const v = _vbState.answers[x.id];
+      const disp = Array.isArray(v) ? v.map(vv => TIPO_LABELS[vv] || vv).join(', ') : String(v);
+      const lbl = x.q.split(' ').slice(0,3).join(' ') + '…';
+      return `<div class="rq-chip" onclick="_vbGoTo('${x.id}')">
+        <span class="rq-chip-lbl">${lbl}</span>
+        <span class="rq-chip-val">${disp}</span>
+        <span class="rq-chip-edit">✎</span></div>`;
+    }).join('');
+
+  let inputHtml = '';
+  const cur = _vbState.answers[s.id];
+  if (s.type === 'text' || s.type === 'number') {
+    inputHtml = `<input id="vb-inp" type="${s.type === 'number' ? 'number' : 'text'}"
+      class="rq-input" placeholder="${s.placeholder||''}" value="${cur != null ? cur : ''}"
+      onkeydown="if(event.key==='Enter')_vbNext()">`;
+  } else if (s.type === 'buttons') {
+    inputHtml = `<div class="rq-btn-grp">${(s.opts||[]).map(o =>
+      `<button class="rq-opt${cur===o.v?' sel':''}" onclick="_vbPickBtn('${o.v}',${s.autoAdvance?'true':'false'})">
+        <span class="rq-opt-lbl">${o.label}</span>
+        ${o.sub?`<span class="rq-opt-sub">${o.sub}</span>`:''}
+      </button>`).join('')}</div>`;
+  } else if (s.type === 'checkbox') {
+    const sel = cur || [];
+    inputHtml = `<div class="rq-btn-grp">${(s.opts||[]).map(o =>
+      `<button class="rq-opt${sel.includes(o.v)?' sel':''}" onclick="_vbToggle('${o.v}')">
+        <span class="rq-opt-lbl">${o.label}</span>
+        ${o.sub?`<span class="rq-opt-sub">${o.sub}</span>`:''}
+      </button>`).join('')}</div>`;
+  }
+
+  const isLast = _vbState.step === VB_STEPS.length - 1;
+  const nextLabel = isLast ? '🔍 Risultato verificato' : (s.quickBreak ? '⚡ Vedi risultato rapido' : 'Continua →');
+  const navHtml = `<div class="rq-nav">
+    ${_vbState.step > 0 ? `<button class="rq-btn-back" onclick="_vbBack()">← Indietro</button>` : ''}
+    ${s.type !== 'buttons' || !s.autoAdvance
+      ? `<button class="rq-btn-next" onclick="_vbNext()">${nextLabel}</button>`
+      : ''}
+    ${s.optional ? `<button class="rq-btn-skip" onclick="_vbSkip()">Salta</button>` : ''}
+  </div>`;
+
+  document.getElementById('vb-step-wrap').innerHTML =
+    `<div class="rq-step">
+      <div class="rq-step-num">Domanda ${_vbState.step+1} di ${VB_STEPS.length}</div>
+      <div class="rq-step-q">${s.q}</div>
+      ${s.sub ? `<div class="rq-step-sub">${s.sub}</div>` : ''}
+      ${inputHtml}
+      ${navHtml}
+    </div>`;
+
+  const inp = document.getElementById('vb-inp');
+  if (inp) setTimeout(() => inp.focus(), 80);
+}
+
+function _vbPickBtn(v, autoAdv) {
+  _vbState.answers[VB_STEPS[_vbState.step].id] = v;
+  if (autoAdv) setTimeout(_vbNext, 180);
+  else _vbRender();
+}
+
+function _vbToggle(v) {
+  const id = VB_STEPS[_vbState.step].id;
+  if (!_vbState.answers[id]) _vbState.answers[id] = [];
+  const arr = _vbState.answers[id];
+  const i = arr.indexOf(v);
+  if (i >= 0) arr.splice(i,1); else arr.push(v);
+  _vbRender();
+}
+
+function _vbNext() {
+  const s = VB_STEPS[_vbState.step];
+  if (s.type === 'text' || s.type === 'number') {
+    const inp = document.getElementById('vb-inp');
+    const val = inp ? inp.value.trim() : '';
+    if (s.required && !val) {
+      if (inp) { inp.classList.add('err'); setTimeout(()=>inp.classList.remove('err'),1400); }
+      return;
+    }
+    _vbState.answers[s.id] = s.type === 'number' ? (parseFloat(val)||null) : (val||null);
+  }
+  if (s.quickBreak) { _vbShowResults(true); return; }
+  if (_vbState.step < VB_STEPS.length - 1) { _vbState.step++; _vbRender(); }
+  else _vbShowResults(false);
+}
+
+function _vbSkip() {
+  const s = VB_STEPS[_vbState.step];
+  _vbState.answers[s.id] = s.type === 'checkbox' ? [] : null;
+  if (s.quickBreak) { _vbShowResults(true); return; }
+  if (_vbState.step < VB_STEPS.length - 1) { _vbState.step++; _vbRender(); }
+  else _vbShowResults(false);
+}
+
+// Riprende il questionario dalle domande di approfondimento (dopo il risultato rapido)
+function _vbContinueDeep() {
+  const idx = VB_STEPS.findIndex(s => s.quickBreak) + 1;
+  _vbState.step = Math.min(idx, VB_STEPS.length - 1);
+  document.getElementById('vb-risultati').style.display = 'none';
+  _vbRender();
+}
+
+function _vbBack() {
+  if (_vbState.step > 0) { _vbState.step--; _vbRender(); }
+}
+
+function _vbGoTo(id) {
+  const idx = VB_STEPS.findIndex(s => s.id === id);
+  if (idx >= 0) {
+    _vbState.step = idx;
+    document.getElementById('vb-risultati').style.display = 'none';
+    _vbRender();
+  }
+}
+
+function _vbToggleEsclusi() {
+  const wrap = document.getElementById('vb-esclusi-wrap');
+  const btn = document.getElementById('vb-btn-esclusi');
+  const show = wrap.style.display === 'none';
+  wrap.style.display = show ? '' : 'none';
+  if (btn) btn.textContent = show ? 'Nascondi bandi esclusi ↑' : `Mostra bandi esclusi ↓`;
+}
+
+function _vbShowResults(quick) {
+  const ans = _vbState.answers;
+  document.getElementById('vb-progress-fill').style.width = quick ? '30%' : '100%';
+
+  document.getElementById('vb-chips').innerHTML = VB_STEPS
+    .filter(x => { const v=ans[x.id]; return v!==null&&v!==undefined&&v!==''&&!(Array.isArray(v)&&v.length===0); })
+    .map(x => {
+      const v=ans[x.id]; const disp=Array.isArray(v)?v.map(vv=>TIPO_LABELS[vv]||vv).join(', '):String(v);
+      return `<div class="rq-chip" onclick="_vbGoTo('${x.id}')">
+        <span class="rq-chip-lbl">${x.q.split(' ').slice(0,3).join(' ')}…</span>
+        <span class="rq-chip-val">${disp}</span>
+        <span class="rq-chip-edit">✎</span></div>`;
+    }).join('');
+
+  document.getElementById('vb-step-wrap').innerHTML = quick
+    ? `<div class="rq-done-bar">
+        <span class="rq-done-txt">⚡ Risultato rapido — basato solo su regione, dimensione e categoria</span>
+        <button class="rq-btn-back" onclick="_vbInit()">🔄 Nuova ricerca</button>
+      </div>`
+    : `<div class="rq-done-bar">
+        <span class="rq-done-txt">✅ Risultato verificato su tutti i requisiti</span>
+        <button class="rq-btn-back" onclick="_vbInit()">🔄 Nuova ricerca</button>
+      </div>`;
+
+  const sedi = (ans.sedi||'').split(',').map(s=>s.trim()).filter(Boolean);
+  const userRegioni = [ans.regione||'', ...sedi];
+  const status = ans.status||[];
+  const profile = {
+    citta: ans.regione||'',
+    regioniOperative: sedi,
+    annoFondazione: ans.anno||null,
+    dimensione: ans.dimensione||'',
+    ateco: ans.ateco||'',
+    startupInnovativa: status.includes('startup'),
+    pmiInnovativa: status.includes('pmi'),
+    impresaFemminile: status.includes('femminile'),
+    impresaGiovanile: status.includes('giovanile'),
+    impresaInDifficolta: ans.difficolta === 'si',
+    procedureConcorsuali: ans.concorsuali === 'si',
+    addetti: ans.addetti||null,
+    fatturatoUltimo: ans.fatturato||null,
+    bilanciApprovati: ans.bilanci != null ? (ans.bilanci === '3+' ? 3 : parseInt(ans.bilanci)||null) : null,
+    aiutiRicevuti: ans.aiuti||null,
+  };
+  const TMP = '__PUB__';
+  CLIENTI[TMP] = profile;
+
+  const categorie = ans.categorie || [];
+
+  const risultati = BANDI_PUBBLICI
+    .filter(b => !categorie.length || categorie.some(c => (b.tipo||[]).includes(c)))
+    .map(b => {
+      const m = matchClienteBando(TMP, b);
+      const geo = matchGeografico(b.regione, userRegioni);
+      const esito = classificaEsito(m, geo);
+      return { b, m, esito, geo };
+    });
+
+  delete CLIENTI[TMP];
+
+  const idonei = risultati.filter(r => r.esito.livello === 'idoneo');
+  const soft = risultati.filter(r => r.esito.livello === 'soft');
+  const esclusi = risultati.filter(r => r.esito.livello === 'escluso');
+
+  const statoBadge = b => b.stato === 'inapertura' ? `<span class="rq-badge rq-badge-inapertura">In apertura</span>` : '';
+  const geoBadge = geo => geo === 'nazionale' ? `<span class="rq-badge rq-badge-naz">Nazionale</span>` : '';
+
+  const cardOk = r => {
+    const b = r.b;
+    return `<div class="rq-card">
+      <div class="rq-card-body">
+        <div class="rq-card-nome">${b.nome}</div>
+        <div class="rq-card-meta">${b.ente} · ${b.regione} · ${b.contributo}</div>
+        <a class="rq-card-link" href="${b.link}" target="_blank" rel="noopener">Vai al bando ↗</a>
+      </div>
+      <div class="rq-card-badges">${geoBadge(r.geo)}${statoBadge(b)}<span class="rq-badge rq-badge-ok">Idoneo</span></div>
+    </div>`;
+  };
+
+  const cardSoft = r => {
+    const b = r.b;
+    return `<div class="rq-card soft">
+      <div class="rq-card-body">
+        <div class="rq-card-nome">${b.nome}</div>
+        <div class="rq-card-meta">${b.ente} · ${b.regione} · ${b.contributo}</div>
+        <div class="rq-card-azioni">${r.esito.azioni.map(a => `<div>${a}</div>`).join('')}</div>
+        <a class="rq-card-link" href="${b.link}" target="_blank" rel="noopener">Vai al bando ↗</a>
+      </div>
+      <div class="rq-card-badges">${geoBadge(r.geo)}${statoBadge(b)}<span class="rq-badge rq-badge-soft">Idoneo se…</span></div>
+    </div>`;
+  };
+
+  const cardEscluso = r => {
+    const b = r.b;
+    return `<div class="rq-card escluso">
+      <div class="rq-card-body">
+        <div class="rq-card-nome">${b.nome}</div>
+        <div class="rq-card-meta" style="color:#ef4444">${r.m.reasonsHard.join(' · ')}</div>
+      </div>
+    </div>`;
+  };
+
+  if (!risultati.length && categorie.length) {
+    const ris0 = document.getElementById('vb-risultati');
+    ris0.style.display = '';
+    ris0.innerHTML = `
+      <div class="rq-ris-hdr">Nessun bando in questa categoria, per ora</div>
+      <div class="rq-ris-sub">Nessuno dei bandi attualmente disponibili nel tool rientra nelle categorie selezionate.</div>
+      <button class="rq-btn-next" onclick="_vbState.answers.categorie=[];_vbShowResults(${quick?'true':'false'})">Mostra tutti i bandi disponibili</button>
+    `;
+    ris0.scrollIntoView({ behavior:'smooth', block:'start' });
+    return;
+  }
+
+  const nomeAzienda = (ans.nome||'').trim();
+  const saluto = nomeAzienda ? ` per ${nomeAzienda}` : '';
+  const titolo = quick
+    ? `${idonei.length} bandi indicativamente idonei${saluto}`
+    : `${idonei.length} bandi a cui puoi già applicare${saluto}`;
+  const sottotitolo = quick
+    ? `Basato solo su regione, dimensione e categoria — ATECO, età, bilanci e status non sono ancora stati verificati.`
+    : `${soft.length} bandi possibili con qualche passo in più · ${esclusi.length} non compatibili`;
+  const bannerApprofondimento = quick
+    ? `<div class="vb-cta" style="margin:0 0 24px;text-align:left">
+        <div class="vb-cta-title" style="margin-bottom:2px">Vuoi sapere con certezza se sei idoneo?</div>
+        <div class="vb-cta-sub">Rispondi a qualche altra domanda (ATECO, anno di fondazione, bilanci, status) per un risultato verificato su tutti i requisiti del bando.</div>
+        <button class="vb-cta-btn" style="border:none;font-family:inherit;cursor:pointer" onclick="_vbContinueDeep()">🔍 Ottieni il risultato verificato</button>
+      </div>`
+    : '';
+
+  const ris = document.getElementById('vb-risultati');
+  ris.style.display = '';
+  ris.innerHTML = `
+    <div class="rq-ris-hdr">${titolo}</div>
+    <div class="rq-ris-sub">${sottotitolo}</div>
+    ${bannerApprofondimento}
+    ${idonei.length ? idonei.map(cardOk).join('') : `<div class="rq-no-res">Nessun bando idoneo subito con questi dati.<br>Guarda qui sotto se qualcuno diventa disponibile con un passo in più, oppure parla con un consulente.</div>`}
+    ${soft.length ? `<div class="rq-sec-lbl">Idoneo se…</div>${soft.map(cardSoft).join('')}` : ''}
+    ${esclusi.length ? `<button class="rq-toggle-esclusi" id="vb-btn-esclusi" onclick="_vbToggleEsclusi()">Mostra ${esclusi.length} bandi non compatibili ↓</button>
+      <div id="vb-esclusi-wrap" style="display:none">${esclusi.map(cardEscluso).join('')}</div>` : ''}
+  `;
+
+  ris.scrollIntoView({ behavior:'smooth', block:'start' });
+
+  const ctaMail = document.getElementById('vb-cta-mail');
+  if (ctaMail && nomeAzienda) {
+    const body = `Ciao, sono di ${nomeAzienda}. Ho usato il tool di verifica bandi e vorrei una consulenza.`;
+    ctaMail.href = `mailto:marcoammoniaci01@gmail.com?subject=Verifica%20bandi%20-%20${encodeURIComponent(nomeAzienda)}&body=${encodeURIComponent(body)}`;
+  }
+}
+
+_vbInit();
+</script>
+</body>
+</html>

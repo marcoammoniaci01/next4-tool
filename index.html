@@ -1837,6 +1837,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="matching-engine.js"></script>
 </head>
 <body class="hub-mode">
 
@@ -2076,6 +2077,7 @@
     <button class="bt-btn bt-btn-fl" onclick="exportCSV('clienti')">⬇ Clienti CSV</button>
     <button class="bt-btn bt-btn-tl" onclick="backupJSON()">💾 Backup</button>
     <button class="bt-btn bt-btn-fl" onclick="importJSON()">⬆ Ripristina</button>
+    <button class="bt-btn bt-btn-fl" onclick="generaExportPubblico()" title="Genera bandi_pubblici.js per il tool clienti in portale/">🌐 Export pubblico</button>
     <input type="file" id="import-json-input" accept=".json" style="display:none" onchange="_handleImport(event)">
   </div>
 
@@ -3086,6 +3088,8 @@ const BANDI = [
     scadenza:"19/05/2025 – 30/06/2026", proc:"Sportello",
     stato:"chiuso", urgente:false, altaRilevanza:false, aperturaImminente:false,
     descrizione:"Consolidamento startup innovative Calabria ad alta intensità di conoscenza. Richiede iscrizione sezione startup registro imprese. GATIM e Tod Systems da verificare. ⚠ Chiuso il 30/06/2026.",
+    pubblicabile:true,
+    descrizionePubblica:"Contributo a fondo perduto fino al 70% (max €400.000) per il consolidamento di startup innovative ad alta intensità di conoscenza con sede in Calabria. Richiede iscrizione alla sezione speciale startup innovative del Registro Imprese.",
     clienti:[],
     link:"https://calabriaeuropa.regione.calabria.it/bando/avviso-per-il-sostegno-alla-creazione-e-al-consolidamento-di-startup-innovative-ad-alta-intensita-di-conoscenza/" },
 
@@ -3095,6 +3099,8 @@ const BANDI = [
     scadenza:"Fino a esaurimento fondi (31/12/2029)", proc:"Sportello",
     stato:"aperto", urgente:false, altaRilevanza:true, aperturaImminente:false,
     descrizione:"Startup innovative <60 mesi. ⚠ RIMOSSI per età: INTUOS (2019,PMI non startup), Boss Tech (2018, nessuna iscrizione), Messagenius (2014). Dati chiave: BrainoAI(MI,2023,36m), Velion(TS,2024,18m✅), Drop(RM,10/01/2023,41m), Ekore(UD,2022,48m), Fideliomed(TO,04/02/2022,52m), WinkSuite(MI,28/03/2023,38m), DestinoItalia(PA,15/07/2025,11m), AzuTech(RM,18/01/2024,29m), Yourease(BO,01/10/2024,20m), Spartan Tech(MI,2019,nessun aggiornamento dal 2019→verificare scadenza). ⚠ OralTec: ATECO 46.38 (commercio) – verificare.",
+    pubblicabile:true,
+    descrizionePubblica:"Finanziamento a tasso zero fino a €1.500.000 per la nascita e la crescita di startup innovative in tutta Italia, con quota aggiuntiva a fondo perduto per il Mezzogiorno. Riservato a startup innovative costituite da meno di 60 mesi.",
     clienti:["BrainoAI","Drop Digital Health","Ekore SRL","Fideliomed","Wink Suite SRL","Destino Italia","Azu Tech","Yourease","OralTec","iSaisei Corporation","Heres *","Assetia *"],
     link:"https://www.invitalia.it/incentivi-e-strumenti/smartstart-italia" },
 
@@ -3103,6 +3109,8 @@ const BANDI = [
     scadenza:"Fino a esaurimento fondi", proc:"Sportello",
     stato:"aperto", urgente:false, altaRilevanza:false, aperturaImminente:false,
     descrizione:"Finanziamento tasso zero + fondo perduto fino al 90% per micro/piccole imprese femminili (>50% donne) o giovanili (>50% under 35), costituite da ≤5 anni. Investimento 100K–3M€. Sportello permanente.",
+    pubblicabile:true,
+    descrizionePubblica:"Finanziamento a tasso zero abbinato a un contributo a fondo perduto fino al 90%, riservato a micro e piccole imprese femminili (oltre il 50% partecipato da donne) o giovanili (oltre il 50% partecipato da under 35), costituite da non più di 5 anni. Investimenti ammessi da €100.000 a €3.000.000.",
     clienti:["Wink Suite SRL"],
     link:"https://www.invitalia.it/incentivi-e-strumenti/on-oltre-nuove-imprese-a-tasso-zero" },
 
@@ -3127,6 +3135,8 @@ const BANDI = [
     scadenza:"19/03/2026 – fondi esauriti ✗", proc:"Sportello",
     stato:"chiuso", urgente:false, altaRilevanza:false, aperturaImminente:false,
     descrizione:"Startup innovative Lazio <36 mesi. Fondo perduto 100% su spese ammissibili. Apporto min €10.000. Copertura fino a 2× se investitore terzo (max €145.000). Monitorare Pre-Seed 4.0. ⚠ RIMOSSI per età >36 mesi: INTUOS (2019), Messagenius (2014), Drop Digital Health (41 mesi).",
+    pubblicabile:true,
+    descrizionePubblica:"Contributo a fondo perduto pari al 100% delle spese ammissibili per startup innovative con sede nel Lazio costituite da meno di 36 mesi, fino a €145.000 in presenza di un investitore terzo qualificato.",
     clienti:["Azu Tech","Assetia *"],
     link:"https://www.lazioinnova.it/bandi/pre-seed-3-0/" },
 
@@ -3135,6 +3145,8 @@ const BANDI = [
     scadenza:"Fino a esaurimento fondi", proc:"Sportello",
     stato:"aperto", urgente:false, altaRilevanza:false, aperturaImminente:false,
     descrizione:"Valorizzazione economica di nuovi prodotti/servizi per startup e piccole imprese in Puglia.",
+    pubblicabile:true,
+    descrizionePubblica:"Contributi fino a €350.000 per la valorizzazione economica di nuovi prodotti o servizi da parte di startup e piccole imprese innovative con sede in Puglia.",
     clienti:[],
     link:"https://www.regione.puglia.it/web/competitivita-e-innovazione/-/avviso-tecnonidi-aiuti-alle-piccole-imprese-innovative" },
 
@@ -3167,6 +3179,8 @@ const BANDI = [
     scadenza:"Dal 30/03/2026 – esaurimento fondi", proc:"Sportello",
     stato:"aperto", urgente:false, altaRilevanza:false, aperturaImminente:false,
     descrizione:"Contributi per innovazione e investimenti nelle tecnologie STEP in Toscana. OralTec (FI) biomedical/dental. Drycor: tecnologia HVAC ad alta efficienza energetica, manufacturing Siena (apertura entità italiana).",
+    pubblicabile:true,
+    descrizionePubblica:"Contributi per investimenti in tecnologie strategiche europee (STEP – Strategic Technologies for Europe Platform) da parte di imprese con sede in Toscana.",
     clienti:["OralTec","Drycor *"],
     link:"https://www.regione.toscana.it/-/bando-innovazione-strategica-step-strategic-technologies-for-europe-platform-" },
 
@@ -3200,6 +3214,8 @@ const BANDI = [
     scadenza:"Sportello digitale continuo", proc:"Sportello digitale",
     stato:"aperto", urgente:false, altaRilevanza:true, aperturaImminente:false,
     descrizione:"Finanziamento agevolato per entrare in nuovi mercati esteri: studi di mercato, uffici di rappresentanza, personale locale, consulenze, campagne promo. Accessibile anche a PMI senza fatturato estero (prime esportazioni).",
+    pubblicabile:true,
+    descrizionePubblica:"Finanziamento agevolato SIMEST per entrare in nuovi mercati esteri: studi di mercato, uffici di rappresentanza, personale locale, consulenze, campagne promozionali. Accessibile anche a PMI senza fatturato estero (prime esportazioni). Fino a €300.000, con quota aggiuntiva del 10% a fondo perduto (25% per il Sud Italia).",
     clienti:["BrainoAI","INTUOS SRL","Messagenius","Drop Digital Health","Ekore SRL","Fideliomed","Velion SRL","Wink Suite SRL","Boss Technologies SRL","Casavo","Destino Italia","Digitalmens","GATIM SRL","Tod Systems","ProGen SRL","EasyRFID","TLC Telecomunicazioni","Azu Tech","Ecubit","OralTec","Yourease","Spartan Tech","Heres","GGG","Flex Packaging","Ecoter","Citynews *","Next4Production","Fairtile *","Drycor *","Leasy *","Leonardo formazione"],
     link:"https://www.simest.it/per-le-imprese/finanziamenti-agevolati/finanziamenti-agevolati-internazionalizzazione/" },
 
@@ -3208,6 +3224,8 @@ const BANDI = [
     scadenza:"Sportello digitale continuo", proc:"Sportello digitale",
     stato:"aperto", urgente:false, altaRilevanza:true, aperturaImminente:false,
     descrizione:"Software, hardware, sistemi digitali, consulenze per digitalizzazione dell'export. Aggiornato 30/04/2026 con misura 'Energia per Competitività': PMI con incremento ≥10% costi energetici (conflitto Golfo Persico, dal 28/02/2026) ottengono condizioni migliorative.",
+    pubblicabile:true,
+    descrizionePubblica:"Finanziamento agevolato SIMEST per software, hardware, sistemi digitali e consulenze finalizzati alla digitalizzazione dell'export. Fino a €300.000, con quota aggiuntiva del 10% a fondo perduto (25% per il Sud Italia). Condizioni migliorative per PMI con incremento di almeno il 10% dei costi energetici.",
     clienti:["BrainoAI","INTUOS SRL","Messagenius","Drop Digital Health","Ekore SRL","Fideliomed","Velion SRL","Wink Suite SRL","Boss Technologies SRL","Casavo","Digitalmens","EasyRFID","Tod Systems","Azu Tech","Ecubit","Yourease","Spartan Tech","Heres","Flex Packaging"],
     link:"https://www.simest.it/per-le-imprese/finanziamenti-agevolati/finanziamenti-agevolati-internazionalizzazione/" },
 
@@ -3216,6 +3234,8 @@ const BANDI = [
     scadenza:"Sportello digitale continuo", proc:"Sportello digitale",
     stato:"aperto", urgente:false, altaRilevanza:false, aperturaImminente:false,
     descrizione:"Partecipazione a fiere ed eventi promozionali internazionali: quote stand, allestimento, trasferte, materiale promozionale, traduzioni.",
+    pubblicabile:true,
+    descrizionePubblica:"Finanziamento agevolato SIMEST per la partecipazione a fiere ed eventi promozionali internazionali: quote stand, allestimento, trasferte, materiale promozionale, traduzioni. Fino a €100.000, con quota aggiuntiva del 10% a fondo perduto (25% per il Sud Italia).",
     clienti:["BrainoAI","INTUOS SRL","Messagenius","Drop Digital Health","Ekore SRL","Fideliomed","Velion SRL","Wink Suite SRL","Boss Technologies SRL","Casavo","Destino Italia","EasyRFID","Azu Tech","Ecubit","OralTec","Yourease","Flex Packaging","GGG"],
     link:"https://www.simest.it/per-le-imprese/finanziamenti-agevolati/finanziamenti-agevolati-internazionalizzazione/" },
 
@@ -3224,6 +3244,8 @@ const BANDI = [
     scadenza:"Sportello digitale continuo", proc:"Sportello digitale",
     stato:"aperto", urgente:false, altaRilevanza:false, aperturaImminente:false,
     descrizione:"Piattaforme e-commerce internazionali, SEO su mercati esteri, logistica, traduzioni, sistemi di pagamento digitale. Requisito: dominio/piattaforma rivolta a mercati esteri.",
+    pubblicabile:true,
+    descrizionePubblica:"Finanziamento agevolato SIMEST per piattaforme e-commerce internazionali, SEO su mercati esteri, logistica, traduzioni e sistemi di pagamento digitale. Fino a €150.000, con quota aggiuntiva del 10% a fondo perduto (25% per il Sud Italia). Richiede una piattaforma/dominio rivolto a mercati esteri.",
     clienti:["BrainoAI","INTUOS SRL","Messagenius","Drop Digital Health","Ekore SRL","Velion SRL","Wink Suite SRL","Casavo","EasyRFID","Azu Tech","Yourease","Heres","Spartan Tech","OralTec"],
     link:"https://www.simest.it/per-le-imprese/finanziamenti-agevolati/finanziamenti-agevolati-internazionalizzazione/" },
 
@@ -3232,6 +3254,8 @@ const BANDI = [
     scadenza:"Sportello digitale continuo", proc:"Sportello digitale",
     stato:"aperto", urgente:false, altaRilevanza:false, aperturaImminente:false,
     descrizione:"Certificazioni internazionali (ISO, CE marking, standard tecnici esteri) e consulenze strategiche per l'internazionalizzazione.",
+    pubblicabile:true,
+    descrizionePubblica:"Finanziamento agevolato SIMEST per certificazioni internazionali (ISO, marcatura CE, standard tecnici esteri) e consulenze strategiche per l'internazionalizzazione. Fino a €100.000, con quota aggiuntiva del 10% a fondo perduto (25% per il Sud Italia).",
     clienti:["BrainoAI","INTUOS SRL","Messagenius","Drop Digital Health","Ekore SRL","Fideliomed","Velion SRL","Wink Suite SRL","Boss Technologies SRL","Casavo","Destino Italia","EasyRFID","TLC Telecomunicazioni","Digitalmens","ProGen SRL","Azu Tech","Ecubit","OralTec","Yourease","GGG","Flex Packaging","Ecoter","Speri","Leonardo formazione"],
     link:"https://www.simest.it/per-le-imprese/finanziamenti-agevolati/finanziamenti-agevolati-internazionalizzazione/" },
 
@@ -3240,6 +3264,8 @@ const BANDI = [
     scadenza:"Sportello digitale continuo", proc:"Sportello digitale",
     stato:"aperto", urgente:false, altaRilevanza:false, aperturaImminente:false,
     descrizione:"Figura professionale di Temporary/Export Manager tramite società di management specializzata. Ideale per PMI senza struttura export interna che vogliono avviare o accelerare l'internazionalizzazione.",
+    pubblicabile:true,
+    descrizionePubblica:"Finanziamento agevolato SIMEST per l'inserimento di un Temporary/Export Manager tramite società di management specializzata, ideale per PMI senza struttura export interna. Fino a €150.000, con quota aggiuntiva del 10% a fondo perduto (25% per il Sud Italia).",
     clienti:["BrainoAI","INTUOS SRL","Messagenius","Drop Digital Health","Ekore SRL","Fideliomed","Velion SRL","Wink Suite SRL","Boss Technologies SRL","Destino Italia","Digitalmens","GATIM SRL","Tod Systems","EasyRFID","TLC Telecomunicazioni","Azu Tech","Ecubit","OralTec","Yourease","Flex Packaging","GGG","Ecoter","Speri","Leonardo formazione"],
     link:"https://www.simest.it/per-le-imprese/finanziamenti-agevolati/finanziamenti-agevolati-internazionalizzazione/" },
 
@@ -3248,6 +3274,8 @@ const BANDI = [
     scadenza:"Sportello digitale continuo", proc:"Sportello digitale",
     stato:"aperto", urgente:false, altaRilevanza:true, aperturaImminente:false,
     descrizione:"Per PMI già presenti, che esportano o si approvvigionano in Africa. Spese: investimenti produttivi/commerciali, digitalizzazione, rafforzamento patrimoniale, formazione personale. Quota fondo perduto elevata (30-40%). Piano Mattei correlato.",
+    pubblicabile:true,
+    descrizionePubblica:"Finanziamento agevolato SIMEST per PMI già presenti, esportatrici o che si approvvigionano in Africa: investimenti produttivi/commerciali, digitalizzazione, rafforzamento patrimoniale, formazione del personale. Fino a €900.000, con quota a fondo perduto del 30% (40% per il Sud Italia).",
     clienti:["Destino Italia","GATIM SRL","Boss Technologies SRL","BrainoAI","Flex Packaging","Ecubit","EasyRFID","Tod Systems","Digitalmens"],
     link:"https://www.simest.it/per-le-imprese/finanziamenti-agevolati/finanziamenti-agevolati-internazionalizzazione/" },
 
@@ -3256,6 +3284,8 @@ const BANDI = [
     scadenza:"Sportello digitale continuo", proc:"Sportello digitale",
     stato:"aperto", urgente:false, altaRilevanza:false, aperturaImminente:false,
     descrizione:"Per PMI con interessi in America centrale o meridionale (Argentina, Brasile, Messico, Colombia, Cile, Perù, ecc.). Investimenti produttivi, commerciali, digitali, patrimoniali. Attivo dal 28/02/2025.",
+    pubblicabile:true,
+    descrizionePubblica:"Finanziamento agevolato SIMEST per PMI con interessi in America centrale o meridionale (Argentina, Brasile, Messico, Colombia, Cile, Perù e altri): investimenti produttivi, commerciali, digitali e patrimoniali. Fino a €900.000, con quota a fondo perduto del 30% (40% per il Sud Italia).",
     clienti:["BrainoAI","Boss Technologies SRL","INTUOS SRL","Destino Italia","Yourease","Ecubit","EasyRFID","Leasy *"],
     link:"https://www.simest.it/per-le-imprese/finanziamenti-agevolati/finanziamenti-agevolati-internazionalizzazione/" },
 
@@ -3264,6 +3294,8 @@ const BANDI = [
     scadenza:"Sportello digitale continuo", proc:"Sportello digitale",
     stato:"aperto", urgente:false, altaRilevanza:false, aperturaImminente:false,
     descrizione:"Per PMI che vogliono entrare o sono già presenti in India. Almeno 30% del finanziamento destinato a investimenti in India. Spese: produttivi, commerciali, digitalizzazione, formazione. Attivo dal 31/07/2025.",
+    pubblicabile:true,
+    descrizionePubblica:"Finanziamento agevolato SIMEST per PMI che vogliono entrare o sono già presenti in India, con almeno il 30% del finanziamento destinato a investimenti in India: spese produttive, commerciali, di digitalizzazione e formazione. Fino a €300.000, con quota a fondo perduto del 25% (35% per il Sud Italia).",
     clienti:["BrainoAI","Ekore SRL","INTUOS SRL","Fideliomed","Ecubit","Azu Tech","OralTec","EasyRFID"],
     link:"https://www.simest.it/per-le-imprese/finanziamenti-agevolati/finanziamenti-agevolati-internazionalizzazione/" },
 
@@ -3272,6 +3304,8 @@ const BANDI = [
     scadenza:"31/12/2026", proc:"Sportello digitale",
     stato:"aperto", urgente:false, altaRilevanza:true, aperturaImminente:false,
     descrizione:"Nuova misura SIMEST (aperta 25/5/2026) per PMI esportatrici colpite dal caro energia o dalla contrazione di fatturato per il conflitto nel Golfo Persico. Fondo perduto 30% PMI (20% grandi), finanziamento tasso 0,3%, anticipo 50%, durata fino 8 anni, esenzione garanzie. Dotazione 800M€.",
+    pubblicabile:true,
+    descrizionePubblica:"Misura SIMEST per PMI esportatrici colpite dal caro energia o dalla contrazione del fatturato per il conflitto nel Golfo Persico: fondo perduto 30% (20% per le grandi imprese), finanziamento a tasso 0,3%, anticipo 50%, durata fino a 8 anni, esenzione garanzie. Fino a €200.000. Dotazione €800 milioni.",
     clienti:["BrainoAI","INTUOS SRL","Messagenius","Drop Digital Health","Ekore SRL","Fideliomed","Velion SRL","Wink Suite SRL","Boss Technologies SRL","Casavo","Destino Italia","Digitalmens","GATIM SRL","Tod Systems","ProGen SRL","EasyRFID","TLC Telecomunicazioni","Azu Tech","Ecubit","OralTec","Yourease","Spartan Tech","Heres","Flex Packaging","Ecoter","Citynews *","Next4Production","Fairtile *","Leasy *"],
     link:"https://www.simest.it/misura-energia-per-la-competitivita-internazionale/" },
 
@@ -3288,6 +3322,8 @@ const BANDI = [
     scadenza:"10/11/2025 – 30/04/2027", proc:"Sportello",
     stato:"aperto", urgente:false, altaRilevanza:false, aperturaImminente:false,
     descrizione:"Incentivi per sviluppo e validazione di startup innovative in Sardegna. Drycor (Nimbus EU) pianifica manufacturing a Porto Torres – aprire sede in Sardegna per candidatura.",
+    pubblicabile:true,
+    descrizionePubblica:"Incentivi fino a €200.000 per lo sviluppo e la validazione di startup innovative con sede in Sardegna.",
     clienti:["Drycor *"],
     link:"https://www.regione.sardegna.it/notizie/pubblicata-l-edizione-2025-del-programma-voucher-startup" },
 
@@ -3312,6 +3348,8 @@ const BANDI = [
     scadenza:"Cut-off 08/07/2026 e 17/12/2026 (short proposal: continuo)", proc:"Graduatoria bifasica",
     stato:"aperto", urgente:true, altaRilevanza:true, aperturaImminente:false,
     descrizione:"634M€ europei per startup/PMI deep-tech con innovazione dirompente. TRL 6-8. Grant non rimborsabile + investimento equity. Aperto a tutte le PMI UE.",
+    pubblicabile:true,
+    descrizionePubblica:"Finanziamento europeo (Horizon Europe) fino a €2,5 milioni a fondo perduto più investimento equity fino a €10 milioni, per startup e PMI deep-tech con innovazione dirompente (TRL 6-8). Aperto a tutte le PMI dell'Unione Europea.",
     clienti:["BrainoAI","INTUOS SRL","Fideliomed","Drop Digital Health","Boss Technologies SRL","Ekore SRL","Azu Tech","Yourease","Ecubit","iSaisei Corporation","Heres *","Ilios *","Fairtile *"],
     link:"https://eic.ec.europa.eu/eic-funding-opportunities/eic-accelerator/eic-accelerator-challenges-2026_en" },
 
@@ -3337,6 +3375,8 @@ const BANDI = [
     scadenza:"In attesa di pubblicazione", proc:"Graduatoria",
     stato:"inapertura", urgente:false, altaRilevanza:true, aperturaImminente:false,
     descrizione:"Bando Regione Lombardia per startup innovative (<36 mesi, o <60 mesi se TRL≤6). Requisito: sede in Lombardia entro la prima erogazione. BrainoAI e Wink Suite già a Milano. ⚠ RIMOSSI per età: INTUOS (84m), Messagenius (143m), Boss Technologies (72m), Velion (72m).",
+    pubblicabile:true,
+    descrizionePubblica:"Bando di Regione Lombardia per startup innovative costituite da meno di 36 mesi (o meno di 60 mesi se TRL ≤ 6), con requisito di sede operativa in Lombardia entro la prima erogazione. Dotazione €15,64 milioni.",
     clienti:["BrainoAI","Wink Suite SRL","Drop Digital Health","Ekore SRL","Fideliomed","Destino Italia","Azu Tech","Yourease","OralTec","iSaisei Corporation *","Heres *","Assetia *"],
     link:"https://www.regione.lombardia.it/attivita-produttive-imprese/start-up-e-avvio-di-impresa/sviluppo-tecnologico-delle-startup-innovative" },
 
@@ -3361,6 +3401,8 @@ const BANDI = [
     scadenza:"In attesa di decreto", proc:"Sportello",
     stato:"inapertura", urgente:false, altaRilevanza:true, aperturaImminente:false,
     descrizione:"Programmi innovativi, sostenibili e ad alto contenuto tecnologico per PMI del Mezzogiorno.",
+    pubblicabile:true,
+    descrizionePubblica:"Contributi per programmi di investimento innovativi, sostenibili e ad alto contenuto tecnologico riservati a PMI con sede nel Mezzogiorno. Dotazione €448 milioni.",
     clienti:["GATIM SRL","Tod Systems","Digitalmens","ProGen SRL","Destino Italia","Flex Packaging"],
     link:"https://www.mimit.gov.it/it/notizie-stampa/mimit-al-via-il-bando-investimenti-sostenibili-4-0-da-448-milioni" },
 
@@ -3402,6 +3444,8 @@ const BANDI = [
     scadenza:"EUIPO SME Fund: 04/12/2026 · MIMIT click day periodici", proc:"Sportello / Click day",
     stato:"aperto", urgente:false, altaRilevanza:true, aperturaImminente:false,
     descrizione:"EUIPO SME Fund 2026 (aperto fino 04/12/2026): voucher per PMI UE – rimborso 75% tasse deposito marchi EU/nazionali/internazionali e design registrati. Max €1.000/marchio EU, €750/marchio nazionale. Cumulabile con Brevetti+ MIMIT (fino a 80% spese brevettazione).",
+    pubblicabile:true,
+    descrizionePubblica:"EUIPO SME Fund 2026: voucher per PMI dell'Unione Europea con rimborso del 75% delle tasse di deposito di marchi (UE, nazionali, internazionali) e disegni registrati (max €1.000 per marchio UE, €750 per marchio nazionale). Cumulabile con Brevetti+ MIMIT, che copre fino all'80% delle spese di brevettazione.",
     clienti:["Boss Technologies SRL","BrainoAI","Fideliomed","INTUOS SRL","Ecubit","EasyRFID","OralTec","Azu Tech","Ekore SRL","Velion SRL","Drop Digital Health","Digitalmens","Wink Suite SRL"],
     link:"https://www.euipo.europa.eu/it/sme-corner/sme-fund/2026" },
 
@@ -3459,6 +3503,8 @@ const BANDI = [
     scadenza:"22/04/2026 – 10/06/2026 ✗", proc:"Graduatoria",
     stato:"chiuso", urgente:false, altaRilevanza:false, aperturaImminente:false,
     descrizione:"Contributi per sviluppo PMI femminili nel Lazio. INTUOS (58,5% donna), Wink Suite (100% donna). Monitorare edizione 2027.",
+    pubblicabile:true,
+    descrizionePubblica:"Contributi della Regione Lazio per lo sviluppo di PMI a prevalente partecipazione femminile (oltre il 50% di quote o soci donne).",
     clienti:["INTUOS SRL","Wink Suite SRL","Drop Digital Health"],
     link:"https://next4consulting.it/news-bando/donne-e-impresa-lazio-2026/" },
 
@@ -3491,6 +3537,8 @@ const BANDI = [
     scadenza:"14/01/2026 – 18/02/2026 ✗", proc:"Graduatoria",
     stato:"chiuso", urgente:false, altaRilevanza:false, aperturaImminente:false,
     descrizione:"Ricerca industriale e sviluppo sperimentale con imprese e università. Monitorare edizione 2026.",
+    pubblicabile:true,
+    descrizionePubblica:"Incentivi MIMIT per progetti di ricerca industriale e sviluppo sperimentale realizzati in collaborazione tra imprese e università, riservati a imprese con almeno 2 bilanci approvati depositati. Dotazione €731 milioni.",
     clienti:["BrainoAI","Boss Technologies SRL","ProGen SRL","Fideliomed","Ecubit","Ecoter","EasyRFID"],
     link:"https://next4consulting.it/news-bando/accordi-per-linnovazione-2025/" },
 
@@ -3507,6 +3555,8 @@ const BANDI = [
     scadenza:"12/02/2026 – 12/05/2026 ✗", proc:"Graduatoria",
     stato:"chiuso", urgente:false, altaRilevanza:false, aperturaImminente:false,
     descrizione:"Contributo 50% per fiere, e-commerce, consulenze internazionali. Imprese FVG. Monitorare riedizione per Boss Technologies (UD) e Velion (TS).",
+    pubblicabile:true,
+    descrizionePubblica:"Contributo del 50% delle spese ammissibili (fino a €100.000) per fiere, e-commerce e consulenze di internazionalizzazione, riservato a imprese con sede in Friuli Venezia Giulia.",
     clienti:["Boss Technologies SRL","Velion SRL"],
     link:"https://next4consulting.it/news-bando/bando-internazionalizzazione-imprese-fvg-2026/" },
 
@@ -3515,6 +3565,8 @@ const BANDI = [
     scadenza:"Chiuso 20/11/2025 ✗", proc:"Graduatoria",
     stato:"chiuso", urgente:false, altaRilevanza:false, aperturaImminente:false,
     descrizione:"Incentivi per valorizzazione economica dei brevetti. Monitorare edizione 2026.",
+    pubblicabile:true,
+    descrizionePubblica:"Incentivi MIMIT per la valorizzazione economica dei brevetti da parte delle imprese italiane.",
     clienti:["Boss Technologies SRL","BrainoAI","Fideliomed","Ecubit","EasyRFID","OralTec"],
     link:"https://next4consulting.it/news-bando/brevetti-2025/" },
 
@@ -6222,149 +6274,8 @@ function parseRequisitiFromNote(testo) {
   return req;
 }
 
-// Controlla se un cliente soddisfa i requisiti di ammissibilità di un bando.
-// Restituisce { ok: bool, reasons: string[] }.
-// Se requisiti è vuoto o il campo cliente non è compilato → non blocca il match.
-function matchClienteBando(nomeCliente, bando) {
-  const d   = CLIENTI[nomeCliente] || {};
-  // Usa i requisiti salvati; se assenti, prova a parsarli dalla descrizione (bandi pre-esistenti)
-  const req = (bando && bando.requisiti)
-           || (bando && BANDI_REQUISITI_MAP[bando.nome])
-           || parseRequisitiFromNote(bando && bando.descrizione)
-           || {};
-  const reasons = [];
-  const annoOggi = new Date().getFullYear();
-
-  if (req.dimensioni && req.dimensioni.length > 0 && d.dimensione)
-    if (!req.dimensioni.includes(d.dimensione))
-      reasons.push(`Dimensione: serve ${req.dimensioni.join('/')} (questa è ${d.dimensione})`);
-
-  if (req.startupInnovativa && !d.startupInnovativa)
-    reasons.push('Richiede iscrizione come Startup Innovativa');
-
-  if (req.pmiInnovativa && !d.pmiInnovativa)
-    reasons.push('Richiede iscrizione come PMI Innovativa');
-
-  if (req.impresaFemminile && !d.impresaFemminile)
-    reasons.push('Richiede requisito di impresa femminile');
-
-  if (req.impresaGiovanile && !d.impresaGiovanile)
-    reasons.push('Richiede requisito di impresa giovanile');
-
-  if (req.atecoInclude && req.atecoInclude.length > 0 && d.ateco)
-    if (!req.atecoInclude.some(p => d.ateco.startsWith(p)))
-      reasons.push(`ATECO ${d.ateco} non tra i codici ammessi (${req.atecoInclude.join(', ')})`);
-
-  if (req.atecoExclude && req.atecoExclude.length > 0 && d.ateco)
-    if (req.atecoExclude.some(p => d.ateco.startsWith(p)))
-      reasons.push(`ATECO ${d.ateco} escluso dal bando`);
-
-  if (req.etaMinAnni != null && d.annoFondazione != null) {
-    const eta = annoOggi - d.annoFondazione;
-    if (eta < req.etaMinAnni) reasons.push(`Impresa troppo giovane: ${eta} anni (min ${req.etaMinAnni})`);
-  }
-  if (req.etaMaxAnni != null && d.annoFondazione != null) {
-    const eta = annoOggi - d.annoFondazione;
-    if (eta > req.etaMaxAnni) reasons.push(`Impresa troppo anziana: ${eta} anni (max ${req.etaMaxAnni})`);
-  }
-  if (req.addettiMin != null && d.addetti != null && d.addetti < req.addettiMin)
-    reasons.push(`Troppo pochi addetti: ${d.addetti} (min ${req.addettiMin})`);
-  if (req.addettiMax != null && d.addetti != null && d.addetti > req.addettiMax)
-    reasons.push(`Troppi addetti: ${d.addetti} (max ${req.addettiMax})`);
-  if (req.fatturatoMin != null && d.fatturatoUltimo != null && d.fatturatoUltimo < req.fatturatoMin)
-    reasons.push(`Fatturato insufficiente: €${d.fatturatoUltimo.toLocaleString('it-IT')} (min €${req.fatturatoMin.toLocaleString('it-IT')})`);
-  if (req.fatturatoMax != null && d.fatturatoUltimo != null && d.fatturatoUltimo > req.fatturatoMax)
-    reasons.push(`Fatturato troppo alto: €${d.fatturatoUltimo.toLocaleString('it-IT')} (max €${req.fatturatoMax.toLocaleString('it-IT')})`);
-
-  // Bilanci approvati (check generico — funziona per tutti i bandi con bilanciMin impostato)
-  if (req.bilanciMin != null) {
-    if (d.bilanciApprovati != null && d.bilanciApprovati < req.bilanciMin)
-      reasons.push(`Troppo pochi bilanci approvati: ${d.bilanciApprovati} (richiesti almeno ${req.bilanciMin})`);
-    else if (d.bilanciApprovati == null && d.annoFondazione != null) {
-      const stimaBilanci = Math.max(0, annoOggi - d.annoFondazione - 1);
-      if (stimaBilanci < req.bilanciMin)
-        reasons.push(`Probabilmente bilanci insufficienti: ~${stimaBilanci} stimati (richiesti almeno ${req.bilanciMin}; fondata ${d.annoFondazione})`);
-    }
-  }
-  if (req.bilanciMax != null && d.bilanciApprovati != null && d.bilanciApprovati > req.bilanciMax)
-    reasons.push(`Troppi bilanci depositati: ${d.bilanciApprovati} (max ${req.bilanciMax})`);
-
-  // Numero soci
-  if (req.sociMin != null && d.nSoci != null && d.nSoci < req.sociMin)
-    reasons.push(`Troppo pochi soci: ${d.nSoci} (richiesti almeno ${req.sociMin})`);
-  if (req.sociMax != null && d.nSoci != null && d.nSoci > req.sociMax)
-    reasons.push(`Troppi soci: ${d.nSoci} (max ${req.sociMax})`);
-
-  // SIMEST: check fatturato zero (il bilanci check è ora gestito via bilanciMin in BANDI_REQUISITI_MAP)
-  if (bando && /^SIMEST/i.test(bando.nome)) {
-    if (req.bilanciMin == null) {
-      // Fallback per bandi SIMEST non ancora in BANDI_REQUISITI_MAP
-      if (d.bilanciApprovati != null && d.bilanciApprovati < 2)
-        reasons.push(`SIMEST richiede almeno 2 bilanci approvati (${d.bilanciApprovati} depositati)`);
-      else if (d.bilanciApprovati == null && d.annoFondazione != null && (annoOggi - d.annoFondazione) < 2)
-        reasons.push('SIMEST richiede almeno 2 bilanci approvati (impresa troppo giovane)');
-    }
-    if (d.fatturatoUltimo != null && d.fatturatoUltimo === 0)
-      reasons.push('SIMEST non ammissibile: fatturato zero');
-  }
-
-  return { ok: reasons.length === 0, reasons };
-}
-
-function autoMatchClienti(regione) {
-  const r = (regione || '').toLowerCase();
-
-  // Regioni italiane → province/città associate
-  const GEO = {
-    lazio:      ['roma','viterbo','frosinone','latina','rieti','(rm)','(vt)','(fr)','(lt)','(ri)'],
-    lombardia:  ['milano','bergamo','brescia','como','cremona','lecco','lodi','mantova','monza','pavia','sondrio','varese','(mi)','(bg)','(bs)','(co)','(cr)','(lc)','(lo)','(mn)','(mb)','(pv)','(so)','(va)'],
-    toscana:    ['firenze','arezzo','grosseto','livorno','lucca','massa','pisa','pistoia','prato','siena','(fi)','(ar)','(gr)','(li)','(lu)','(ms)','(pi)','(pt)','(po)','(si)'],
-    campania:   ['napoli','avellino','benevento','caserta','salerno','(na)','(av)','(bn)','(ce)','(sa)'],
-    sicilia:    ['palermo','agrigento','caltanissetta','catania','enna','messina','ragusa','siracusa','trapani','(pa)','(ag)','(cl)','(ct)','(en)','(me)','(rg)','(sr)','(tp)'],
-    veneto:     ['venezia','belluno','padova','rovigo','treviso','verona','vicenza','(ve)','(bl)','(pd)','(ro)','(tv)','(vr)','(vi)'],
-    piemonte:   ['torino','alessandria','asti','biella','cuneo','novara','verbania','vercelli','(to)','(al)','(at)','(bi)','(cn)','(no)','(vb)','(vc)'],
-    'emilia':   ['bologna','ferrara','forlì','modena','parma','piacenza','ravenna','reggio emilia','rimini','(bo)','(fe)','(fc)','(mo)','(pr)','(pc)','(ra)','(re)','(rn)'],
-    puglia:     ['bari','brindisi','foggia','lecce','taranto','(ba)','(bt)','(br)','(fg)','(le)','(ta)'],
-    calabria:   ['catanzaro','cosenza','crotone','reggio calabria','vibo valentia','(cz)','(cs)','(kr)','(rc)','(vv)'],
-    sardegna:   ['cagliari','nuoro','oristano','sassari','(ca)','(nu)','(or)','(ss)','(su)'],
-    abruzzo:    ["l'aquila",'chieti','pescara','teramo','(aq)','(ch)','(pe)','(te)'],
-    basilicata: ['potenza','matera','(pz)','(mt)'],
-    molise:     ['campobasso','isernia','(cb)','(is)'],
-    umbria:     ['perugia','terni','(pg)','(tr)'],
-    marche:     ['ancona','ascoli','fermo','macerata','pesaro','(an)','(ap)','(fm)','(mc)','(pu)'],
-    liguria:    ['genova','imperia','la spezia','savona','(ge)','(im)','(sp)','(sv)'],
-    friuli:     ['trieste','gorizia','pordenone','udine','(ts)','(go)','(pn)','(ud)'],
-    trentino:   ['trento','bolzano','(tn)','(bz)'],
-    // Mezzogiorno = macro-area
-    mezzogiorno:['campania','puglia','basilicata','calabria','sicilia','sardegna','abruzzo','molise',
-                 'napoli','bari','palermo','catanzaro','potenza','cosenza','catania','cagliari','pescara','campobasso',
-                 '(na)','(ba)','(pa)','(cz)','(pz)','(cs)','(ct)','(ca)','(pe)','(cb)',
-                 '(av)','(bn)','(ce)','(sa)','(bt)','(br)','(fg)','(le)','(ta)','(kr)','(rc)','(vv)',
-                 '(nu)','(or)','(ss)','(su)','(aq)','(ch)','(te)','(mt)','(ag)','(cl)','(en)','(me)','(rg)','(sr)','(tp)'],
-  };
-
-  // Cerca la regione nel testo
-  let keywords = [];
-  for (const [key, cities] of Object.entries(GEO)) {
-    if (r.includes(key)) { keywords = cities; break; }
-  }
-  const isNazionale = !keywords.length || ['nazionale','tutte','italia','tutto il territorio'].some(k => r.includes(k));
-
-  const out = [];
-  for (const [nome, dati] of Object.entries(CLIENTI)) {
-    if (!dati.piva) continue; // salta aziende senza P.IVA (dati incompleti)
-    if (isNazionale) {
-      out.push(nome);
-    } else {
-      const cittaLC = (dati.citta || '').toLowerCase();
-      const sediExtra = (dati.regioniOperative || []).map(r => r.toLowerCase());
-      const inRegione = keywords.some(k => cittaLC.includes(k))
-                     || sediExtra.some(r => keywords.some(k => r.includes(k)));
-      out.push(inRegione ? nome : nome + ' *');
-    }
-  }
-  return out.sort();
-}
+// matchClienteBando, autoMatchClienti, matchGeografico, classificaEsito sono
+// definiti in matching-engine.js (condiviso con il tool pubblico in portale/).
 
 function saveNewBando() {
   const editIdx   = parseInt(document.getElementById('nb-editing-idx').value);
@@ -6582,6 +6493,55 @@ function backupJSON() {
   };
   _dlText(JSON.stringify(payload, null, 2), `backup_next4_${_dateStr()}.json`, 'application/json');
   showToast('💾 Backup scaricato', 'ok', 3000);
+}
+
+// Genera bandi_pubblici.js: dataset sanitizzato per il tool pubblico in portale/.
+// Include SOLO i bandi con pubblicabile:true + descrizionePubblica compilata +
+// requisiti risolvibili — se manca anche solo uno dei tre, il bando resta escluso
+// (mai un falso positivo per errore di distrazione). Omette clienti[] e descrizione
+// originale, che possono contenere dati confidenziali di altri clienti.
+function generaExportPubblico() {
+  const inclusi = [];
+  const scartati = [];
+
+  BANDI.forEach(b => {
+    if (!b.pubblicabile) return; // non marcato per la pubblicazione, salta silenziosamente
+    if (b.stato === 'chiuso') return; // bando chiuso, non presentabile
+    const requisiti = b.requisiti || BANDI_REQUISITI_MAP[b.nome];
+    const problemi = [];
+    if (!requisiti) problemi.push('requisiti non risolvibili');
+    if (!b.descrizionePubblica || !b.descrizionePubblica.trim()) problemi.push('descrizionePubblica mancante');
+    if (problemi.length) { scartati.push(`${b.nome} (${problemi.join(', ')})`); return; }
+
+    inclusi.push({
+      nome: b.nome,
+      ente: b.ente,
+      regione: b.regione,
+      tipo: b.tipo || [],
+      contributo: b.contributo,
+      scadenza: b.scadenza,
+      proc: b.proc,
+      stato: b.stato,
+      descrizione: b.descrizionePubblica,
+      requisiti,
+      link: b.link,
+    });
+  });
+
+  if (scartati.length) {
+    console.warn(`Export pubblico — ${scartati.length} bandi esclusi:\n` + scartati.join('\n'));
+  }
+  if (!inclusi.length) {
+    showToast('⚠ Nessun bando pubblicabile: aggiungi pubblicabile:true + descrizionePubblica', 'warn', 4000);
+    return;
+  }
+
+  _dlText(
+    `// Generato da generaExportPubblico() il ${new Date().toISOString()} — non modificare a mano.\nconst BANDI_PUBBLICI = ${JSON.stringify(inclusi, null, 2)};\n`,
+    'bandi_pubblici.js',
+    'application/javascript'
+  );
+  showToast(`🌐 Export pubblico: ${inclusi.length} bandi inclusi` + (scartati.length ? `, ${scartati.length} esclusi (vedi console)` : ''), 'ok', 4000);
 }
 
 function importJSON() { document.getElementById('import-json-input').click(); }
@@ -7099,19 +7059,8 @@ function _rqGoTo(id) {
   }
 }
 
-// controlla se la regione del bando è compatibile con le regioni dell'utente
-function _rqGeoOk(bandoReg, userRegioni) {
-  const br = (bandoReg||'').toLowerCase();
-  if (!br || ['nazionale','tutte','tutto il territorio','italia'].some(k=>br.includes(k))) return 'nazionale';
-  const MEZZ = ['campania','puglia','basilicata','calabria','sicilia','sardegna','abruzzo','molise','campobasso','(na)','(ba)','(pa)','(cz)','(pz)','(cs)','(ct)','(ca)','(pe)','(rc)','(kr)'];
-  for (const r of userRegioni.filter(Boolean)) {
-    const rl = r.toLowerCase().trim();
-    if (!rl) continue;
-    if (br.includes(rl) || rl.split(' ').some(w=>w.length>3&&br.includes(w))) return 'in';
-    if (br.includes('mezzogiorno') && MEZZ.some(m=>rl.includes(m.replace('(','').replace(')','')))) return 'in';
-  }
-  return 'fuori';
-}
+// _rqGeoOk è stata spostata in matching-engine.js come matchGeografico()
+// (condivisa con il tool pubblico in portale/).
 
 function _rqShowResults() {
   const ans = _rqState.answers;
@@ -7164,7 +7113,7 @@ function _rqShowResults() {
     .filter(b => _statoCalcolato(b).stato !== 'chiuso')
     .map(b => {
       const m   = matchClienteBando(TMP, b);
-      const geo = _rqGeoOk(b.regione, userRegioni);
+      const geo = matchGeografico(b.regione, userRegioni);
       // soft: tipo investimento
       const tipoOk = !investimento.length || investimento.some(t=>(b.tipo||[]).includes(t));
       return { b, ok:m.ok, reasons:m.reasons, geo, tipoOk };
