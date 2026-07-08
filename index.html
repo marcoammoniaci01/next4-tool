@@ -3056,6 +3056,8 @@ const BANDI = [
     scadenza:"04/06/2026 – 06/07/2026", proc:"Graduatoria",
     stato:"aperto", urgente:true, altaRilevanza:true, aperturaImminente:false,
     descrizione:"Contributi per economia circolare, recupero e valorizzazione materiali da rifiuti in Calabria. GATIM SRL ha ATECO 38.21.30: corrispondenza diretta.",
+    pubblicabile:true,
+    descrizionePubblica:"Contributo a fondo perduto per investimenti in economia circolare (nuovo stabilimento, ampliamento, diversificazione o cambio processo) per il riutilizzo, riciclaggio e recupero di materia da rifiuti in Calabria. Riservato a piccole e medie imprese (non micro), anche in raggruppamento (2-4 PMI). Costo ammissibile tra €150.000 e €800.000 per PMI.",
     clienti:["GATIM SRL"],
     link:"https://calabriaeuropa.regione.calabria.it/incentivi-per-lo-sviluppo-di-filiere-produttive-innovative-per-il-riutilizzo-il-riciclaggio-e-il-recupero-di-materia-dai-rifiuti-pubblicato-lavviso-pubblico/" },
 
@@ -3063,23 +3065,27 @@ const BANDI = [
     tipo:["rs","innovazione"], contributo:"Fino a €250.000 fondo perduto",
     scadenza:"30/06/2026 (scadenza PROROGATA)", proc:"Graduatoria",
     stato:"aperto", urgente:true, altaRilevanza:true, aperturaImminente:false,
-    descrizione:"Startup innovative Lazio <36 mesi, TRL≥4. ⚠ RIMOSSI: INTUOS (84m), Messagenius (143m), Drop(41m >36m), Yourease(BO≠Lazio). Azu Tech (RM, 18/01/2024, 29m) ✅ ammissibile se iscritto startup innovativa.",
+    descrizione:"Startup innovative Lazio <36 mesi, TRL≥4. ⚠ RIMOSSI: INTUOS (84m), Messagenius (143m), Drop(41m >36m), Yourease(BO≠Lazio). Azu Tech (RM, 18/01/2024, 29m) ✅ ammissibile se iscritto startup innovativa. ⚠ VERIFICATO 08/07/2026: il sito ufficiale (ttlazio.lazioinnova.it) dichiara ORA 'la call è attualmente chiusa' — contrasta con scadenza 30/06/2026 qui sopra. Contattare TTLazio@lazioinnova.it prima di proporlo a clienti.",
     clienti:["Azu Tech","Assetia *"],
     link:"https://ttlazio.lazioinnova.it" },
 
   { nome:"Voucher Manager – Potenziamento Manageriale Lazio", ente:"Regione Lazio / PR FSE+ 2021-2027", regione:"Lazio",
     tipo:["impresa"], contributo:"Fino a €30.000 per azienda",
-    scadenza:"30/06/2026 (finestre mensili)", proc:"Sportello (ordine cronologico)",
+    scadenza:"02/02/2026 ore 9:30 – 22/12/2026 ore 17:00 (prorogata con Determinazione G06729 del 19/05/2026)", proc:"Sportello (ordine cronologico)",
     stato:"aperto", urgente:true, altaRilevanza:true, aperturaImminente:false,
     descrizione:"Voucher per assunzione manager/quadri o consulenza manageriale specializzata. €5M totali. Aperto a tutte le imprese laziali. Fino a 2 domande per azienda. ✅ Sede Lazio confermata per: WDA, Govtech, Ecoter, Ecubit, Consedin, Speri, Kerr.",
+    pubblicabile:true,
+    descrizionePubblica:"Voucher a fondo perduto per l'assunzione di un manager/quadro/dirigente o per consulenze manageriali specialistiche, per imprese con sede legale/operativa nel Lazio. Massimali 12 mesi: fino a €26.000 (o €30.000 per donne/over55) per aziende fino a 10 dipendenti, con importi decrescenti per aziende più grandi. Massimo 2 domande per impresa.",
     clienti:["INTUOS SRL","Messagenius","Drop Digital Health","Azu Venture","Azu Tech","Ecoter","Ecubit","WDA","Govtech","Consedin","Speri","Kerr","TLC Telecomunicazioni","Assetia *"],
     link:"https://www.lazioeuropa.it/bandi/rafforzamento-delle-capacita-manageriali-delle-imprese/" },
 
   { nome:"Sviluppo Competenze Digitali/Green – Mezzogiorno", ente:"MIMIT / Invitalia", regione:"Mezzogiorno",
     tipo:["lavoro","digitale"], contributo:"€50 milioni (dotazione totale)",
-    scadenza:"23/06/2026", proc:"Sportello",
+    scadenza:"21/04/2026 ore 12:00 – 23/06/2026 ore 12:00", proc:"Sportello",
     stato:"aperto", urgente:true, altaRilevanza:true, aperturaImminente:false,
     descrizione:"Finanziamento a fondo perduto per PMI del Mezzogiorno che investono in formazione digitale e green. Scadenza imminente.",
+    pubblicabile:true,
+    descrizionePubblica:"Contributo a fondo perduto (50% delle spese, +20% micro/piccole e +10% medie per progetti integrati sovraregionali) per PMI con sede in Basilicata, Calabria, Campania, Molise, Puglia, Sardegna o Sicilia che investono in formazione del personale su innovazione tecnologica e transizione verde/digitale.",
     clienti:["GATIM SRL","Digitalmens","Tod Systems","Flex Packaging"],
     link:"https://www.invitalia.it/incentivi-e-strumenti/sviluppo-competenze-specialistiche-delle-pmi" },
 
@@ -3112,7 +3118,7 @@ const BANDI = [
     pubblicabile:true,
     descrizionePubblica:"Finanziamento a tasso zero abbinato a un contributo a fondo perduto fino al 90%, riservato a micro e piccole imprese femminili (oltre il 50% partecipato da donne) o giovanili (oltre il 50% partecipato da under 35), costituite da non più di 5 anni. Investimenti ammessi da €100.000 a €3.000.000.",
     clienti:["Wink Suite SRL"],
-    link:"https://www.invitalia.it/incentivi-e-strumenti/on-oltre-nuove-imprese-a-tasso-zero" },
+    link:"https://www.invitalia.it/incentivi-e-strumenti/ON-nuove-imprese-tasso-zero" },
 
   { nome:"Autoimpiego Centro-Nord", ente:"Invitalia", regione:"Centro-Nord",
     tipo:["lavoro","impresa"], contributo:"Voucher €30.000–€40.000",
@@ -6184,6 +6190,10 @@ function openEditBandoModal(idx) {
 // Requisiti estratti dalle schede ufficiali Next4G — fonte: documenti Consulting N4G.
 // Usati come fallback se il bando non ha requisiti salvati e la descrizione non è parsabile.
 const BANDI_REQUISITI_MAP = {
+  // Requisiti strutturati dopo lettura diretta dell'avviso ufficiale (non da nota interna) — 08/07/2026
+  "Filiere Riciclo e Recupero Rifiuti – Calabria": { dimensioni:["piccola","media"], startupInnovativa:false, pmiInnovativa:false, impresaFemminile:false, impresaGiovanile:false, atecoInclude:[], atecoExclude:[], etaMinAnni:null, etaMaxAnni:null, escludeImpresaDifficolta:true },
+  "Voucher Manager – Potenziamento Manageriale Lazio": { dimensioni:[], startupInnovativa:false, pmiInnovativa:false, impresaFemminile:false, impresaGiovanile:false, atecoInclude:[], atecoExclude:[], etaMinAnni:null, etaMaxAnni:null, deMinimisMassimale:300000 },
+  "Sviluppo Competenze Digitali/Green – Mezzogiorno": { dimensioni:["micro","piccola","media"], startupInnovativa:false, pmiInnovativa:false, impresaFemminile:false, impresaGiovanile:false, atecoInclude:[], atecoExclude:[], etaMinAnni:null, etaMaxAnni:null },
   "Smart&Start Italia":                            { dimensioni:["micro","piccola"],            startupInnovativa:true,  pmiInnovativa:false, impresaFemminile:false, impresaGiovanile:false, atecoInclude:[], atecoExclude:[], etaMinAnni:null, etaMaxAnni:5  },
   "Sviluppo Tecnologico delle Startup Innovative": { dimensioni:["micro","piccola"],            startupInnovativa:true,  pmiInnovativa:false, impresaFemminile:false, impresaGiovanile:false, atecoInclude:[], atecoExclude:[], etaMinAnni:null, etaMaxAnni:null },
   "EIC Accelerator 2026":                          { dimensioni:["micro","piccola","media"],    startupInnovativa:false, pmiInnovativa:false, impresaFemminile:false, impresaGiovanile:false, atecoInclude:[], atecoExclude:[], etaMinAnni:null, etaMaxAnni:null },
