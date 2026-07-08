@@ -3132,7 +3132,7 @@ const BANDI = [
     tipo:["impresa"], contributo:"€50.000 – €200.000",
     scadenza:"Dal 15/10/2025 – esaurimento fondi", proc:"Sportello",
     stato:"aperto", urgente:false, altaRilevanza:true, aperturaImminente:false,
-    descrizione:"⚠ ATTENZIONE: bando riservato a persone fisiche 18-34 anni disoccupate/inattive che avviano nuove iniziative (non per SRL già esistenti). Da associare solo a founder under 34 inoccupati. GATIM 1995, ProGen 2010, Tod Systems 2015, Digitalmens 2020 – tutte imprese già operative.",
+    descrizione:"⚠ ATTENZIONE: bando riservato a persone fisiche 18-34 anni disoccupate/inattive che avviano nuove iniziative (non per SRL già esistenti). Da associare solo a founder under 34 inoccupati. GATIM 1995, ProGen 2010, Tod Systems 2015, Digitalmens 2020 – tutte imprese già operative. ⚠ VERIFICATO 08/07/2026: il link attuale (invitalia.it/incentivi-e-strumenti/resto-al-sud) porta al programma ORIGINALE, dichiarato chiuso il 14/10/2025 — non ho trovato la pagina dedicata a 'Resto al Sud 2.0'. Chiedere link corretto a Marco.",
     clienti:[],
     link:"https://www.invitalia.it/incentivi-e-strumenti/resto-al-sud" },
 
@@ -3165,10 +3165,12 @@ const BANDI = [
     link:"https://www.regione.puglia.it/web/competitivita-e-innovazione/-/avviso-pubblico-step-tecnologie-critiche-digitali-e-biotecnologie" },
 
   { nome:"MiniPIA Puglia", ente:"Regione Puglia", regione:"Puglia",
-    tipo:["innovazione","impresa"], contributo:"Da definire",
+    tipo:["innovazione","impresa"], contributo:"Investimento €30.000–€5.000.000. Fondo perduto: 25-35% investimenti produttivi, 30% innovazione/consulenze, 40-50% formazione, 35-45% ambiente",
     scadenza:"Dal 29/02/2024 – esaurimento fondi", proc:"Sportello",
     stato:"aperto", urgente:false, altaRilevanza:false, aperturaImminente:false,
     descrizione:"Incentivi per investimenti innovativi di micro e piccole imprese in Puglia.",
+    pubblicabile:true,
+    descrizionePubblica:"Contributo a fondo perduto per micro, piccole e piccole imprese partecipate (equiparate a medie) con sede in Puglia, su investimenti da €30.000 a €5.000.000: investimenti produttivi (25-35%), innovazione di processo (30%), formazione (40-50%), tutela ambientale (35-45%), consulenze e fiere (30%).",
     clienti:[],
     link:"https://www.minipia.puglia.it" },
 
@@ -6194,6 +6196,7 @@ const BANDI_REQUISITI_MAP = {
   "Filiere Riciclo e Recupero Rifiuti – Calabria": { dimensioni:["piccola","media"], startupInnovativa:false, pmiInnovativa:false, impresaFemminile:false, impresaGiovanile:false, atecoInclude:[], atecoExclude:[], etaMinAnni:null, etaMaxAnni:null, escludeImpresaDifficolta:true },
   "Voucher Manager – Potenziamento Manageriale Lazio": { dimensioni:[], startupInnovativa:false, pmiInnovativa:false, impresaFemminile:false, impresaGiovanile:false, atecoInclude:[], atecoExclude:[], etaMinAnni:null, etaMaxAnni:null, deMinimisMassimale:300000 },
   "Sviluppo Competenze Digitali/Green – Mezzogiorno": { dimensioni:["micro","piccola","media"], startupInnovativa:false, pmiInnovativa:false, impresaFemminile:false, impresaGiovanile:false, atecoInclude:[], atecoExclude:[], etaMinAnni:null, etaMaxAnni:null },
+  "MiniPIA Puglia": { dimensioni:["micro","piccola","media"], startupInnovativa:false, pmiInnovativa:false, impresaFemminile:false, impresaGiovanile:false, atecoInclude:[], atecoExclude:[], etaMinAnni:null, etaMaxAnni:null, escludeImpresaDifficolta:true },
   "Smart&Start Italia":                            { dimensioni:["micro","piccola"],            startupInnovativa:true,  pmiInnovativa:false, impresaFemminile:false, impresaGiovanile:false, atecoInclude:[], atecoExclude:[], etaMinAnni:null, etaMaxAnni:5  },
   "Sviluppo Tecnologico delle Startup Innovative": { dimensioni:["micro","piccola"],            startupInnovativa:true,  pmiInnovativa:false, impresaFemminile:false, impresaGiovanile:false, atecoInclude:[], atecoExclude:[], etaMinAnni:null, etaMaxAnni:null },
   "EIC Accelerator 2026":                          { dimensioni:["micro","piccola","media"],    startupInnovativa:false, pmiInnovativa:false, impresaFemminile:false, impresaGiovanile:false, atecoInclude:[], atecoExclude:[], etaMinAnni:null, etaMaxAnni:null },

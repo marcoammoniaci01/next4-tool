@@ -1,4 +1,4 @@
-﻿// Generato da generaExportPubblico() il 2026-07-08T15:24:11.637Z — non modificare a mano.
+﻿// Generato da generaExportPubblico() il 2026-07-08T15:33:11.332Z — non modificare a mano.
 const BANDI_PUBBLICI = [
   {
     "nome": "Filiere Riciclo e Recupero Rifiuti – Calabria",
@@ -172,6 +172,37 @@ const BANDI_PUBBLICI = [
       "etaMaxAnni": null
     },
     "link": "https://www.regione.puglia.it/web/competitivita-e-innovazione/-/avviso-tecnonidi-aiuti-alle-piccole-imprese-innovative"
+  },
+  {
+    "nome": "MiniPIA Puglia",
+    "ente": "Regione Puglia",
+    "regione": "Puglia",
+    "tipo": [
+      "innovazione",
+      "impresa"
+    ],
+    "contributo": "Investimento €30.000–€5.000.000. Fondo perduto: 25-35% investimenti produttivi, 30% innovazione/consulenze, 40-50% formazione, 35-45% ambiente",
+    "scadenza": "Dal 29/02/2024 – esaurimento fondi",
+    "proc": "Sportello",
+    "stato": "aperto",
+    "descrizione": "Contributo a fondo perduto per micro, piccole e piccole imprese partecipate (equiparate a medie) con sede in Puglia, su investimenti da €30.000 a €5.000.000: investimenti produttivi (25-35%), innovazione di processo (30%), formazione (40-50%), tutela ambientale (35-45%), consulenze e fiere (30%).",
+    "requisiti": {
+      "dimensioni": [
+        "micro",
+        "piccola",
+        "media"
+      ],
+      "startupInnovativa": false,
+      "pmiInnovativa": false,
+      "impresaFemminile": false,
+      "impresaGiovanile": false,
+      "atecoInclude": [],
+      "atecoExclude": [],
+      "etaMinAnni": null,
+      "etaMaxAnni": null,
+      "escludeImpresaDifficolta": true
+    },
+    "link": "https://www.minipia.puglia.it"
   },
   {
     "nome": "Innovazione Strategica STEP – Toscana",
